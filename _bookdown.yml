@@ -1,0 +1,4 @@
+book_filename: "ML Crash Course"
+repo: https://github.com/uodatascience/ML-CrashCourse.git
+output_dir: docs
+new_session: yes

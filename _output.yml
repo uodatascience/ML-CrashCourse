@@ -1,0 +1,7 @@
+bookdown::gitbook:
+  split_by: rmd
+  config:
+    toc:
+      collapse: section
+    search: yes
+
