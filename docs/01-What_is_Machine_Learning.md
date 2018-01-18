@@ -68,19 +68,27 @@ From this history we can see the major components of the machine learning approa
 
 3) Multiple models, or units of models, are combined so increase the generality of the functions that can be estimated.
 
+4) Models are tested by their ability to generalize to novel data, or by 'cross-validation'
+
 ## Common ML Algorithms
 
 Good god there are so many. The folks that put together scikit-learn for Python made this flowchart that gives a very high-level overview of the major types
 
 ![](files/ml_map.png)
 
-* **Decision Trees** - For this I defer to this lovely presentation: http://www.r2d3.us/visual-intro-to-machine-learning-part-1/
+### **Decision Trees** 
 
-* **Support Vector Machines** - In the simplest example, we learn some line, plane, or hyperplane that best separates classes.
+For this I defer to this lovely presentation: http://www.r2d3.us/visual-intro-to-machine-learning-part-1/
+
+### **Support Vector Machines** 
+
+In the simplest example, we learn some line, plane, or hyperplane that best separates classes.
 
 ![H1 does not separate the classes. H2 does, but only with a small margin. H3 separates them with the maximum margin.](files/svn_planes.png)
 
-* **Artificial Neural Networks** - Models are composed of neurons, arranged in layers, with particular connectivity between (or within) layers. Neurons can be arbitrarily complex, from the simplest weight-only neuron to the hypercomplex LSTM neurons. Models also get their power from their architecture, as exemplified convolutional neural networks.
+### **Artificial Neural Networks** 
+
+Models are composed of neurons, arranged in layers, with particular connectivity between (or within) layers. Neurons can be arbitrarily complex, from the simplest weight-only neuron to the hypercomplex LSTM neurons. Models also get their power from their architecture, as exemplified convolutional neural networks.
 
 ![A neuron. Outputs are computed by multiplying inputs by trained weights, summing them, and passing that sum to some typically nonlinear function. http://www.theprojectspot.com/tutorial-post/introduction-to-artificial-neural-networks-part-1/7](files/an.jpg)
 
@@ -90,7 +98,9 @@ Good god there are so many. The folks that put together scikit-learn for Python 
 
 And of course we have to [deep dream a little bit](https://www.youtube.com/watch?v=SCE-QeDfXtA)
 
-* **k-Means Clustering** - Divide data into k clusters such that each observation is identified as the cluster with the nearest mean value. One of the simplest clustering algorithms.
+### **k-Means Clustering**
+
+Divide data into k clusters such that each observation is identified as the cluster with the nearest mean value. One of the simplest clustering algorithms.
 
 ![](files/K-means_convergence.gif)
 

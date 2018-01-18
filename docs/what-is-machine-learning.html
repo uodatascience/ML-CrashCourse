@@ -66,7 +66,12 @@
 <li class="chapter" data-level="2.1" data-path="what-is-machine-learning.html"><a href="what-is-machine-learning.html#a-broad-definition"><i class="fa fa-check"></i><b>2.1</b> A Broad Definition…</a></li>
 <li class="chapter" data-level="2.2" data-path="what-is-machine-learning.html"><a href="what-is-machine-learning.html#major-classes-of-ml-problems"><i class="fa fa-check"></i><b>2.2</b> Major Classes of ML Problems</a></li>
 <li class="chapter" data-level="2.3" data-path="what-is-machine-learning.html"><a href="what-is-machine-learning.html#a-brief-history"><i class="fa fa-check"></i><b>2.3</b> A Brief History…</a></li>
-<li class="chapter" data-level="2.4" data-path="what-is-machine-learning.html"><a href="what-is-machine-learning.html#common-ml-algorithms"><i class="fa fa-check"></i><b>2.4</b> Common ML Algorithms</a></li>
+<li class="chapter" data-level="2.4" data-path="what-is-machine-learning.html"><a href="what-is-machine-learning.html#common-ml-algorithms"><i class="fa fa-check"></i><b>2.4</b> Common ML Algorithms</a><ul>
+<li class="chapter" data-level="2.4.1" data-path="what-is-machine-learning.html"><a href="what-is-machine-learning.html#decision-trees"><i class="fa fa-check"></i><b>2.4.1</b> <strong>Decision Trees</strong></a></li>
+<li class="chapter" data-level="2.4.2" data-path="what-is-machine-learning.html"><a href="what-is-machine-learning.html#support-vector-machines"><i class="fa fa-check"></i><b>2.4.2</b> <strong>Support Vector Machines</strong></a></li>
+<li class="chapter" data-level="2.4.3" data-path="what-is-machine-learning.html"><a href="what-is-machine-learning.html#artificial-neural-networks"><i class="fa fa-check"></i><b>2.4.3</b> <strong>Artificial Neural Networks</strong></a></li>
+<li class="chapter" data-level="2.4.4" data-path="what-is-machine-learning.html"><a href="what-is-machine-learning.html#k-means-clustering"><i class="fa fa-check"></i><b>2.4.4</b> <strong>k-Means Clustering</strong></a></li>
+</ul></li>
 <li class="chapter" data-level="2.5" data-path="what-is-machine-learning.html"><a href="what-is-machine-learning.html#resources"><i class="fa fa-check"></i><b>2.5</b> Resources</a></li>
 </ul></li>
 </ul>
@@ -142,6 +147,7 @@
 <li><p>Models are evaluated by a loss value: the difference between the correct answer and the predicted answer</p></li>
 <li><p>Models are improved by updating their parameters to minimize that loss value</p></li>
 <li><p>Multiple models, or units of models, are combined so increase the generality of the functions that can be estimated.</p></li>
+<li><p>Models are tested by their ability to generalize to novel data, or by ‘cross-validation’</p></li>
 </ol>
 </div>
 <div id="common-ml-algorithms" class="section level2">
@@ -151,17 +157,21 @@
 <img src="files/ml_map.png" />
 
 </div>
-<ul>
-<li><p><strong>Decision Trees</strong> - For this I defer to this lovely presentation: <a href="http://www.r2d3.us/visual-intro-to-machine-learning-part-1/" class="uri">http://www.r2d3.us/visual-intro-to-machine-learning-part-1/</a></p></li>
-<li><p><strong>Support Vector Machines</strong> - In the simplest example, we learn some line, plane, or hyperplane that best separates classes.</p></li>
-</ul>
+<div id="decision-trees" class="section level3">
+<h3><span class="header-section-number">2.4.1</span> <strong>Decision Trees</strong></h3>
+<p>For this I defer to this lovely presentation: <a href="http://www.r2d3.us/visual-intro-to-machine-learning-part-1/" class="uri">http://www.r2d3.us/visual-intro-to-machine-learning-part-1/</a></p>
+</div>
+<div id="support-vector-machines" class="section level3">
+<h3><span class="header-section-number">2.4.2</span> <strong>Support Vector Machines</strong></h3>
+<p>In the simplest example, we learn some line, plane, or hyperplane that best separates classes.</p>
 <div class="figure">
 <img src="files/svn_planes.png" alt="H1 does not separate the classes. H2 does, but only with a small margin. H3 separates them with the maximum margin." />
 <p class="caption">H1 does not separate the classes. H2 does, but only with a small margin. H3 separates them with the maximum margin.</p>
 </div>
-<ul>
-<li><strong>Artificial Neural Networks</strong> - Models are composed of neurons, arranged in layers, with particular connectivity between (or within) layers. Neurons can be arbitrarily complex, from the simplest weight-only neuron to the hypercomplex LSTM neurons. Models also get their power from their architecture, as exemplified convolutional neural networks.</li>
-</ul>
+</div>
+<div id="artificial-neural-networks" class="section level3">
+<h3><span class="header-section-number">2.4.3</span> <strong>Artificial Neural Networks</strong></h3>
+<p>Models are composed of neurons, arranged in layers, with particular connectivity between (or within) layers. Neurons can be arbitrarily complex, from the simplest weight-only neuron to the hypercomplex LSTM neurons. Models also get their power from their architecture, as exemplified convolutional neural networks.</p>
 <div class="figure">
 <img src="files/an.jpg" alt="A neuron. Outputs are computed by multiplying inputs by trained weights, summing them, and passing that sum to some typically nonlinear function. http://www.theprojectspot.com/tutorial-post/introduction-to-artificial-neural-networks-part-1/7" />
 <p class="caption">A neuron. Outputs are computed by multiplying inputs by trained weights, summing them, and passing that sum to some typically nonlinear function. <a href="http://www.theprojectspot.com/tutorial-post/introduction-to-artificial-neural-networks-part-1/7" class="uri">http://www.theprojectspot.com/tutorial-post/introduction-to-artificial-neural-networks-part-1/7</a></p>
@@ -175,12 +185,14 @@
 <p class="caption">Convolutional Neural Nets learn simplified features by restricting their connectivity</p>
 </div>
 <p>And of course we have to <a href="https://www.youtube.com/watch?v=SCE-QeDfXtA">deep dream a little bit</a></p>
-<ul>
-<li><strong>k-Means Clustering</strong> - Divide data into k clusters such that each observation is identified as the cluster with the nearest mean value. One of the simplest clustering algorithms.</li>
-</ul>
+</div>
+<div id="k-means-clustering" class="section level3">
+<h3><span class="header-section-number">2.4.4</span> <strong>k-Means Clustering</strong></h3>
+<p>Divide data into k clusters such that each observation is identified as the cluster with the nearest mean value. One of the simplest clustering algorithms.</p>
 <div class="figure">
 <img src="files/K-means_convergence.gif" />
 
+</div>
 </div>
 </div>
 <div id="resources" class="section level2">
