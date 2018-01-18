@@ -62,7 +62,12 @@
 
 <ul class="summary">
 <li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Index</a></li>
-<li class="chapter" data-level="2" data-path="what-is-machine-learning.html"><a href="what-is-machine-learning.html"><i class="fa fa-check"></i><b>2</b> What is Machine Learning?</a></li>
+<li class="chapter" data-level="2" data-path="what-is-machine-learning.html"><a href="what-is-machine-learning.html"><i class="fa fa-check"></i><b>2</b> What is Machine Learning?</a><ul>
+<li class="chapter" data-level="2.1" data-path="what-is-machine-learning.html"><a href="what-is-machine-learning.html#a-broad-definition"><i class="fa fa-check"></i><b>2.1</b> A Broad Definition…</a></li>
+<li class="chapter" data-level="2.2" data-path="what-is-machine-learning.html"><a href="what-is-machine-learning.html#major-classes-of-ml-problems"><i class="fa fa-check"></i><b>2.2</b> Major Classes of ML Problems</a></li>
+<li class="chapter" data-level="2.3" data-path="what-is-machine-learning.html"><a href="what-is-machine-learning.html#a-brief-history"><i class="fa fa-check"></i><b>2.3</b> A Brief History…</a></li>
+<li class="chapter" data-level="2.4" data-path="what-is-machine-learning.html"><a href="what-is-machine-learning.html#resources"><i class="fa fa-check"></i><b>2.4</b> Resources</a></li>
+</ul></li>
 </ul>
 
       </nav>
@@ -82,8 +87,58 @@
             <section class="normal" id="section-">
 <div id="what-is-machine-learning" class="section level1">
 <h1><span class="header-section-number">2</span> What is Machine Learning?</h1>
-<p>test</p>
+<div id="a-broad-definition" class="section level2">
+<h2><span class="header-section-number">2.1</span> A Broad Definition…</h2>
+<p>Machine learning is an approach to making accurate predictions using experience (ie. prior information). The methods that arise from this approach attempt to algorithmically fit some function relating some “input” values to some “output” values such that the function accurately predicts future outputs from future inputs.</p>
+<p>Or, the goal is to determine the relationship between thing a (or things a1, …, an) and thing b (or things b1, …, bn) even when that relationship is arbitrarily complex.</p>
+<p>Once more, according to Vapnik “the learning process is a process of choosing an appropriate function from a given set of functions.”</p>
+<p>For example, linear regression works great when the relationship is linear, but poorly when it looks like this…</p>
+<div class="figure">
+<img src="files/fox_rabbit.png" />
 
+</div>
+<p>If the only class of functions you were considering were lines of different slopes, you would fail to characterize the relationship between the three variables (time, fox, and rabbit populations). Machine learning is a generalization of the linear/parametric statistical problems you are likely familiar with.</p>
+<p>Our learning machines have two basic requirements:</p>
+<ol style="list-style-type: decimal">
+<li>To estimate our function from a wide variety of functions – roughly, we want to be able to estimate the relationship no matter how complicated it might be.</li>
+<li>To estimate our function using a limited number of examples.</li>
+</ol>
+</div>
+<div id="major-classes-of-ml-problems" class="section level2">
+<h2><span class="header-section-number">2.2</span> Major Classes of ML Problems</h2>
+<ul>
+<li><em>Classification/Pattern Recognition</em></li>
+</ul>
+<p>Given a set of observations, learn a generalizable rule that allows their discrete class to be predicted. For example, we see a series of animals with either two or four legs who do or don’t bark. We want to learn to categorize animals with two legs as humans, animals with four legs who don’t bark as cats and animals with four legs who do bark as dogs. We want to <em>partition</em> the input space.</p>
+<ul>
+<li><em>Regression</em></li>
+</ul>
+<p>Given a set of observations, learn a generalizable relationship that allows some real-valued output to be predicted. For example, we want to estimate a likely temperature after seeing a series of temperatures, times, humidities, air pressures, etc.</p>
+<ul>
+<li><em>Density Estimation</em></li>
+</ul>
+<p>Given a set of observations, we want to describe the probability distribution of the underlying population. The most commonly associated machine learning methods are those of cluster analysis, which seek to characterize the structure of data without knowing about category membership in advance – things that share a probability distribution are more likely to be from the same phenomenon than those that do not.</p>
+</div>
+<div id="a-brief-history" class="section level2">
+<h2><span class="header-section-number">2.3</span> A Brief History…</h2>
+<p>(taken largely from Ch. 1 of Vapnik’s Statistical Learning Theory)</p>
+<ul>
+<li><p><em>The parametric approach of the 1920-30’s</em> - The classical, maximum likelihood methods developed largely by Fisher in the 1920’s pose the problem of statistical inference as 1) assuming the structure of the process that generated observed values – eg. the assumption of normality – in order to 2) estimate the parameters of a predefined function. This parametric method of inference works well when 1) the laws that generate the random error of observation and 2) the form of the function whose parameters are to be estimated are both known in advance. The number of problems that satisfy those two conditions are very few indeed. This approach reached its “golden age” from 1930-1960, but remains in common currency in some part by historical accident (its alternative was developed by the Russians during the Cold War) and in some part by many scientists being unwilling to give half an ass to learn math.</p></li>
+<li><p><em>Empirical Risk Minimization in the 1960’s</em> - It is easy to forget that many of the classical methods were developed without computers, and evaluating complex datasets was laborious such that it neared impossibility. When we got our hands on our computers it became clear that the ideas that underlie the parametric approach to inference were naive, however convenient. It is from this realization that the practice of “data analysis” that seeks to describe data rather than make formal statistical inductions followed. The development of the <a href="https://en.wikipedia.org/wiki/Perceptron">perceptron</a>, which mimics very crude neurons that update input “weights” depending on repeated input to estimate category labels prompted the development of <em>Emperical Risk Minimization</em>. The ERM principle suggests that functions that generalize well to future inputs, ie. functions that describe the input/output relationship well, should be trained by minimizing the observed error (risk) on training examples. The major intellectual developments that followed were the description of the conditions for <em>consistency</em> of ERM – when ERM will arrive at the best possible solution – and the <em>quality</em> of the functions fit by ERM.</p></li>
+<li><p><em>Backpropagation in the 1980’s</em> - This practice remained unpopular due to the limitations of perceptions and related learning algorithms, but the development of backpropagation that allowed multiple instances of a learning algorithm to be chained together renewed interest. Backpropagation allows the observed error at the output of a chain of stacked algorithms to be… propagated… backwards… through to the input, so that all weights or parameters of the function estimator can be intelligibly updated rather than just those of the output.</p></li>
+<li><p><em>Deep Learning in the 2000’s</em> - Backpropagation is great, but computationally expensive. The advent of cheap GPUs that allow the matrix algebra necessary for deep algorithms to be performed in a tractable period of time.</p></li>
+</ul>
+<p>From this history we can see the major components of the machine learning approach 1) Models are evaluated by a loss value: the difference between the correct answer and the predicted answer 2) Models are improved by updating their parameters to minimize that loss value 3) Multiple models, or units of models, are combined so increase the generality of the functions that can be estimated.</p>
+</div>
+<div id="resources" class="section level2">
+<h2><span class="header-section-number">2.4</span> Resources</h2>
+<ul>
+<li><a href="https://mitpress.mit.edu/books/foundations-machine-learning">Foundations of Machine Learning</a></li>
+<li><a href="http://math.arizona.edu/~hzhang/math574m/Read/vapnik.pdf">Vapnik 1999 - An Overview of Statistical Learning Theory</a></li>
+<li><a href="https://link.springer.com/chapter/10.1007/978-1-4757-2440-0_1">Vapnik - The Nature of Statistical Learning Theory</a></li>
+</ul>
+
+</div>
 </div>
             </section>
 
