@@ -245,5 +245,101 @@ fit_ridge <- train(points ~ .,
                    trControl = train_control,
                    method = "ridge",
                    preProc = c("center", "scale"))
+
+avg_r2_ridge <- mean(fit_ridge$results$Rsquared)
+avg_RMSE_ridge <- mean(fit_ridge$results$RMSE)
+
+avg_r2_ridge
+avg_RMSE_ridge
+```
+Harder test: how does it do with the holdout sample?
+
+```{r}
+pred_ridge <- predict(fit_ridge, newdata = testing)
+
+# Gets R^2 and RMSE for ridge model
+fitstat_ridge <- postResample(pred = fit_ridge, 
+                                  obs = testing$points)
 ```
 
+```{r, eval = FALSE}
+# Set seed for consistency's sake
+set.seed(500)
+# This part creates a list of values;
+# these values are the row numbers for data included in the training set
+# we're splitting it 75-25, such that 75% of cases will be in the training set (25% in the test).
+inTrain <- createDataPartition(y = wine_for_ml$points,
+                                 p = .75,
+                                 list = FALSE)
+# subsets the training data (those data whose row number appears in the inTrain object)
+training <- wine_for_ml[inTrain,]
+# subsets the test data (those data whose row number DOES NOT appear in the inTrain object)
+testing <- wine_for_ml[-inTrain,]
+
+# Sets parameters for training;
+# telling it to use 10-fold cross-validation, and to save the predictions.
+train_control<- trainControl(method="cv", number=10, 
+                             savePredictions = TRUE)
+
+fit_lasso <- train(points ~ ., 
+                   data = training,
+                   trControl = train_control,
+                   method = "lasso",
+                   preProc = c("center", "scale"))
+
+avg_r2_lasso <- mean(fit_lasso$results$Rsquared)
+avg_RMSE_lasso <- mean(fit_lasso$results$RMSE)
+
+avg_r2_lasso
+avg_RMSE_lasso
+```
+Harder test: how does it do with the holdout sample?
+
+```{r}
+pred_lasso <- predict(fit_lasso, newdata = testing)
+
+# Gets R^2 and RMSE for lasso model
+fitstat_lasso <- postResample(pred = fit_lasso, 
+                                  obs = testing$points)
+```
+
+```{r, eval = FALSE}
+# Set seed for consistency's sake
+set.seed(500)
+# This part creates a list of values;
+# these values are the row numbers for data included in the training set
+# we're splitting it 75-25, such that 75% of cases will be in the training set (25% in the test).
+inTrain <- createDataPartition(y = wine_for_ml$points,
+                                 p = .75,
+                                 list = FALSE)
+# subsets the training data (those data whose row number appears in the inTrain object)
+training <- wine_for_ml[inTrain,]
+# subsets the test data (those data whose row number DOES NOT appear in the inTrain object)
+testing <- wine_for_ml[-inTrain,]
+
+# Sets parameters for training;
+# telling it to use 10-fold cross-validation, and to save the predictions.
+train_control<- trainControl(method="cv", number=10, 
+                             savePredictions = TRUE)
+
+fit_enet <- train(points ~ ., 
+                   data = training,
+                   trControl = train_control,
+                   method = "enet",
+                   preProc = c("center", "scale"))
+
+avg_r2_enet <- mean(fit_enet$results$Rsquared)
+avg_RMSE_enet <- mean(fit_enet$results$RMSE)
+
+avg_r2_enet
+avg_RMSE_enet
+```
+Harder test: how does it do with the holdout sample?
+
+```{r}
+pred_enet <- predict(fit_enet, newdata = testing)
+
+# Gets R^2 and RMSE for enet model
+fitstat_enet <- postResample(pred = fit_enet, 
+                                  obs = testing$points)
+```
