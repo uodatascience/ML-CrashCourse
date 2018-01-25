@@ -215,7 +215,7 @@ And, let's merge that back into the wine dataframe.
 wine_for_ml <- wine %>%
   left_join(description_sentiment, by = "id") %>%
   # removing raw description for now
-  select(-description, -id) %>%
+  select(points, price, sentiment) %>%
   # just removing missing values, because they complicate things
   na.omit()
 ```
@@ -245,30 +245,5 @@ fit_ridge <- train(points ~ .,
                    trControl = train_control,
                    method = "ridge",
                    preProc = c("center", "scale"))
-
-fit_ridge$
-# This uses the fitted model to get predicted values on 
-# the testing data (the 25 case holdout sample)
-pred_ridge <- predict(fit_ridge, newdata = testing)
-
-# This gets R^2 and RMSE for extraversion model
-ext_fitstat_enet <- postResample(pred = pred_ridge, 
-                                 obs = testing$ext_t)
-
-# This does the same predictive model for Extraversion BUT
-# uses ridge algorithm instead of elastic net
-Fit_E_ridge <- train(ext_t ~ .,
-               data = training,
-               trControl = train_control,
-               method = "ridge",
-               preProc = c("center", "scale"))
-
-# predicted values for holdout based on
-# model trained with ridge
-ext_pred_ridge <- predict(Fit_E_ridge, newdata = testing)
-
-# Gets R^2 and RMSE for ridge model
-ext_fitstat_ridge <- postResample(pred = ext_pred_ridge, 
-                                  obs = testing$ext_t)
 ```
 
