@@ -88,4 +88,8 @@ This makes it so that paramter values are only allowed to be large if they reduc
 
 The extent to which they are shrunk towards 0 depends on the value of $\lambda$; higher values lead to more shrinkage than lower values. This is called a *hyperparameter* because it's a parameter that governs other parameters. You can think of $\lambda$ as sort of the cost associated with larger parameter values: higher values of lambda are like telling your model that larger parameter values are more costly (so don't make them large for nothing).
 
-Finally, you can think of this penalty as introducing a specific type of bias: bias towards smaller parameter value. However, since larger parameter values can result from overfitting, this bias can result in reducing variance.
+You can think of this penalty as introducing a specific type of bias: bias towards smaller parameter value. However, since larger parameter values can result from overfitting, this bias can result in reducing variance.
+
+So why does Ridge do that and why is it useful? As I said earlier, I find it useful to think of statistical tools as having certain beliefs, and as being useful when those beliefs seem more or less true (in that case). Ridge believes that all of the variables you're considering matter, but that most of them matter very little. Put differently, it believes that each variable you've entered belongs in the model, but that most or all only have small contributions. Because of this, people often say that ridge doesn't perform *feature selection*, and shouldn't be used if you need to select features (i.e., variables). This makes sense once you think of what Ridge believes: it believes every variable you're telling it to use should be in the model, but many will simply have small impacts. If we want to select features (i.e., decide what variables go in our model), we need a different tool.
+
+##Lasso: only some features matter, and they can be of any size
