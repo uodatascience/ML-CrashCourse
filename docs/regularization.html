@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>ML Crashcourse Index</title>
+  <meta name="description" content="ML Crashcourse Index">
+  <meta name="generator" content="bookdown 0.5 and GitBook 2.6.7">
+
+  <meta property="og:title" content="ML Crashcourse Index" />
+  <meta property="og:type" content="book" />
+  <meta property="og:url" content="<a href="https://github.com/uodatascience/ML-CrashCourse" class="uri">https://github.com/uodatascience/ML-CrashCourse</a>" />
+  
+  
+  <meta name="github-repo" content="uodatascience/ML-CrashCourse" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="ML Crashcourse Index" />
+  
+  
+  
+
+<meta name="author" content="UO Data Science">
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="the-bias-variance-tradeoff-overfitting-and-cross-validation.html">
+
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Index</a></li>
+<li class="chapter" data-level="2" data-path="what-is-machine-learning.html"><a href="what-is-machine-learning.html"><i class="fa fa-check"></i><b>2</b> What is Machine Learning?</a><ul>
+<li class="chapter" data-level="2.1" data-path="what-is-machine-learning.html"><a href="what-is-machine-learning.html#a-broad-definition"><i class="fa fa-check"></i><b>2.1</b> A Broad Definition…</a></li>
+<li class="chapter" data-level="2.2" data-path="what-is-machine-learning.html"><a href="what-is-machine-learning.html#major-classes-of-ml-problems"><i class="fa fa-check"></i><b>2.2</b> Major Classes of ML Problems</a></li>
+<li class="chapter" data-level="2.3" data-path="what-is-machine-learning.html"><a href="what-is-machine-learning.html#a-brief-history"><i class="fa fa-check"></i><b>2.3</b> A Brief History…</a></li>
+<li class="chapter" data-level="2.4" data-path="what-is-machine-learning.html"><a href="what-is-machine-learning.html#common-ml-algorithms"><i class="fa fa-check"></i><b>2.4</b> Common ML Algorithms</a><ul>
+<li class="chapter" data-level="2.4.1" data-path="what-is-machine-learning.html"><a href="what-is-machine-learning.html#decision-trees"><i class="fa fa-check"></i><b>2.4.1</b> <strong>Decision Trees</strong></a></li>
+<li class="chapter" data-level="2.4.2" data-path="what-is-machine-learning.html"><a href="what-is-machine-learning.html#support-vector-machines"><i class="fa fa-check"></i><b>2.4.2</b> <strong>Support Vector Machines</strong></a></li>
+<li class="chapter" data-level="2.4.3" data-path="what-is-machine-learning.html"><a href="what-is-machine-learning.html#artificial-neural-networks"><i class="fa fa-check"></i><b>2.4.3</b> <strong>Artificial Neural Networks</strong></a></li>
+<li class="chapter" data-level="2.4.4" data-path="what-is-machine-learning.html"><a href="what-is-machine-learning.html#k-means-clustering"><i class="fa fa-check"></i><b>2.4.4</b> <strong>k-Means Clustering</strong></a></li>
+</ul></li>
+<li class="chapter" data-level="2.5" data-path="what-is-machine-learning.html"><a href="what-is-machine-learning.html#resources"><i class="fa fa-check"></i><b>2.5</b> Resources</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="the-bias-variance-tradeoff-overfitting-and-cross-validation.html"><a href="the-bias-variance-tradeoff-overfitting-and-cross-validation.html"><i class="fa fa-check"></i><b>3</b> The Bias-Variance Tradeoff, Overfitting, and Cross-Validation</a><ul>
+<li class="chapter" data-level="3.1" data-path="the-bias-variance-tradeoff-overfitting-and-cross-validation.html"><a href="the-bias-variance-tradeoff-overfitting-and-cross-validation.html#bias-variance-tradeoff"><i class="fa fa-check"></i><b>3.1</b> Bias-Variance Tradeoff</a></li>
+<li class="chapter" data-level="3.2" data-path="the-bias-variance-tradeoff-overfitting-and-cross-validation.html"><a href="the-bias-variance-tradeoff-overfitting-and-cross-validation.html#overfitting"><i class="fa fa-check"></i><b>3.2</b> Overfitting</a></li>
+<li class="chapter" data-level="3.3" data-path="the-bias-variance-tradeoff-overfitting-and-cross-validation.html"><a href="the-bias-variance-tradeoff-overfitting-and-cross-validation.html#cross-validation"><i class="fa fa-check"></i><b>3.3</b> Cross-Validation</a><ul>
+<li class="chapter" data-level="3.3.1" data-path="the-bias-variance-tradeoff-overfitting-and-cross-validation.html"><a href="the-bias-variance-tradeoff-overfitting-and-cross-validation.html#k-fold-cross-validation"><i class="fa fa-check"></i><b>3.3.1</b> K-fold cross-validation</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="regularization.html"><a href="regularization.html"><i class="fa fa-check"></i><b>4</b> Regularization</a><ul>
+<li class="chapter" data-level="4.1" data-path="regularization.html"><a href="regularization.html#ridge-all-of-these-features-matter-but-only-a-little-bit."><i class="fa fa-check"></i><b>4.1</b> Ridge: all of these features matter, but only a little bit.</a></li>
+<li class="chapter" data-level="4.2" data-path="regularization.html"><a href="regularization.html#lasso-only-some-features-matter-and-they-might-matter-a-lot"><i class="fa fa-check"></i><b>4.2</b> Lasso: only some features matter, and they might matter a lot</a></li>
+<li class="chapter" data-level="4.3" data-path="regularization.html"><a href="regularization.html#elastic-net-maybe-everything-matters-and-maybe-only-a-little-bit."><i class="fa fa-check"></i><b>4.3</b> Elastic Net: maybe everything matters, and maybe only a little bit.</a></li>
+</ul></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">ML Crashcourse Index</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="regularization" class="section level1">
+<h1><span class="header-section-number">4</span> Regularization</h1>
+<p>Now let’s get to regularized regression. This is a pretty simple extension of OLS regression. The logic of it is basically that OLS regression is minimally biased, but because of this, is higher variance than we might want. So, the solution is to introduce some bias into the model that will decrease variance. This takes the form of a new <em>penalization</em>, which tends to either be focused on parameter size, number of parameters, or both. Let’s start with the first. I find it helpful to think of these as having different beliefs, and choosing one depends on whether or not those beliefs seem correct.</p>
+<div id="ridge-all-of-these-features-matter-but-only-a-little-bit." class="section level2">
+<h2><span class="header-section-number">4.1</span> Ridge: all of these features matter, but only a little bit.</h2>
+<p>Ridge regression is basically OLS regression with an extra term. As a refresher, OLS seeks to minimize the sum of squared error, or:</p>
+<p><span class="math display">\[SSE = \sum\limits_{i=1}^n = (y_i - \hat{y_i})^2\]</span></p>
+<p>Ridge adds an additional penalty:</p>
+<p><span class="math display">\[SSE_{L2} = \sum\limits_{i=1}^n = (y_i - \hat{y_i}^2) + \lambda \sum\limits_{j=1}^p \beta^2_j\]</span> This makes it so that paramter values are only allowed to be large if they reduce error enough to justify their size. Functionally, this makes it so parameter values shrink towards 0. You can hopefully see this in that as our paramater values (our betas) increase in size, error increases, since we are adding the sum of squared beta values, times some constant <span class="math inline">\(\lambda\)</span>, to our error term SSE. So, unless the parameter values decrease the first part of the error term (the ordinary sum of squared error; to the left of our new penalty) proportionally to their magnitude, they are shrunk toward 0.</p>
+<p>The extent to which they are shrunk towards 0 depends on the value of <span class="math inline">\(\lambda\)</span>; higher values lead to more shrinkage than lower values. This is called a <em>hyperparameter</em> because it’s a parameter that governs other parameters. You can think of <span class="math inline">\(\lambda\)</span> as sort of the cost associated with larger parameter values: higher values of lambda are like telling your model that larger parameter values are more costly (so don’t make them large for nothing).</p>
+<p>You can think of this penalty as introducing a specific type of bias: bias towards smaller parameter values. However, since larger parameter values can result from overfitting, this bias can result in reducing variance.</p>
+<p>So why does Ridge do that and why is it useful? As I said earlier, I find it useful to think of statistical tools as having certain beliefs, and as being useful when those beliefs seem more or less true (in some particular case). Ridge believes that all of the variables you’re considering matter, but that most of them matter very little. Put differently, it believes that each variable you’ve entered belongs in the model, but that most or all only have small contributions. Because of this, people often say that ridge doesn’t perform <em>feature selection</em>, and shouldn’t be used if you need to select features (i.e., variables). This makes sense once you think of what Ridge believes: it believes every variable you’re telling it to use should be in the model, but many will simply have small impacts. If we want to select features (i.e., decide what variables go in our model), we need a different tool with a different set of beliefs.</p>
+</div>
+<div id="lasso-only-some-features-matter-and-they-might-matter-a-lot" class="section level2">
+<h2><span class="header-section-number">4.2</span> Lasso: only some features matter, and they might matter a lot</h2>
+<p>Another popular form of regularized regression is the <em>least absolute shrinkage and selection operator</em> model, or <em>lasso</em>. Unlike ridge, lasso’s regularization simultaneously performs feature selection and model improvement.</p>
+<p>Just like ridge, lasso is essentially our old friend OLS regression with an extra term added to error, which penalizes non-zero parameter values:</p>
+<p><span class="math display">\[SSE_{L1} = \sum\limits_{i=1}^n = (y_i - \hat{y_i}^2) + \lambda \sum\limits_{j=1}^p |\beta_j|\]</span></p>
+<p>It’s sort of hard (at least for me) to have a strong intuition about why this simple change leads to a model that functions differently. But, the basic idea is that penalizing the absolute value leads to some parameters actually being set to zero; the idea (I think) is that penalizing the absolute value leads to small departures from zero (e.g., .1) to be relatively more penalized than when you’re penalizing the squared value (since squaring a value &lt; 1 leads to a smaller value than its absolute value). This is most consequential for correlated predictors: Ridge will allow each of k correlated predictors to basically share the predictive duty, whereas Lasso will tend to pick the best and ignore the rest. SO, just like with ridge, lasso introduces bias, and its bias is that many predictors will have no relation to the outcome variable (i.e., only some features matter).</p>
+<p>Let’s walk through an example with correlated predictors that I think will help. Let’s say we have an outcome <span class="math inline">\(Y\)</span>, and two predictors <span class="math inline">\(X_1\)</span> and <span class="math inline">\(X_2\)</span>. And let’s imagine <span class="math inline">\(X_1\)</span> and <span class="math inline">\(X_2\)</span> are highly correlated (<span class="math inline">\(r_{X_1, X_2} = .90\)</span>). Let’s say a model (Model 1) that contains predictors gives us this solution:</p>
+<p><span class="math display">\[Model 1: y_i = .40*X_1 + .40*X_2\]</span> According to the path algebra, including just one of these predictors, <span class="math inline">\(X_1\)</span>, in the model would give us the following:</p>
+<p><span class="math display">\[Model 2: y_i = .76*X_1\]</span></p>
+<p>Note, this is just the path from <span class="math inline">\(X_2\)</span> to <span class="math inline">\(Y\)</span> (.40) times the correlation between <span class="math inline">\(X_1\)</span> and <span class="math inline">\(X_2\)</span> (.90). So how would each of these penalties treat this? Let’s walk through it:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">lambda &lt;-<span class="st"> </span>.<span class="dv">1</span>
+ridge_penalty_Model_<span class="dv">1</span> &lt;-<span class="st"> </span>lambda<span class="op">*</span>(<span class="kw">sum</span>(<span class="kw">c</span>(.<span class="dv">40</span><span class="op">^</span><span class="dv">2</span>, .<span class="dv">40</span><span class="op">^</span><span class="dv">2</span>)))
+ridge_penalty_Model_<span class="dv">2</span> &lt;-<span class="st"> </span>lambda<span class="op">*</span>(<span class="kw">sum</span>(<span class="kw">c</span>(.<span class="dv">76</span><span class="op">^</span><span class="dv">2</span>, <span class="dv">0</span><span class="op">^</span><span class="dv">2</span>)))
+
+ridge_penalties &lt;-<span class="st"> </span><span class="kw">rbind</span>(ridge_penalty_Model_<span class="dv">1</span>, ridge_penalty_Model_<span class="dv">2</span>)
+
+lasso_penalty_Model_<span class="dv">1</span> &lt;-<span class="st"> </span>lambda<span class="op">*</span>(<span class="kw">sum</span>(<span class="kw">c</span>(<span class="kw">abs</span>(.<span class="dv">40</span>), <span class="kw">abs</span>(.<span class="dv">40</span>))))
+lasso_penalty_Model_<span class="dv">2</span> &lt;-<span class="st"> </span>lambda<span class="op">*</span>(<span class="kw">sum</span>(<span class="kw">c</span>(<span class="kw">abs</span>(.<span class="dv">76</span>), <span class="kw">abs</span>(<span class="dv">0</span>))))
+
+lasso_penalties &lt;-<span class="st"> </span><span class="kw">rbind</span>(lasso_penalty_Model_<span class="dv">1</span>, lasso_penalty_Model_<span class="dv">2</span>)
+penalties &lt;-<span class="st"> </span><span class="kw">cbind</span>(ridge_penalties, lasso_penalties)
+
+<span class="kw">colnames</span>(penalties)&lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;ridge&quot;</span>, <span class="st">&quot;lasso&quot;</span>)
+<span class="kw">row.names</span>(penalties) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;model 1&quot;</span>, <span class="st">&quot;model 2&quot;</span>)
+knitr<span class="op">::</span><span class="kw">kable</span>(penalties, <span class="dt">digits =</span> <span class="dv">3</span>)</code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th></th>
+<th align="right">ridge</th>
+<th align="right">lasso</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>model 1</td>
+<td align="right">0.032</td>
+<td align="right">0.080</td>
+</tr>
+<tr class="even">
+<td>model 2</td>
+<td align="right">0.058</td>
+<td align="right">0.076</td>
+</tr>
+</tbody>
+</table>
+<p>Now what you could hopefully see there is that, all else equal, lasso prefers fewer predictors (which can have larger values) than ridge. How much it penalizes predictors depends again on <span class="math inline">\(\lambda\)</span>, which again is a <em>hyperparameter</em>.</p>
+<p>So returning to why we would use it, it’s easiest for me to see when it would be useful by thinking about what Lasso believes: it believes that non-zero predictors are costly (and cost doesn’t accelerate with parameter value size, like ridge does). It (sort of) believes that only some of the variables are needed, and the ones that are needed can take on relatively larger sizes.</p>
+<p>What if our belief is somewhere in between these options: that some variables may not be needed (may actually be zero), but that many of the variables should have smaller values?</p>
+</div>
+<div id="elastic-net-maybe-everything-matters-and-maybe-only-a-little-bit." class="section level2">
+<h2><span class="header-section-number">4.3</span> Elastic Net: maybe everything matters, and maybe only a little bit.</h2>
+<p>Elastic net combines the penalties used by ridge and lasso. In doing so, it basically takes the middle ground between these two methods: penalizing non-zero values (feature selection) and penalizing values the further they depart from zero (regularization). So now, our error has three terms:</p>
+<ol style="list-style-type: decimal">
+<li>sum of squared errors</li>
+<li>ridge penalty</li>
+<li>lasso penalty</li>
+</ol>
+<p>The formula for this error term is:</p>
+<p><span class="math display">\[SSE_{Enet} = \sum\limits_{i=1}^n = (y_i - \hat{y_i}^2) + \lambda_1 \sum\limits_{j=1}^p \beta^2_j + \lambda_2 \sum\limits_{j=1}^p |\beta_j|\]</span></p>
+<p>Basically, elastic net is sort of a best of both worlds approach: it gives you the feature selection of lasso, and regularizes as effective as ridge. It thus introduces two dimensions of bias:</p>
+<ol style="list-style-type: decimal">
+<li>that most predictors have small relations to the outcome.</li>
+<li>that many predicotrs have no relation to the outcome.</li>
+</ol>
+<p>How much each is priortized depends on the sie of <span class="math inline">\(\lambda_1\)</span> and <span class="math inline">\(\lambda_2\)</span> respectively. It’s often a great place to start, because as you’re tuning the hyperparameters, you can get to one of the other methods if that is truly the best method. For example, if lasso is actually the best method for your data, then (if your training is working well) you should end up with a zero value for <span class="math inline">\(\lambda_1\)</span>, leading to the ridge penalty dropping out of the model (and leaving you with a lasso model). However, in my limited experience, it usually ends up with some non-zero value for both (which I think says something about the problems we deal with).</p>
+<p>In terms of beliefs, Elastic net is basically a more flexible thinker: it thinks we might only need few predictors and that each predictor may only contribute a little bit, and its willing to weigh these things more or less depending on what works better (either determined a priori, or determined via training).</p>
+<p>Okay, this has been a (very brief) intro to regularized regression and some foundational concepts in machine learning necessary to understand it.</p>
+<p>Now let’s walk through an example:</p>
+<p>We’re going to work with this data on wine reviews. It has the score it received in a rating, as well as some data about the wine, and a description of the wine. We’ll see how well we can predict the rating based on the data about the wine (including the description). I found this on &lt;kaggle.com&gt;</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># clear the environment, just to be safe</span>
+<span class="kw">rm</span>(<span class="dt">list=</span><span class="kw">ls</span>())
+
+<span class="kw">library</span>(caret)</code></pre></div>
+<pre><code>## Loading required package: lattice</code></pre>
+<pre><code>## Loading required package: ggplot2</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(tidyverse)</code></pre></div>
+<pre><code>## -- Attaching packages ----------------------------------------------------------------- tidyverse 1.2.0 --</code></pre>
+<pre><code>## v tibble  1.3.4     v purrr   0.2.3
+## v tidyr   0.7.1     v dplyr   0.7.3
+## v readr   1.1.1     v stringr 1.2.0
+## v tibble  1.3.4     v forcats 0.2.0</code></pre>
+<pre><code>## -- Conflicts -------------------------------------------------------------------- tidyverse_conflicts() --
+## x dplyr::filter() masks stats::filter()
+## x dplyr::lag()    masks stats::lag()
+## x purrr::lift()   masks caret::lift()</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(tidytext)
+<span class="kw">library</span>(topicmodels)
+wine &lt;-<span class="st"> </span>rio<span class="op">::</span><span class="kw">import</span>(<span class="st">&quot;winemag-data_first150k.csv&quot;</span>) <span class="op">%&gt;%</span>
+<span class="st">  </span>janitor<span class="op">::</span><span class="kw">clean_names</span>() <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">rename</span>(<span class="dt">id =</span> v1)</code></pre></div>
+<pre><code>## 
+Read 59.6% of 150935 rows
+Read 150930 rows and 11 (of 11) columns from 0.046 GB file in 00:00:03</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">wine &lt;-<span class="st"> </span><span class="kw">sample_n</span>(wine, <span class="dv">500</span>)</code></pre></div>
+<p>Okay, before we start down the modelling road, we want to do something with the descriptions. We’ll separate out the description, and do some automated text analysis, and use the output of those analyses as features. This should make a bit more sense as we walk through.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># first we need to load in a dataframe of stopwords</span>
+<span class="co"># these are basically words that don&#39;t have content</span>
+<span class="co"># and that we don&#39;t need (e.g., &quot;the&quot;, &quot;a&quot;, &quot;and&quot;, etc.)</span>
+<span class="kw">data</span>(<span class="st">&quot;stop_words&quot;</span>)
+
+wine_text_expand&lt;-<span class="st"> </span>wine <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="co"># take just the id and description</span>
+<span class="st">  </span><span class="kw">select</span>(id, description) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="co"># this will make it so that the description is </span>
+<span class="st">  </span><span class="co"># broken into single words, with a row</span>
+<span class="st">  </span><span class="co"># corresponding to each word in each wine&#39;s description</span>
+<span class="st">  </span><span class="kw">unnest_tokens</span>(word, description) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">anti_join</span>(stop_words)</code></pre></div>
+<pre><code>## Joining, by = &quot;word&quot;</code></pre>
+<p>Let’s do some sentiment analysis, since that seems like it will definitely be relevant. Sentiment analysis is intended to extract the emotional tone of a text, and in this case, will basically give us a score corresponding to how poisitive and negative each word is. We’ll leave it at sentiment analysis for the sake of time.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">description_sentiment &lt;-<span class="st"> </span>wine_text_expand <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="co"># this makes it so that all is saved is a</span>
+<span class="st">  </span><span class="co"># data frame that contains the words in the afinn</span>
+<span class="st">  </span><span class="co"># sentiment dictionary, the score associated with those words,</span>
+<span class="st">  </span><span class="co"># and the id for the wine.</span>
+<span class="st">  </span><span class="kw">inner_join</span>(<span class="kw">get_sentiments</span>(<span class="st">&quot;afinn&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="co"># group by wine id</span>
+<span class="st">  </span><span class="kw">group_by</span>(id) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="co"># summarize such that we have a single sentiment score </span>
+<span class="st">  </span><span class="co"># per wine id</span>
+<span class="st">  </span><span class="kw">summarize</span>(<span class="dt">sentiment =</span> <span class="kw">mean</span>(score)) </code></pre></div>
+<pre><code>## Joining, by = &quot;word&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">description_sentiment</code></pre></div>
+<pre><code>## # A tibble: 408 x 2
+##       id sentiment
+##    &lt;int&gt;     &lt;dbl&gt;
+##  1   875 0.6666667
+##  2  2090 1.0000000
+##  3  2250 1.0000000
+##  4  2261 2.0000000
+##  5  2700 1.6666667
+##  6  3097 0.5000000
+##  7  3356 2.5000000
+##  8  3604 0.7500000
+##  9  3921 1.3333333
+## 10  4118 2.5000000
+## # ... with 398 more rows</code></pre>
+<p>And, let’s merge that back into the wine dataframe.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">wine_for_ml &lt;-<span class="st"> </span>wine <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">left_join</span>(description_sentiment, <span class="dt">by =</span> <span class="st">&quot;id&quot;</span>) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="co"># removing raw description for now</span>
+<span class="st">  </span><span class="kw">select</span>(<span class="op">-</span>description, <span class="op">-</span>id) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="co"># just removing missing values, because they complicate things</span>
+<span class="st">  </span><span class="kw">na.omit</span>()</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Set seed for consistency&#39;s sake</span>
+<span class="kw">set.seed</span>(<span class="dv">500</span>)
+<span class="co"># This part creates a list of values;</span>
+<span class="co"># these values are the row numbers for data included in the training set</span>
+<span class="co"># we&#39;re splitting it 75-25, such that 75% of cases will be in the training set (25% in the test).</span>
+inTrain &lt;-<span class="st"> </span><span class="kw">createDataPartition</span>(<span class="dt">y =</span> wine_for_ml<span class="op">$</span>points,
+                                 <span class="dt">p =</span> .<span class="dv">75</span>,
+                                 <span class="dt">list =</span> <span class="ot">FALSE</span>)
+<span class="co"># subsets the training data (those data whose row number appears in the inTrain object)</span>
+training &lt;-<span class="st"> </span>wine_for_ml[inTrain,]
+<span class="co"># subsets the test data (those data whose row number DOES NOT appear in the inTrain object)</span>
+testing &lt;-<span class="st"> </span>wine_for_ml[<span class="op">-</span>inTrain,]
+
+<span class="co"># Sets parameters for training;</span>
+<span class="co"># telling it to use 10-fold cross-validation, and to save the predictions.</span>
+train_control&lt;-<span class="st"> </span><span class="kw">trainControl</span>(<span class="dt">method=</span><span class="st">&quot;cv&quot;</span>, <span class="dt">number=</span><span class="dv">10</span>, 
+                             <span class="dt">savePredictions =</span> <span class="ot">TRUE</span>)
+
+fit_ridge &lt;-<span class="st"> </span><span class="kw">train</span>(points <span class="op">~</span><span class="st"> </span>., 
+                   <span class="dt">data =</span> training,
+                   <span class="dt">trControl =</span> train_control,
+                   <span class="dt">method =</span> <span class="st">&quot;ridge&quot;</span>,
+                   <span class="dt">preProc =</span> <span class="kw">c</span>(<span class="st">&quot;center&quot;</span>, <span class="st">&quot;scale&quot;</span>))
+
+fit_ridge<span class="op">$</span>
+<span class="co"># This uses the fitted model to get predicted values on </span>
+<span class="co"># the testing data (the 25 case holdout sample)</span>
+pred_ridge &lt;-<span class="st"> </span><span class="kw">predict</span>(fit_ridge, <span class="dt">newdata =</span> testing)
+
+<span class="co"># This gets R^2 and RMSE for extraversion model</span>
+ext_fitstat_enet &lt;-<span class="st"> </span><span class="kw">postResample</span>(<span class="dt">pred =</span> pred_ridge, 
+                                 <span class="dt">obs =</span> testing<span class="op">$</span>ext_t)
+
+<span class="co"># This does the same predictive model for Extraversion BUT</span>
+<span class="co"># uses ridge algorithm instead of elastic net</span>
+Fit_E_ridge &lt;-<span class="st"> </span><span class="kw">train</span>(ext_t <span class="op">~</span><span class="st"> </span>.,
+               <span class="dt">data =</span> training,
+               <span class="dt">trControl =</span> train_control,
+               <span class="dt">method =</span> <span class="st">&quot;ridge&quot;</span>,
+               <span class="dt">preProc =</span> <span class="kw">c</span>(<span class="st">&quot;center&quot;</span>, <span class="st">&quot;scale&quot;</span>))
+
+<span class="co"># predicted values for holdout based on</span>
+<span class="co"># model trained with ridge</span>
+ext_pred_ridge &lt;-<span class="st"> </span><span class="kw">predict</span>(Fit_E_ridge, <span class="dt">newdata =</span> testing)
+
+<span class="co"># Gets R^2 and RMSE for ridge model</span>
+ext_fitstat_ridge &lt;-<span class="st"> </span><span class="kw">postResample</span>(<span class="dt">pred =</span> ext_pred_ridge, 
+                                  <span class="dt">obs =</span> testing<span class="op">$</span>ext_t)</code></pre></div>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="the-bias-variance-tradeoff-overfitting-and-cross-validation.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:" && /^https?:/.test(script.src))
+      script.src  = script.src.replace(/^https?:/, '');
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>
