@@ -1,0 +1,17 @@
+base
+lattice
+ggplot2
+caret
+tidyverse
+tibble
+tidyr
+readr
+purrr
+dplyr
+stringr
+forcats
+tidytext
+topicmodels
+janitor
+rio
+bindrcpp

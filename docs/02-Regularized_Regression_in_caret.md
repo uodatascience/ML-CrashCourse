@@ -9,25 +9,27 @@ output:
     toc_depth: 2
 ---
 
+# Regularized Regression in Caret
+
 This is intended to provide a (very brief) introduction to some key concepts in Machine Learning/Predictive Modeling, and how they work within a regression context. Regularized regression is a nice place for folks with a psych background to start, because its an extension of the familiar regression models we've all come to know and love.
 
 Regression models, of course, are used when you have a *continuous* outcome. So many of our problems in psych involve continuous outcomes (e.g., personality dimensions, emotions/affect, etc.), and so regression models are pretty useful for psychologists. 
 
 But, before we dive into regularized regression, we should first cover some basic concepts in machine learning.
 
-# The Bias-Variance Tradeoff, Overfitting, and Cross-Validation
+## The Bias-Variance Tradeoff, Overfitting, and Cross-Validation
 
-## Bias-Variance Tradeoff
+### Bias-Variance Tradeoff
 
 This came up briefly last week, but the bias-variance tradeoff is really crucial to everything we'll talk about today. The basic idea is that you can partition error into two components: bias and variance. **Bias** refers to the extent to which a model produces parameter estimates that miss in a particular direction (e.g., consistently over-estimating or consistently under-estimating a parameter value). **Variance** refers to the extent to which a model produces parameter estimates that vary from their central tendency across different datasets. 
 
 There is a tradeoff between bias and variance: all else equal, increasing bias will decrease variance. The basic idea here is that if we have a zero-bias estimator, it will tend to try to fit everything in the data, whereas an estimator biased in some direction won't. This isn't to say that bias is good or bad, just that there are times where we might want to increase bias to decrease variance. As we'll see later, regularization is basically one method for introducing bias (to minimize variance).
 
-## Overfitting 
+### Overfitting 
 
 This is probably familiar to folks in here (and it came up last week), so I won't say much about it here. The basic idea is that any data has signal and noise. Sometimes, something appears to be signal but is actually noise. That is, when our statistical models are searching for the best solution, they sometimes will be fooled into thinking some noise is signal. This is usually called **overfitting**, and it has presented a pretty substantial problem in statistical modeling. As you'll see, one of our goals is to try to avoid overfitting. Also worth noting is that overfitting will tend to produce a model with high variance, because noise will vary from dataset to dataset (basically by definition), and so a model which has fit noise will not do well across different datasets (with different noise).
 
-## Cross-Validation
+### Cross-Validation
 
 Cross-validation generally refers to taking a model that you trained on some data and using it in a new dataset. Unlike a replication, the model parameters carry over from the training to the test data (i.e., you don't simply use the same variables and re-estimate the model parameters; you save the model parameters, and use it to predict the outcome variable). You can use cross-validation both to train and evaluate a model. A simple example may make this clear.
 
@@ -54,7 +56,7 @@ $$RMSE = \sqrt{MSE}$$
 Typically, people will also look at prediction accuracy, using the model's $R^2$. This is interpreted the same way as $R^2$ always is (as the % of variance in the outcome accounted for by the model).
 
 
-### K-fold cross-validation
+#### K-fold cross-validation
 
 There are different varieties of cross-validation. The most intuitive version is to create a single partition of data (i.e., split full data frame into two dataframes: training and test). However, there are other methods for cross-validation. One that has been gaining steam (or is maybe already at full steam at this point) is **k-fold cross-validation**. The basic idea is that we split a dataset into k subsamples (called folds). We then treat one subsample as the holdout sample, train on the remaining subsamples, and cross-validate on the holdout sample; then rinse and repeat so to speak. An example will probably help here.
 
@@ -71,7 +73,7 @@ Then, we calculate the average performance across all of the tests.
 Note that you can also use k-fold cross-validation for training purposes. Basically, this works by taking the best fitting model from a k-fold cross-validation procedure, and then testing it on a new holdout sample. 
 
 
-# Regularization
+## Regularization
 
 Now let's get to regularized regression. This is a pretty simple extension of OLS regression. The logic of it is basically that OLS regression is minimally biased, but because of this, is higher variance than we might want. So, the solution is to introduce some bias into the model that will decrease variance. This takes the form of a new *penalization*, which tends to either be focused on parameter size, number of parameters, or both. Let's start with the first. I find it helpful to think of these as having different beliefs, and choosing one depends on whether or not those beliefs seem correct.
 
@@ -92,7 +94,7 @@ You can think of this penalty as introducing a specific type of bias: bias towar
 
 So why does Ridge do that and why is it useful? As I said earlier, I find it useful to think of statistical tools as having certain beliefs, and as being useful when those beliefs seem more or less true (in some particular case). Ridge believes that all of the variables you're considering matter, but that most of them matter very little. Put differently, it believes that each variable you've entered belongs in the model, but that most or all only have small contributions. Because of this, people often say that ridge doesn't perform *feature selection*, and shouldn't be used if you need to select features (i.e., variables). This makes sense once you think of what Ridge believes: it believes every variable you're telling it to use should be in the model, but many will simply have small impacts. If we want to select features (i.e., decide what variables go in our model), we need a different tool with a different set of beliefs.
 
-##Lasso: only some features matter, and they might matter a lot
+### Lasso: only some features matter, and they might matter a lot
 
 Another popular form of regularized regression is the *least absolute shrinkage and selection operator* model, or *lasso*. Unlike ridge, lasso's regularization simultaneously performs feature selection and model improvement. 
 
@@ -141,7 +143,7 @@ So returning to why we would use it, it's easiest for me to see when it would be
 
 What if our belief is somewhere in between these options: that some variables may not be needed (may actually be zero), but that many of the variables should have smaller values?
 
-## Elastic Net: maybe everything matters, and maybe only a little bit.
+### Elastic Net: maybe everything matters, and maybe only a little bit.
 
 Elastic net combines the penalties used by ridge and lasso. In doing so, it basically takes the middle ground between these two methods: penalizing non-zero values (feature selection) and penalizing values the further they depart from zero (regularization). So now, our error has three terms: 
 
@@ -176,6 +178,10 @@ library(caret)
 ```
 
 ```
+## Warning: package 'caret' was built under R version 3.4.3
+```
+
+```
 ## Loading required package: lattice
 ```
 
@@ -188,36 +194,84 @@ library(tidyverse)
 ```
 
 ```
-## -- Attaching packages ----------------------------------------------------------------- tidyverse 1.2.0 --
+## Warning: package 'tidyverse' was built under R version 3.4.2
 ```
 
 ```
-## v tibble  1.3.4     v purrr   0.2.3
-## v tidyr   0.7.1     v dplyr   0.7.3
-## v readr   1.1.1     v stringr 1.2.0
-## v tibble  1.3.4     v forcats 0.2.0
+## ── Attaching packages ────────────────────────────────── tidyverse 1.2.1 ──
 ```
 
 ```
-## -- Conflicts -------------------------------------------------------------------- tidyverse_conflicts() --
-## x dplyr::filter() masks stats::filter()
-## x dplyr::lag()    masks stats::lag()
-## x purrr::lift()   masks caret::lift()
+## ✔ tibble  1.4.2     ✔ purrr   0.2.4
+## ✔ tidyr   0.7.2     ✔ dplyr   0.7.4
+## ✔ readr   1.1.1     ✔ stringr 1.2.0
+## ✔ tibble  1.4.2     ✔ forcats 0.2.0
+```
+
+```
+## Warning: package 'tibble' was built under R version 3.4.3
+```
+
+```
+## Warning: package 'tidyr' was built under R version 3.4.2
+```
+
+```
+## Warning: package 'purrr' was built under R version 3.4.2
+```
+
+```
+## Warning: package 'dplyr' was built under R version 3.4.2
+```
+
+```
+## ── Conflicts ───────────────────────────────────── tidyverse_conflicts() ──
+## ✖ dplyr::filter() masks stats::filter()
+## ✖ dplyr::lag()    masks stats::lag()
+## ✖ purrr::lift()   masks caret::lift()
 ```
 
 ```r
 library(tidytext)
-library(topicmodels)
-wine <- rio::import("winemag-data_first150k.csv") %>%
-  janitor::clean_names() %>%
-  rename(id = v1)
 ```
 
 ```
-## Read 59.6% of 150935 rowsRead 150930 rows and 11 (of 11) columns from 0.046 GB file in 00:00:03
+## Warning: package 'tidytext' was built under R version 3.4.3
 ```
 
 ```r
+library(topicmodels)
+```
+
+```
+## Warning: package 'topicmodels' was built under R version 3.4.2
+```
+
+```r
+require(janitor)
+```
+
+```
+## Loading required package: janitor
+```
+
+```
+## Warning: package 'janitor' was built under R version 3.4.3
+```
+
+```r
+require(rio)
+```
+
+```
+## Loading required package: rio
+```
+
+```r
+wine <- rio::import("files/winemag-data_first150k.csv") %>%
+  janitor::clean_names() %>%
+  rename(id = v1)
+
 wine <- sample_n(wine, 500)
 ```
 
@@ -268,20 +322,20 @@ description_sentiment
 ```
 
 ```
-## # A tibble: 408 x 2
+## # A tibble: 398 x 2
 ##       id sentiment
 ##    <int>     <dbl>
-##  1   875 0.6666667
-##  2  2090 1.0000000
-##  3  2250 1.0000000
-##  4  2261 2.0000000
-##  5  2700 1.6666667
-##  6  3097 0.5000000
-##  7  3356 2.5000000
-##  8  3604 0.7500000
-##  9  3921 1.3333333
-## 10  4118 2.5000000
-## # ... with 398 more rows
+##  1   311     1.44 
+##  2   392     0.667
+##  3   488     0.500
+##  4   618    -2.00 
+##  5   854     1.33 
+##  6   908     1.67 
+##  7  2079     2.00 
+##  8  2396     1.00 
+##  9  2802     1.00 
+## 10  3044     2.00 
+## # ... with 388 more rows
 ```
 
 And, let's merge that back into the wine dataframe.
@@ -290,7 +344,7 @@ And, let's merge that back into the wine dataframe.
 wine_for_ml <- wine %>%
   left_join(description_sentiment, by = "id") %>%
   # removing raw description for now
-  select(-description, -id) %>%
+  select(points, price, sentiment) %>%
   # just removing missing values, because they complicate things
   na.omit()
 ```
@@ -322,29 +376,138 @@ fit_ridge <- train(points ~ .,
                    method = "ridge",
                    preProc = c("center", "scale"))
 
-fit_ridge$
-# This uses the fitted model to get predicted values on 
-# the testing data (the 25 case holdout sample)
-pred_ridge <- predict(fit_ridge, newdata = testing)
+avg_r2_ridge <- mean(fit_ridge$results$Rsquared)
+avg_RMSE_ridge <- mean(fit_ridge$results$RMSE)
 
-# This gets R^2 and RMSE for extraversion model
-ext_fitstat_enet <- postResample(pred = pred_ridge, 
-                                 obs = testing$ext_t)
-
-# This does the same predictive model for Extraversion BUT
-# uses ridge algorithm instead of elastic net
-Fit_E_ridge <- train(ext_t ~ .,
-               data = training,
-               trControl = train_control,
-               method = "ridge",
-               preProc = c("center", "scale"))
-
-# predicted values for holdout based on
-# model trained with ridge
-ext_pred_ridge <- predict(Fit_E_ridge, newdata = testing)
-
-# Gets R^2 and RMSE for ridge model
-ext_fitstat_ridge <- postResample(pred = ext_pred_ridge, 
-                                  obs = testing$ext_t)
+avg_r2_ridge
 ```
 
+```
+## [1] 0.3969759
+```
+
+```r
+avg_RMSE_ridge
+```
+
+```
+## [1] 2.567107
+```
+Harder test: how does it do with the holdout sample?
+
+
+```r
+pred_ridge <- predict(fit_ridge, newdata = testing)
+
+# Gets R^2 and RMSE for ridge model
+fitstat_ridge <- postResample(pred = pred_ridge, 
+                                  obs = testing$points)
+```
+
+
+```r
+# Set seed for consistency's sake
+set.seed(500)
+# This part creates a list of values;
+# these values are the row numbers for data included in the training set
+# we're splitting it 75-25, such that 75% of cases will be in the training set (25% in the test).
+inTrain <- createDataPartition(y = wine_for_ml$points,
+                                 p = .75,
+                                 list = FALSE)
+# subsets the training data (those data whose row number appears in the inTrain object)
+training <- wine_for_ml[inTrain,]
+# subsets the test data (those data whose row number DOES NOT appear in the inTrain object)
+testing <- wine_for_ml[-inTrain,]
+
+# Sets parameters for training;
+# telling it to use 10-fold cross-validation, and to save the predictions.
+train_control<- trainControl(method="cv", number=10, 
+                             savePredictions = TRUE)
+
+fit_lasso <- train(points ~ ., 
+                   data = training,
+                   trControl = train_control,
+                   method = "lasso",
+                   preProc = c("center", "scale"))
+
+avg_r2_lasso <- mean(fit_lasso$results$Rsquared)
+avg_RMSE_lasso <- mean(fit_lasso$results$RMSE)
+
+avg_r2_lasso
+```
+
+```
+## [1] 0.3772097
+```
+
+```r
+avg_RMSE_lasso
+```
+
+```
+## [1] 2.779287
+```
+Harder test: how does it do with the holdout sample?
+
+
+```r
+pred_lasso <- predict(fit_lasso, newdata = testing)
+
+# Gets R^2 and RMSE for lasso model
+fitstat_lasso <- postResample(pred = pred_lasso, 
+                                  obs = testing$points)
+```
+
+
+```r
+# Set seed for consistency's sake
+set.seed(500)
+# This part creates a list of values;
+# these values are the row numbers for data included in the training set
+# we're splitting it 75-25, such that 75% of cases will be in the training set (25% in the test).
+inTrain <- createDataPartition(y = wine_for_ml$points,
+                                 p = .75,
+                                 list = FALSE)
+# subsets the training data (those data whose row number appears in the inTrain object)
+training <- wine_for_ml[inTrain,]
+# subsets the test data (those data whose row number DOES NOT appear in the inTrain object)
+testing <- wine_for_ml[-inTrain,]
+
+# Sets parameters for training;
+# telling it to use 10-fold cross-validation, and to save the predictions.
+train_control<- trainControl(method="cv", number=10, 
+                             savePredictions = TRUE)
+
+fit_enet <- train(points ~ ., 
+                   data = training,
+                   trControl = train_control,
+                   method = "enet",
+                   preProc = c("center", "scale"))
+
+avg_r2_enet <- mean(fit_enet$results$Rsquared)
+avg_RMSE_enet <- mean(fit_enet$results$RMSE)
+
+avg_r2_enet
+```
+
+```
+## [1] 0.3236829
+```
+
+```r
+avg_RMSE_enet
+```
+
+```
+## [1] 2.798077
+```
+Harder test: how does it do with the holdout sample?
+
+
+```r
+pred_enet <- predict(fit_enet, newdata = testing)
+
+# Gets R^2 and RMSE for enet model
+fitstat_enet <- postResample(pred = pred_enet, 
+                                  obs = testing$points)
+```
