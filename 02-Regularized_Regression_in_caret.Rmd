@@ -100,7 +100,7 @@ You can think of this penalty as introducing a specific type of bias: bias towar
 
 So why does Ridge do that and why is it useful? As I said earlier, I find it useful to think of statistical tools as having certain beliefs, and as being useful when those beliefs seem more or less true (in some particular case). Ridge believes that all of the variables you're considering matter, but that most of them matter very little. Put differently, it believes that each variable you've entered belongs in the model, but that most or all only have small contributions. Because of this, people often say that ridge doesn't perform *feature selection*, and shouldn't be used if you need to select features (i.e., variables). This makes sense once you think of what Ridge believes: it believes every variable you're telling it to use should be in the model, but many will simply have small impacts. If we want to select features (i.e., decide what variables go in our model), we need a different tool with a different set of beliefs.
 
-### Lasso: only some features matter, and they might matter a lot
+## Lasso: only some features matter, and they might matter a lot
 
 Another popular form of regularized regression is the *least absolute shrinkage and selection operator* model, or *lasso*. Unlike ridge, lasso's regularization simultaneously performs feature selection and model improvement. 
 
@@ -192,7 +192,7 @@ So returning to why we would use it, it's easiest for me to see when it would be
 
 What if our belief is somewhere in between these options: that some variables may not be needed (may actually be zero), but that many of the variables should have smaller values?
 
-### Elastic Net: maybe everything matters, and maybe only a little bit.
+## Elastic Net: maybe everything matters, and maybe only a little bit.
 
 Elastic net combines the penalties used by ridge and lasso. In doing so, it basically takes the middle ground between these two methods: penalizing non-zero values (feature selection) and penalizing values the further they depart from zero (regularization). So now, our error has three terms: 
 

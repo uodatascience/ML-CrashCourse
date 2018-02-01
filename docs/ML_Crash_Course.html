@@ -134,13 +134,12 @@ code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Infor
 <li class="chapter" data-level="3.1.3" data-path=""><a href="#cross-validation"><i class="fa fa-check"></i><b>3.1.3</b> Cross-Validation</a></li>
 </ul></li>
 <li class="chapter" data-level="3.2" data-path=""><a href="#regularization"><i class="fa fa-check"></i><b>3.2</b> Regularization</a></li>
-<li class="chapter" data-level="3.3" data-path=""><a href="#ridge-all-of-these-features-matter-but-only-a-little-bit."><i class="fa fa-check"></i><b>3.3</b> Ridge: all of these features matter, but only a little bit.</a><ul>
-<li class="chapter" data-level="3.3.1" data-path=""><a href="#lasso-only-some-features-matter-and-they-might-matter-a-lot"><i class="fa fa-check"></i><b>3.3.1</b> Lasso: only some features matter, and they might matter a lot</a></li>
-<li class="chapter" data-level="3.3.2" data-path=""><a href="#elastic-net-maybe-everything-matters-and-maybe-only-a-little-bit."><i class="fa fa-check"></i><b>3.3.2</b> Elastic Net: maybe everything matters, and maybe only a little bit.</a></li>
-</ul></li>
-<li class="chapter" data-level="3.4" data-path=""><a href="#example-using-caret"><i class="fa fa-check"></i><b>3.4</b> Example using Caret</a><ul>
-<li class="chapter" data-level="3.4.1" data-path=""><a href="#extracting-features-a-brief-detour-into-text-analysis"><i class="fa fa-check"></i><b>3.4.1</b> Extracting features: a brief detour into text analysis</a></li>
-<li class="chapter" data-level="3.4.2" data-path=""><a href="#modeling-with-caret"><i class="fa fa-check"></i><b>3.4.2</b> Modeling with caret</a></li>
+<li class="chapter" data-level="3.3" data-path=""><a href="#ridge-all-of-these-features-matter-but-only-a-little-bit."><i class="fa fa-check"></i><b>3.3</b> Ridge: all of these features matter, but only a little bit.</a></li>
+<li class="chapter" data-level="3.4" data-path=""><a href="#lasso-only-some-features-matter-and-they-might-matter-a-lot"><i class="fa fa-check"></i><b>3.4</b> Lasso: only some features matter, and they might matter a lot</a></li>
+<li class="chapter" data-level="3.5" data-path=""><a href="#elastic-net-maybe-everything-matters-and-maybe-only-a-little-bit."><i class="fa fa-check"></i><b>3.5</b> Elastic Net: maybe everything matters, and maybe only a little bit.</a></li>
+<li class="chapter" data-level="3.6" data-path=""><a href="#example-using-caret"><i class="fa fa-check"></i><b>3.6</b> Example using Caret</a><ul>
+<li class="chapter" data-level="3.6.1" data-path=""><a href="#extracting-features-a-brief-detour-into-text-analysis"><i class="fa fa-check"></i><b>3.6.1</b> Extracting features: a brief detour into text analysis</a></li>
+<li class="chapter" data-level="3.6.2" data-path=""><a href="#modeling-with-caret"><i class="fa fa-check"></i><b>3.6.2</b> Modeling with caret</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="4" data-path=""><a href="#closing-thoughts"><i class="fa fa-check"></i><b>4</b> Closing thoughts</a></li>
@@ -327,8 +326,9 @@ code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Infor
 <p>The extent to which they are shrunk towards 0 depends on the value of <span class="math inline">\(\lambda\)</span>; higher values lead to more shrinkage than lower values. This is called a <em>hyperparameter</em> because it’s a parameter that governs other parameters. You can think of <span class="math inline">\(\lambda\)</span> as sort of the cost associated with larger parameter values: higher values of lambda are like telling your model that larger parameter values are more costly (so don’t make them large for nothing).</p>
 <p>You can think of this penalty as introducing a specific type of bias: bias towards smaller parameter values. However, since larger parameter values can result from overfitting, this bias can result in reducing variance.</p>
 <p>So why does Ridge do that and why is it useful? As I said earlier, I find it useful to think of statistical tools as having certain beliefs, and as being useful when those beliefs seem more or less true (in some particular case). Ridge believes that all of the variables you’re considering matter, but that most of them matter very little. Put differently, it believes that each variable you’ve entered belongs in the model, but that most or all only have small contributions. Because of this, people often say that ridge doesn’t perform <em>feature selection</em>, and shouldn’t be used if you need to select features (i.e., variables). This makes sense once you think of what Ridge believes: it believes every variable you’re telling it to use should be in the model, but many will simply have small impacts. If we want to select features (i.e., decide what variables go in our model), we need a different tool with a different set of beliefs.</p>
-<section id="lasso-only-some-features-matter-and-they-might-matter-a-lot" class="level3">
-<h3><span class="header-section-number">3.3.1</span> Lasso: only some features matter, and they might matter a lot</h3>
+</section>
+<section id="lasso-only-some-features-matter-and-they-might-matter-a-lot" class="level2">
+<h2><span class="header-section-number">3.4</span> Lasso: only some features matter, and they might matter a lot</h2>
 <p>Another popular form of regularized regression is the <em>least absolute shrinkage and selection operator</em> model, or <em>lasso</em>. Unlike ridge, lasso’s regularization simultaneously performs feature selection and model improvement.</p>
 <p>Just like ridge, lasso is essentially our old friend OLS regression with an extra term added to error, which penalizes non-zero parameter values:</p>
 <p><span class="math display">\[SSE_{L1} = \sum\limits_{i=1}^n = (y_i - \hat{y_i}^2) + \lambda \sum\limits_{j=1}^p |\beta_j|\]</span></p>
@@ -356,9 +356,9 @@ code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Infor
 <p>Alright, let’s check the correlation matrix to make sure we did this correctly. This should match sigma:</p>
 <pre class="sourceCode r" id="cb2"><code class="sourceCode r"><div class="sourceLine" id="cb2-1" data-line-number="1"><span class="kw">cor</span>(sample_data)</div></code></pre>
 <pre><code>##           x1        x2         y
-## x1 1.0000000 0.8999275 0.7596885
-## x2 0.8999275 1.0000000 0.7598208
-## y  0.7596885 0.7598208 1.0000000</code></pre>
+## x1 1.0000000 0.8997763 0.7594485
+## x2 0.8997763 1.0000000 0.7591536
+## y  0.7594485 0.7591536 1.0000000</code></pre>
 <p>Ah, it does! Good, let’s proceed. Now if we estimate, a regression with both variables, we should get two beta weights of about .40:</p>
 <pre class="sourceCode r" id="cb4"><code class="sourceCode r"><div class="sourceLine" id="cb4-1" data-line-number="1">model_<span class="dv">1</span> &lt;-<span class="kw">lm</span>(y <span class="op">~</span><span class="st"> </span>x1 <span class="op">+</span><span class="st"> </span>x2, <span class="dt">data =</span> sample_data)</div>
 <div class="sourceLine" id="cb4-2" data-line-number="2"><span class="kw">summary</span>(model_<span class="dv">1</span>)</div></code></pre>
@@ -367,20 +367,20 @@ code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Infor
 ## lm(formula = y ~ x1 + x2, data = sample_data)
 ## 
 ## Residuals:
-##      Min       1Q   Median       3Q      Max 
-## -2.88993 -0.42238 -0.00098  0.42289  3.12422 
+##     Min      1Q  Median      3Q     Max 
+## -3.1681 -0.4241  0.0003  0.4231  2.9531 
 ## 
 ## Coefficients:
-##              Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept) 0.0001873  0.0006262   0.299    0.765    
-## x1          0.3993581  0.0014370 277.904   &lt;2e-16 ***
-## x2          0.4005888  0.0014367 278.825   &lt;2e-16 ***
+##               Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) -0.0008660  0.0006272  -1.381    0.167    
+## x1           0.4016308  0.0014385 279.204   &lt;2e-16 ***
+## x2           0.3987393  0.0014387 277.156   &lt;2e-16 ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
-## Residual standard error: 0.6262 on 999997 degrees of freedom
-## Multiple R-squared:  0.6076, Adjusted R-squared:  0.6076 
-## F-statistic: 7.743e+05 on 2 and 999997 DF,  p-value: &lt; 2.2e-16</code></pre>
+## Residual standard error: 0.6272 on 999997 degrees of freedom
+## Multiple R-squared:  0.607,  Adjusted R-squared:  0.607 
+## F-statistic: 7.721e+05 on 2 and 999997 DF,  p-value: &lt; 2.2e-16</code></pre>
 <p>Okay, that worked as expected; we get two beta weights of about .40 (if you round to 2 decimals). Now let’s check model 2, where we just include 1 x variable (x1). We should get a single beta weight of about .76.</p>
 <pre class="sourceCode r" id="cb6"><code class="sourceCode r"><div class="sourceLine" id="cb6-1" data-line-number="1">model_<span class="dv">2</span> &lt;-<span class="kw">lm</span>(y <span class="op">~</span><span class="st"> </span>x1, <span class="dt">data =</span> sample_data)</div>
 <div class="sourceLine" id="cb6-2" data-line-number="2"><span class="kw">summary</span>(model_<span class="dv">2</span>)</div></code></pre>
@@ -389,19 +389,19 @@ code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Infor
 ## lm(formula = y ~ x1, data = sample_data)
 ## 
 ## Residuals:
-##      Min       1Q   Median       3Q      Max 
-## -3.15195 -0.43848 -0.00032  0.43828  3.06765 
+##     Min      1Q  Median      3Q     Max 
+## -3.4964 -0.4389 -0.0001  0.4386  3.2230 
 ## 
 ## Coefficients:
-##              Estimate Std. Error  t value Pr(&gt;|t|)    
-## (Intercept) 0.0003526  0.0006501    0.542    0.588    
-## x1          0.7599419  0.0006505 1168.234   &lt;2e-16 ***
+##               Estimate Std. Error  t value Pr(&gt;|t|)    
+## (Intercept) -0.0007002  0.0006508   -1.076    0.282    
+## x1           0.7603576  0.0006513 1167.362   &lt;2e-16 ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
-## Residual standard error: 0.6501 on 999998 degrees of freedom
-## Multiple R-squared:  0.5771, Adjusted R-squared:  0.5771 
-## F-statistic: 1.365e+06 on 1 and 999998 DF,  p-value: &lt; 2.2e-16</code></pre>
+## Residual standard error: 0.6508 on 999998 degrees of freedom
+## Multiple R-squared:  0.5768, Adjusted R-squared:  0.5768 
+## F-statistic: 1.363e+06 on 1 and 999998 DF,  p-value: &lt; 2.2e-16</code></pre>
 <p>And we do. Now let’s walk through the two penalties we covered so far, Ridge and Lasso. Based on what we know so far, Ridge should prefer Model 1 (with x1 and x2) and LASSO should prefer model 2 (the one with just x1)</p>
 <pre class="sourceCode r" id="cb8"><code class="sourceCode r"><div class="sourceLine" id="cb8-1" data-line-number="1"><span class="co"># pull out the coefficients for each parameter of the two models</span></div>
 <div class="sourceLine" id="cb8-2" data-line-number="2">model_<span class="dv">1</span>_b1 &lt;-<span class="st"> </span>model_<span class="dv">1</span><span class="op">$</span>coefficients[<span class="st">&quot;x1&quot;</span>]</div>
@@ -451,8 +451,8 @@ code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Infor
 <p>So returning to why we would use it, it’s easiest for me to see when it would be useful by thinking about what Lasso believes: it believes that non-zero predictors are costly (and cost doesn’t accelerate with parameter value size, like ridge does). It (sort of) believes that only some of the variables are needed, and the ones that are needed can take on relatively larger sizes.</p>
 <p>What if our belief is somewhere in between these options: that some variables may not be needed (may actually be zero), but that many of the variables should have smaller values?</p>
 </section>
-<section id="elastic-net-maybe-everything-matters-and-maybe-only-a-little-bit." class="level3">
-<h3><span class="header-section-number">3.3.2</span> Elastic Net: maybe everything matters, and maybe only a little bit.</h3>
+<section id="elastic-net-maybe-everything-matters-and-maybe-only-a-little-bit." class="level2">
+<h2><span class="header-section-number">3.5</span> Elastic Net: maybe everything matters, and maybe only a little bit.</h2>
 <p>Elastic net combines the penalties used by ridge and lasso. In doing so, it basically takes the middle ground between these two methods: penalizing non-zero values (feature selection) and penalizing values the further they depart from zero (regularization). So now, our error has three terms:</p>
 <ol type="1">
 <li>sum of squared errors</li>
@@ -470,9 +470,8 @@ code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Infor
 <p>In terms of beliefs, Elastic net is basically a more flexible thinker: it thinks we might only need few predictors and that each predictor may only contribute a little bit, and its willing to weigh these things more or less depending on what works better (either determined a priori, or determined via training).</p>
 <p>Okay, this has been a (very brief) intro to regularized regression and some foundational concepts in machine learning necessary to understand it.</p>
 </section>
-</section>
 <section id="example-using-caret" class="level2">
-<h2><span class="header-section-number">3.4</span> Example using Caret</h2>
+<h2><span class="header-section-number">3.6</span> Example using Caret</h2>
 <p>Now let’s walk through an example:</p>
 <p>We’re going to work with this data on wine reviews. It has the score it received in a rating, as well as some data about the wine, and a description of the wine. We’ll see how well we can predict the rating based on the data about the wine (including the description). I found this on &lt;kaggle.com&gt;</p>
 <pre class="sourceCode r" id="cb9"><code class="sourceCode r"><div class="sourceLine" id="cb9-1" data-line-number="1"><span class="co"># clear the environment, just to be safe</span></div>
@@ -525,7 +524,7 @@ code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Infor
 ## #   region_1 &lt;chr&gt;, region_2 &lt;chr&gt;, variety &lt;chr&gt;, winery &lt;chr&gt;</code></pre>
 <p>So you can see wee have some information about where the wine is from, its rating (called <code>points</code>), its price called <code>price</code>, and textual description of the wine (called <code>description</code>). Let’s see if we can train a model that does a good job predicting wine ratings.</p>
 <section id="extracting-features-a-brief-detour-into-text-analysis" class="level3">
-<h3><span class="header-section-number">3.4.1</span> Extracting features: a brief detour into text analysis</h3>
+<h3><span class="header-section-number">3.6.1</span> Extracting features: a brief detour into text analysis</h3>
 <p>Okay, before we start down the modelling road, we want to do something with the textual descriptions. Along these lines, we’ll separate out the description, do some automated text analysis, and use the output of those analyses as features. This should make a bit more sense as we walk through.</p>
 <p>First we need to load in a dataframe of stopwords these are basically words that don’t have content and that we don’t need (e.g., “the”, “a”, “and”, etc.). Luckily, the R package <code>tidytext</code> has some built-in data on stop words. We need to load these up with the <code>data()</code> command.</p>
 <pre class="sourceCode r" id="cb24"><code class="sourceCode r"><div class="sourceLine" id="cb24-1" data-line-number="1"><span class="kw">data</span>(<span class="st">&quot;stop_words&quot;</span>)</div></code></pre>
@@ -577,7 +576,7 @@ code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Infor
 <div class="sourceLine" id="cb31-6" data-line-number="6"><span class="st">  </span><span class="kw">na.omit</span>()</div></code></pre>
 </section>
 <section id="modeling-with-caret" class="level3">
-<h3><span class="header-section-number">3.4.2</span> Modeling with caret</h3>
+<h3><span class="header-section-number">3.6.2</span> Modeling with caret</h3>
 <p>We have quite a bit of data here (150000 cases), so first let’s partition our data into a training and test dataframe. We’ll do a 75-25 training-test split, and can use caret’s <code>createDataPartition()</code> function to do it.</p>
 <pre class="sourceCode r" id="cb32"><code class="sourceCode r"><div class="sourceLine" id="cb32-1" data-line-number="1"><span class="co"># Set seed for consistency&#39;s sake</span></div>
 <div class="sourceLine" id="cb32-2" data-line-number="2"><span class="kw">set.seed</span>(<span class="dv">227</span>)</div>
@@ -599,7 +598,7 @@ code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Infor
 <div class="sourceLine" id="cb33-3" data-line-number="3">train_control&lt;-<span class="st"> </span><span class="kw">trainControl</span>(<span class="dt">method=</span><span class="st">&quot;cv&quot;</span>, <span class="dt">number=</span><span class="dv">10</span>, </div>
 <div class="sourceLine" id="cb33-4" data-line-number="4">                             <span class="dt">savePredictions =</span> <span class="ot">TRUE</span>)</div></code></pre>
 <section id="ridge-method" class="level4">
-<h4><span class="header-section-number">3.4.2.1</span> Ridge Method</h4>
+<h4><span class="header-section-number">3.6.2.1</span> Ridge Method</h4>
 <p>Now let’s train a model using ridge regression. We do this by telling it to:</p>
 <ol type="1">
 <li>predict points from everything (including interactions). This is accomplished with .*. where ‘.’ = all (well, all except the outcome variable).</li>
@@ -643,7 +642,7 @@ code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Infor
 <p>Okay, so an <span class="math inline">\(R^2\)</span> of 0.24, meaning we are explaining 24.11% of the variance in wine ratings with sentiment and price (and the interaction).</p>
 </section>
 <section id="lasso-method" class="level4">
-<h4><span class="header-section-number">3.4.2.2</span> Lasso Method</h4>
+<h4><span class="header-section-number">3.6.2.2</span> Lasso Method</h4>
 <p>Okay, now let’s try lasso. We’ll use the same training-test split, and the same training parameters.</p>
 <p>We will run virtually the same code, but change <code>method = &quot;ridge&quot;</code> to <code>method = &quot;lasso&quot;</code>, like so:</p>
 <pre class="sourceCode r" id="cb44"><code class="sourceCode r"><div class="sourceLine" id="cb44-1" data-line-number="1">fit_lasso &lt;-<span class="st"> </span><span class="kw">train</span>(points <span class="op">~</span><span class="st"> </span>.<span class="op">*</span>., </div>
@@ -675,7 +674,7 @@ code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Infor
 <p>Okay, so an <span class="math inline">\(R^2\)</span> of 0.24, meaning we are explaining 24% of the variance in wine ratings with sentiment and price (and the interaction).</p>
 </section>
 <section id="elastic-net-method" class="level4">
-<h4><span class="header-section-number">3.4.2.3</span> Elastic Net Method</h4>
+<h4><span class="header-section-number">3.6.2.3</span> Elastic Net Method</h4>
 <p>And finally, let’s do the same with elastic net. Like before, we’ll use the same data split and training parameters. And again, the code is <em>almost</em> identical; we just change <code>method = &quot;lasso&quot;</code> to <code>method = &quot;ridge&quot;</code></p>
 <pre class="sourceCode r" id="cb51"><code class="sourceCode r"><div class="sourceLine" id="cb51-1" data-line-number="1">fit_enet &lt;-<span class="st"> </span><span class="kw">train</span>(points <span class="op">~</span><span class="st"> </span>.<span class="op">*</span>., </div>
 <div class="sourceLine" id="cb51-2" data-line-number="2">                   <span class="dt">data =</span> training,</div>

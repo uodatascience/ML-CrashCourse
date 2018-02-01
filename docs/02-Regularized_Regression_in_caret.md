@@ -100,7 +100,7 @@ You can think of this penalty as introducing a specific type of bias: bias towar
 
 So why does Ridge do that and why is it useful? As I said earlier, I find it useful to think of statistical tools as having certain beliefs, and as being useful when those beliefs seem more or less true (in some particular case). Ridge believes that all of the variables you're considering matter, but that most of them matter very little. Put differently, it believes that each variable you've entered belongs in the model, but that most or all only have small contributions. Because of this, people often say that ridge doesn't perform *feature selection*, and shouldn't be used if you need to select features (i.e., variables). This makes sense once you think of what Ridge believes: it believes every variable you're telling it to use should be in the model, but many will simply have small impacts. If we want to select features (i.e., decide what variables go in our model), we need a different tool with a different set of beliefs.
 
-### Lasso: only some features matter, and they might matter a lot
+## Lasso: only some features matter, and they might matter a lot
 
 Another popular form of regularized regression is the *least absolute shrinkage and selection operator* model, or *lasso*. Unlike ridge, lasso's regularization simultaneously performs feature selection and model improvement. 
 
@@ -147,9 +147,9 @@ cor(sample_data)
 
 ```
 ##           x1        x2         y
-## x1 1.0000000 0.8999275 0.7596885
-## x2 0.8999275 1.0000000 0.7598208
-## y  0.7596885 0.7598208 1.0000000
+## x1 1.0000000 0.8997763 0.7594485
+## x2 0.8997763 1.0000000 0.7591536
+## y  0.7594485 0.7591536 1.0000000
 ```
 
 Ah, it does! Good, let's proceed. Now if we estimate, a regression with both variables, we should get two beta weights of about .40:
@@ -166,20 +166,20 @@ summary(model_1)
 ## lm(formula = y ~ x1 + x2, data = sample_data)
 ## 
 ## Residuals:
-##      Min       1Q   Median       3Q      Max 
-## -2.88993 -0.42238 -0.00098  0.42289  3.12422 
+##     Min      1Q  Median      3Q     Max 
+## -3.1681 -0.4241  0.0003  0.4231  2.9531 
 ## 
 ## Coefficients:
-##              Estimate Std. Error t value Pr(>|t|)    
-## (Intercept) 0.0001873  0.0006262   0.299    0.765    
-## x1          0.3993581  0.0014370 277.904   <2e-16 ***
-## x2          0.4005888  0.0014367 278.825   <2e-16 ***
+##               Estimate Std. Error t value Pr(>|t|)    
+## (Intercept) -0.0008660  0.0006272  -1.381    0.167    
+## x1           0.4016308  0.0014385 279.204   <2e-16 ***
+## x2           0.3987393  0.0014387 277.156   <2e-16 ***
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ## 
-## Residual standard error: 0.6262 on 999997 degrees of freedom
-## Multiple R-squared:  0.6076,	Adjusted R-squared:  0.6076 
-## F-statistic: 7.743e+05 on 2 and 999997 DF,  p-value: < 2.2e-16
+## Residual standard error: 0.6272 on 999997 degrees of freedom
+## Multiple R-squared:  0.607,	Adjusted R-squared:  0.607 
+## F-statistic: 7.721e+05 on 2 and 999997 DF,  p-value: < 2.2e-16
 ```
 
 Okay, that worked as expected; we get two beta weights of about .40 (if you round to 2 decimals). Now let's check model 2, where we just include 1 x variable (x1). We should get a single beta weight of about .76.
@@ -196,19 +196,19 @@ summary(model_2)
 ## lm(formula = y ~ x1, data = sample_data)
 ## 
 ## Residuals:
-##      Min       1Q   Median       3Q      Max 
-## -3.15195 -0.43848 -0.00032  0.43828  3.06765 
+##     Min      1Q  Median      3Q     Max 
+## -3.4964 -0.4389 -0.0001  0.4386  3.2230 
 ## 
 ## Coefficients:
-##              Estimate Std. Error  t value Pr(>|t|)    
-## (Intercept) 0.0003526  0.0006501    0.542    0.588    
-## x1          0.7599419  0.0006505 1168.234   <2e-16 ***
+##               Estimate Std. Error  t value Pr(>|t|)    
+## (Intercept) -0.0007002  0.0006508   -1.076    0.282    
+## x1           0.7603576  0.0006513 1167.362   <2e-16 ***
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ## 
-## Residual standard error: 0.6501 on 999998 degrees of freedom
-## Multiple R-squared:  0.5771,	Adjusted R-squared:  0.5771 
-## F-statistic: 1.365e+06 on 1 and 999998 DF,  p-value: < 2.2e-16
+## Residual standard error: 0.6508 on 999998 degrees of freedom
+## Multiple R-squared:  0.5768,	Adjusted R-squared:  0.5768 
+## F-statistic: 1.363e+06 on 1 and 999998 DF,  p-value: < 2.2e-16
 ```
 
 And we do. Now let's walk through the two penalties we covered so far, Ridge and Lasso. Based on what we know so far, Ridge should prefer Model 1 (with x1 and x2) and LASSO should prefer model 2 (the one with just x1)
@@ -252,7 +252,7 @@ So returning to why we would use it, it's easiest for me to see when it would be
 
 What if our belief is somewhere in between these options: that some variables may not be needed (may actually be zero), but that many of the variables should have smaller values?
 
-### Elastic Net: maybe everything matters, and maybe only a little bit.
+## Elastic Net: maybe everything matters, and maybe only a little bit.
 
 Elastic net combines the penalties used by ridge and lasso. In doing so, it basically takes the middle ground between these two methods: penalizing non-zero values (feature selection) and penalizing values the further they depart from zero (regularization). So now, our error has three terms: 
 
