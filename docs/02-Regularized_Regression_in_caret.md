@@ -35,22 +35,28 @@ Cross-validation generally refers to taking a model that you trained on some dat
 
 Let's say we think home size (in square-feet) is the only relevant predictor for house price. So, we have some data on prices of recently sold houses, and estimate a model predicting house price from square-feet:
 
-$$y_{price} = b_0 + b_1*sqaurefeet$$
+$$\hat{price_{i}} = b_0 + b_1*sqaurefeet_i$$
 
 Let's say we get these parameter values:
 
-$$y_{price} = 100 + 50*sqaurefeet$$
+$$\hat{price_{i}} = 100 + 50*sqaurefeet_i$$
 
 And now we want to cross-validate in a hold-out sample. We wouldn't simply estimate this model again:
 
-$$y_{price} = b_0 + b_1*sqaurefeet$$
+$$\hat{price_{i}} = b_0 + b_1*sqaurefeet_i$$
 
 We would instead apply this model:
 
-$$y_{price} = 100 + 50*sqaurefeet$$
-And evaluate how well it did. We could do this either by how much it misses, which is usually done with root mean squared error (RMSE):
+$$\hat{price_{i}} = 100 + 50*sqaurefeet$$
+And evaluate how well it did. We could do this either by how much it misses, which is usually done with root mean squared error (RMSE). This is the average squared difference between observed ($y_i$) and expected ($\hat{y}_i$) values:
 
-$$MSE = \frac{1}{n}\sum\limits_{i=1}^{n}(y_i - \hat{y_i})^2$$
+$$MSE = \frac{1}{n}\sum\limits_{i=1}^{n}(y_i - \hat{y_{i}})^2$$
+
+And in our example, the y variable is house price:
+
+$$MSE = \frac{1}{n}\sum\limits_{i=1}^{n}(price_i - \hat{price_{i}})^2$$
+And then finally, we take the square root for RMSE:
+
 $$RMSE = \sqrt{MSE}$$
 
 Typically, people will also look at prediction accuracy, using the model's $R^2$. This is interpreted the same way as $R^2$ always is (as the % of variance in the outcome accounted for by the model).
@@ -62,7 +68,7 @@ There are different varieties of cross-validation. The most intuitive version is
 
 Let's take a ridiculously simple example (based on the earlier example). We want to predict house sale price from square footage:
 
-$$y_{price} = b_0 + b_1*sqaurefeet$$
+$$\hat{price_i} = b_0 + b_1*sqaurefeet_i$$
 
 Let's say we have just 30 cases, and we use 10-fold cross validation. Let each observation be indicated by $o_i$, so the first observation is $o_1$, the second is $o_2$, and the third is $o_3$, etc. 
 
@@ -81,11 +87,11 @@ Now let's get to regularized regression. This is a pretty simple extension of OL
 
 Ridge regression is basically OLS regression with an extra term. As a refresher, OLS seeks to minimize the sum of squared error, or:
 
-$$SSE = \sum\limits_{i=1}^n = (y_i - \hat{y_i})^2$$
+$$SSE = \sum\limits_{i=1}^n (y_i - \hat{y_i})^2$$
 
 Ridge adds an additional penalty:
 
-$$SSE_{L2} = \sum\limits_{i=1}^n = (y_i - \hat{y_i}^2) + \lambda \sum\limits_{j=1}^p \beta^2_j$$
+$$SSE_{L2} = \sum\limits_{i=1}^n (y_i - \hat{y_i}^2) + \lambda \sum\limits_{j=1}^p \beta^2_j$$
 This makes it so that paramter values are only allowed to be large if they reduce error enough to justify their size. Functionally, this makes it so parameter values shrink towards 0. You can hopefully see this in that as our paramater values (our betas) increase in size, error increases, since we are adding the sum of squared beta values, times some constant $\lambda$, to our error term SSE. So, unless the parameter values decrease the first part of the error term (the ordinary sum of squared error; to the left of our new penalty) proportionally to their magnitude, they are shrunk toward 0. 
 
 The extent to which they are shrunk towards 0 depends on the value of $\lambda$; higher values lead to more shrinkage than lower values. This is called a *hyperparameter* because it's a parameter that governs other parameters. You can think of $\lambda$ as sort of the cost associated with larger parameter values: higher values of lambda are like telling your model that larger parameter values are more costly (so don't make them large for nothing).
@@ -113,16 +119,119 @@ $$Model 2: y_i = .76*X_1$$
 
 Note, this is just the path from $X_2$ to $Y$ (.40) times the correlation between $X_1$ and $X_2$ (.90). So how would each of these penalties treat this? Let's walk through it:
 
+First, let's simulate some data that has the properties we just mentioned. We'll do this with the `mvtnorm` library. This allows us to take a random sample from a multivariate normal distribution. It requires a sample size, a vector of means (equal to the number of variables), and a variance-covariance matrix (called sigma; where r = c = number of variables). Since we're talking about standardized solutions, we'll create a variance-covariance (sigma) matrix that is standardized (i.e., a correlation matrix), with 1's along the diaganol. We then specify the bivariate correlation between each variable, which will be .9 for X1 and X2, and then .76 for X1's relation with Y and .76 for X2's relation with Y (just like above). That looks something like this:
 
 ```r
+# Load the mvtnorm library
+library(mvtnorm)
+
+# specify sigma matrix;
+# again, this is the correlation matrix for the variables
+# since we're working with standardized values.
+sigma <-matrix(c(1, .9, .76,
+                 .9, 1, .76,
+                 .76, .76, 1), ncol = 3)
+
+# Now take the sample, call it sample_data
+sample_data <- data.frame(rmvnorm(n = 1000000, mean = c(0, 0, 0), sigma = sigma))
+
+# give the columns names; we'll use x1, x2, and y just like the example above
+names(sample_data) <- c("x1", "x2", "y")
+```
+
+Alright, let's check the correlation matrix to make sure we did this correctly. This should match sigma:
+
+```r
+cor(sample_data)
+```
+
+```
+##           x1        x2         y
+## x1 1.0000000 0.8996263 0.7590002
+## x2 0.8996263 1.0000000 0.7589675
+## y  0.7590002 0.7589675 1.0000000
+```
+
+Ah, it does! Good, let's proceed. Now if we estimate, a regression with both variables, we should get two beta weights of about .40:
+
+
+```r
+model_1 <-lm(y ~ x1 + x2, data = sample_data)
+summary(model_1)
+```
+
+```
+## 
+## Call:
+## lm(formula = y ~ x1 + x2, data = sample_data)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -2.91897 -0.42276 -0.00014  0.42322  2.83334 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(>|t|)    
+## (Intercept) 0.0013242  0.0006268   2.112   0.0346 *  
+## x1          0.3998931  0.0014373 278.234   <2e-16 ***
+## x2          0.3996746  0.0014376 278.007   <2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.6268 on 999997 degrees of freedom
+## Multiple R-squared:  0.6065,	Adjusted R-squared:  0.6065 
+## F-statistic: 7.706e+05 on 2 and 999997 DF,  p-value: < 2.2e-16
+```
+
+Okay, that worked as expected; we get two beta weights of about .40 (if you round to 2 decimals). Now let's check model 2, where we just include 1 x variable (x1). We should get a single beta weight of about .76.
+
+
+```r
+model_2 <-lm(y ~ x1, data = sample_data)
+summary(model_2)
+```
+
+```
+## 
+## Call:
+## lm(formula = y ~ x1, data = sample_data)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -2.98431 -0.43883  0.00051  0.43925  2.98666 
+## 
+## Coefficients:
+##              Estimate Std. Error  t value Pr(>|t|)    
+## (Intercept) 0.0012014  0.0006506    1.847   0.0648 .  
+## x1          0.7593538  0.0006514 1165.736   <2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.6506 on 999998 degrees of freedom
+## Multiple R-squared:  0.5761,	Adjusted R-squared:  0.5761 
+## F-statistic: 1.359e+06 on 1 and 999998 DF,  p-value: < 2.2e-16
+```
+
+And we do. Now let's walk through the two penalties we covered so far, Ridge and Lasso. Based on what we know so far, Ridge should prefer Model 1 (with x1 and x2) and LASSO should prefer model 2 (the one with just x1)
+
+
+
+```r
+# pull out the coefficients for each parameter of the two models
+model_1_b1 <- model_1$coefficients["x1"]
+model_1_b2 <- model_1$coefficients["x2"]
+model_2_b1 <- model_2$coefficients["x1"]
+# Note, we're not actually estimating b2 in model 2, but this is equivalen to saying its 0
+model_2_b2 <- 0
+
+# set lambda to a constant; we'll use .1
 lambda <- .1
-ridge_penalty_Model_1 <- lambda*(sum(c(.40^2, .40^2)))
-ridge_penalty_Model_2 <- lambda*(sum(c(.76^2, 0^2)))
+ridge_penalty_Model_1 <- lambda*(sum(c(model_1_b1^2, model_1_b2^2)))
+ridge_penalty_Model_2 <- lambda*(sum(c(model_2_b1^2, model_2_b2^2)))
 
 ridge_penalties <- rbind(ridge_penalty_Model_1, ridge_penalty_Model_2)
 
-lasso_penalty_Model_1 <- lambda*(sum(c(abs(.40), abs(.40))))
-lasso_penalty_Model_2 <- lambda*(sum(c(abs(.76), abs(0))))
+lasso_penalty_Model_1 <- lambda*(sum(c(abs(model_1_b1), abs(model_1_b2))))
+lasso_penalty_Model_2 <- lambda*(sum(c(abs(model_2_b1), abs(model_2_b2))))
 
 lasso_penalties <- rbind(lasso_penalty_Model_1, lasso_penalty_Model_2)
 penalties <- cbind(ridge_penalties, lasso_penalties)
@@ -153,7 +262,7 @@ Elastic net combines the penalties used by ridge and lasso. In doing so, it basi
 
 The formula for this error term is:
 
-$$SSE_{Enet} = \sum\limits_{i=1}^n = (y_i - \hat{y_i}^2) + \lambda_1 \sum\limits_{j=1}^p \beta^2_j + \lambda_2 \sum\limits_{j=1}^p |\beta_j|$$
+$$SSE_{Enet} = \sum\limits_{i=1}^n  (y_i - \hat{y_i}^2) + \lambda_1 \sum\limits_{j=1}^p \beta^2_j + \lambda_2 \sum\limits_{j=1}^p |\beta_j|$$
 
 Basically, elastic net is sort of a best of both worlds approach: it gives you the feature selection of lasso, and regularizes as effective as ridge. It thus introduces two dimensions of bias: 
 
@@ -166,6 +275,8 @@ In terms of beliefs, Elastic net is basically a more flexible thinker: it thinks
 
 Okay, this has been a (very brief) intro to regularized regression and some foundational concepts in machine learning necessary to understand it.
 
+## Example using Caret
+
 Now let's walk through an example:
 
 We're going to work with this data on wine reviews. It has the score it received in a rating, as well as some data about the wine, and a description of the wine. We'll see how well we can predict the rating based on the data about the wine (including the description). I found this on <kaggle.com>
@@ -175,10 +286,6 @@ We're going to work with this data on wine reviews. It has the score it received
 rm(list=ls())
 
 library(caret)
-```
-
-```
-## Warning: package 'caret' was built under R version 3.4.3
 ```
 
 ```
@@ -194,69 +301,31 @@ library(tidyverse)
 ```
 
 ```
-## Warning: package 'tidyverse' was built under R version 3.4.2
+## Loading tidyverse: tibble
+## Loading tidyverse: tidyr
+## Loading tidyverse: readr
+## Loading tidyverse: purrr
+## Loading tidyverse: dplyr
 ```
 
 ```
-## ── Attaching packages ────────────────────────────────── tidyverse 1.2.1 ──
+## Conflicts with tidy packages ----------------------------------------------
 ```
 
 ```
-## ✔ tibble  1.4.2     ✔ purrr   0.2.4
-## ✔ tidyr   0.7.2     ✔ dplyr   0.7.4
-## ✔ readr   1.1.1     ✔ stringr 1.2.0
-## ✔ tibble  1.4.2     ✔ forcats 0.2.0
-```
-
-```
-## Warning: package 'tibble' was built under R version 3.4.3
-```
-
-```
-## Warning: package 'tidyr' was built under R version 3.4.2
-```
-
-```
-## Warning: package 'purrr' was built under R version 3.4.2
-```
-
-```
-## Warning: package 'dplyr' was built under R version 3.4.2
-```
-
-```
-## ── Conflicts ───────────────────────────────────── tidyverse_conflicts() ──
-## ✖ dplyr::filter() masks stats::filter()
-## ✖ dplyr::lag()    masks stats::lag()
-## ✖ purrr::lift()   masks caret::lift()
+## filter(): dplyr, stats
+## lag():    dplyr, stats
+## lift():   purrr, caret
 ```
 
 ```r
 library(tidytext)
-```
-
-```
-## Warning: package 'tidytext' was built under R version 3.4.3
-```
-
-```r
 library(topicmodels)
-```
-
-```
-## Warning: package 'topicmodels' was built under R version 3.4.2
-```
-
-```r
 require(janitor)
 ```
 
 ```
 ## Loading required package: janitor
-```
-
-```
-## Warning: package 'janitor' was built under R version 3.4.3
 ```
 
 ```r
@@ -268,27 +337,67 @@ require(rio)
 ```
 
 ```r
-wine <- rio::import("files/winemag-data_first150k.csv") %>%
+wine <- rio::import("files/winemag-data_first150k.csv",
+                    setclass = "tbl_df") %>%
   janitor::clean_names() %>%
   rename(id = v1)
-
-wine <- sample_n(wine, 500)
 ```
 
-Okay, before we start down the modelling road, we want to do something with the descriptions. We'll separate out the description, and do some automated text analysis, and use the output of those analyses as features. This should make a bit more sense as we walk through.
+We'll limit ourselves to a sample of 1000 observations for time's sake.
 
 ```r
-# first we need to load in a dataframe of stopwords
-# these are basically words that don't have content
-# and that we don't need (e.g., "the", "a", "and", etc.)
-data("stop_words")
+#set.seed(227)
 
+#wine <- sample_n(wine, 1000)
+```
+
+Let's take a look at the data
+
+```r
+wine
+```
+
+```
+## # A tibble: 150,930 x 11
+##       id country
+##    <int>   <chr>
+##  1     0      US
+##  2     1   Spain
+##  3     2      US
+##  4     3      US
+##  5     4  France
+##  6     5   Spain
+##  7     6   Spain
+##  8     7   Spain
+##  9     8      US
+## 10     9      US
+## # ... with 150,920 more rows, and 9 more variables: description <chr>,
+## #   designation <chr>, points <int>, price <dbl>, province <chr>,
+## #   region_1 <chr>, region_2 <chr>, variety <chr>, winery <chr>
+```
+So you can see wee have some information about where the wine is from, its rating (called `points`), its price called `price`, and textual description of the wine (called `description`). Let's see if we can train a model that does a good job predicting wine ratings.
+
+### Extracting features: a brief detour into text analysis
+
+Okay, before we start down the modelling road, we want to do something with the textual descriptions. Along these lines, we'll separate out the description, do some automated text analysis, and use the output of those analyses as features. This should make a bit more sense as we walk through.
+
+First we need to load in a dataframe of stopwords these are basically words that don't have content and that we don't need (e.g., "the", "a", "and", etc.). Luckily, the R package `tidytext` has some built-in data on stop words. We need to load these up with the `data()` command.
+
+```r
+data("stop_words")
+```
+
+Now that we have the stop words, let's take our wine data set, select just the id (for merging purposes) and the text descriptions. Then we'll use the `unnest_tokens` function, which basically takes the descriptions, separates them by 'tokens' (which in this case is each word), and leaves us with a dataset with a row per word in each desciption (essentially an id X word from description lengthed dataset).
+
+Finally, we'll use `anti_join()` to remove the stop words. This takes requires two dataframes as its two arguments, and removes any rows from the dataframe in the first argument that are in the dataframe in the second argument. Since we're using pipes (`%>%`), the first argument is invisible, but is the new expanded wine description data, and the second is the dataframe of stopwords; effectively, this will just remove the stopwords from our expanded wine description data.
+
+
+```r
 wine_text_expand<- wine %>%
   # take just the id and description
   select(id, description) %>%
-  # this will make it so that the description is 
-  # broken into single words, with a row
-  # corresponding to each word in each wine's description
+  # unnest tokens; provide it the new variable name (for the tokens)
+  # and the old variable (where it can find the text to tokenize).
   unnest_tokens(word, description) %>%
   anti_join(stop_words)
 ```
@@ -297,7 +406,9 @@ wine_text_expand<- wine %>%
 ## Joining, by = "word"
 ```
 
-Let's do some sentiment analysis, since that seems like it will definitely be relevant. Sentiment analysis is intended to extract the emotional tone of a text, and in this case, will basically give us a score corresponding to how poisitive and negative each word is. We'll leave it at sentiment analysis for the sake of time.
+Okay, now that we have  cleaned up text data for the wine descriptions, let's extract some features from the descriptions. We can use sentiment analysis. since that seems like it will definitely be relevant. Sentiment analysis is intended to extract the emotional tone of a text, and in this case, will basically give us a score corresponding to how poisitive and negative each word is. We'll leave it at sentiment analysis for the sake of time.
+
+We'll do sentiment analysis using tidytext, and the "afinn" sentiment dictionary. This dictionary has a set of words with a continuous sentiment score (from -3, to +3; neutral point of 0). We can use it to get sentiment scores by using `inner_join()`, which basically keeps all columns, but only rows shared by the two dataframes; in this case, only words that are in both our descriptions data AND the sentiment dictionary will be kept, and columns for id, word, and sentiment score. Then, we'll summarize across words to get a sentiment score for each wine's description (wine being tracked with id). This will leave us with a dataframe with id and sentiment score (since the words are shared between the two dataframes)
 
 ```r
 description_sentiment <- wine_text_expand %>%
@@ -322,20 +433,20 @@ description_sentiment
 ```
 
 ```
-## # A tibble: 398 x 2
+## # A tibble: 123,785 x 2
 ##       id sentiment
 ##    <int>     <dbl>
-##  1   311     1.44 
-##  2   392     0.667
-##  3   488     0.500
-##  4   618    -2.00 
-##  5   854     1.33 
-##  6   908     1.67 
-##  7  2079     2.00 
-##  8  2396     1.00 
-##  9  2802     1.00 
-## 10  3044     2.00 
-## # ... with 388 more rows
+##  1     0       1.8
+##  2     1       1.5
+##  3     3       2.0
+##  4     4       2.0
+##  5     5       2.5
+##  6     6       2.5
+##  7     7       2.0
+##  8     9       0.0
+##  9    10      -1.0
+## 10    12       4.0
+## # ... with 123,775 more rows
 ```
 
 And, let's merge that back into the wine dataframe.
@@ -349,33 +460,75 @@ wine_for_ml <- wine %>%
   na.omit()
 ```
 
+### Modeling with caret
 
+We have quite a bit of data here (150000 cases), so first let's partition our data into a training and test dataframe. We'll do a 75-25 training-test split, and can use caret's `createDataPartition()` function to do it.
 
 ```r
 # Set seed for consistency's sake
-set.seed(500)
+set.seed(227)
 # This part creates a list of values;
 # these values are the row numbers for data included in the training set
 # we're splitting it 75-25, such that 75% of cases will be in the training set (25% in the test).
-inTrain <- createDataPartition(y = wine_for_ml$points,
+in_train <- createDataPartition(y = wine_for_ml$points,
                                  p = .75,
                                  list = FALSE)
 # subsets the training data (those data whose row number appears in the inTrain object)
-training <- wine_for_ml[inTrain,]
+training <- wine_for_ml[in_train,]
 # subsets the test data (those data whose row number DOES NOT appear in the inTrain object)
-testing <- wine_for_ml[-inTrain,]
+testing <- wine_for_ml[-in_train,]
+```
 
+Okay, now that we have our training data, let's actually train a model.
+
+First, we set up the training parameters using the `trainControl()` function. This is where you specify the method (e.g., cross-validation), and some other specifics.
+
+In this example, we'll tell it to use 10-fold cross-validation, by specifying cross-validation as the method, and 10 as the number (i.e., k). We'll also tell it to save the best fitting model with the argument `savePredictions = TRUE`. You'll notice that we'll use these same controls for the different models we try (ridge, lasso, elastic net)
+
+```r
 # Sets parameters for training;
 # telling it to use 10-fold cross-validation, and to save the predictions.
 train_control<- trainControl(method="cv", number=10, 
                              savePredictions = TRUE)
+```
 
-fit_ridge <- train(points ~ ., 
+#### Ridge Method
+Now let's train a model using ridge regression. We do this by telling it to:
+
+1) predict points from everything (including interactions). This is accomplished with .*. where '.' = all (well, all except the outcome variable).
+2) using the training data
+3) using the training parameters we just set
+4) using the ridge method
+5) pre-processing by centering and scaling (essentially z scoring everything; this is critical, because we want everything on the same scale, since parameter size is being penalized in one way or another).
+
+
+```r
+fit_ridge <- train(points ~ .*., 
                    data = training,
                    trControl = train_control,
                    method = "ridge",
                    preProc = c("center", "scale"))
+```
 
+```
+## Loading required package: elasticnet
+```
+
+```
+## Loading required package: lars
+```
+
+```
+## Loaded lars 1.2
+```
+
+Okay, so how did our model do? We can evaluate this in two different ways given what we've done so far.
+
+1) Easier test: what is the average fit (with $R^2$) and misfit (with $RMSE$) fromt the training. This will basically take the $R^2$ and $RMSE$ from all 10 folds and average them, telling us how well our models were doing on average across training runs.
+
+We can get this information like so:
+
+```r
 avg_r2_ridge <- mean(fit_ridge$results$Rsquared)
 avg_RMSE_ridge <- mean(fit_ridge$results$RMSE)
 
@@ -383,7 +536,7 @@ avg_r2_ridge
 ```
 
 ```
-## [1] 0.3969759
+## [1] 0.2686071
 ```
 
 ```r
@@ -391,9 +544,12 @@ avg_RMSE_ridge
 ```
 
 ```
-## [1] 2.567107
+## [1] 2.759382
 ```
-Harder test: how does it do with the holdout sample?
+
+Okay, so an $\bar{R^2}$ of 0.27, meaning we are explaining 26.86% of the variance in wine ratings with sentiment and price (and the interaction).
+
+2) Harder test: how well does it do with the holdout sample?
 
 
 ```r
@@ -402,34 +558,34 @@ pred_ridge <- predict(fit_ridge, newdata = testing)
 # Gets R^2 and RMSE for ridge model
 fitstat_ridge <- postResample(pred = pred_ridge, 
                                   obs = testing$points)
+fitstat_ridge
 ```
 
+```
+##      RMSE  Rsquared 
+## 2.8348519 0.2411339
+```
+Okay, so an $R^2$ of 0.24, meaning we are explaining 24.11% of the variance in wine ratings with sentiment and price (and the interaction).
+
+#### Lasso Method
+
+Okay, now let's try lasso. We'll use the same training-test split, and the same training parameters.
+
+We will run virtually the same code, but change `method = "ridge"` to `method = "lasso"`, like so:
 
 ```r
-# Set seed for consistency's sake
-set.seed(500)
-# This part creates a list of values;
-# these values are the row numbers for data included in the training set
-# we're splitting it 75-25, such that 75% of cases will be in the training set (25% in the test).
-inTrain <- createDataPartition(y = wine_for_ml$points,
-                                 p = .75,
-                                 list = FALSE)
-# subsets the training data (those data whose row number appears in the inTrain object)
-training <- wine_for_ml[inTrain,]
-# subsets the test data (those data whose row number DOES NOT appear in the inTrain object)
-testing <- wine_for_ml[-inTrain,]
-
-# Sets parameters for training;
-# telling it to use 10-fold cross-validation, and to save the predictions.
-train_control<- trainControl(method="cv", number=10, 
-                             savePredictions = TRUE)
-
-fit_lasso <- train(points ~ ., 
+fit_lasso <- train(points ~ .*., 
                    data = training,
                    trControl = train_control,
                    method = "lasso",
                    preProc = c("center", "scale"))
+```
 
+And let's evaluate this model in the same two ways. 
+
+Easier test: average fit across training runs:
+
+```r
 avg_r2_lasso <- mean(fit_lasso$results$Rsquared)
 avg_RMSE_lasso <- mean(fit_lasso$results$RMSE)
 
@@ -437,7 +593,7 @@ avg_r2_lasso
 ```
 
 ```
-## [1] 0.3772097
+## [1] 0.249744
 ```
 
 ```r
@@ -445,8 +601,12 @@ avg_RMSE_lasso
 ```
 
 ```
-## [1] 2.779287
+## [1] 2.908199
 ```
+Okay, so an $\bar{R^2}$ of 0.25, meaning we are explaining 24.97% of the variance in wine ratings with sentiment and price (and the interaction).
+
+Now for the harder test.
+
 Harder test: how does it do with the holdout sample?
 
 
@@ -456,34 +616,36 @@ pred_lasso <- predict(fit_lasso, newdata = testing)
 # Gets R^2 and RMSE for lasso model
 fitstat_lasso <- postResample(pred = pred_lasso, 
                                   obs = testing$points)
+
+fitstat_lasso
 ```
+
+```
+##      RMSE  Rsquared 
+## 2.8329419 0.2400375
+```
+
+Okay, so an $R^2$ of 0.24, meaning we are explaining 24% of the variance in wine ratings with sentiment and price (and the interaction).
+
+#### Elastic Net Method
+
+And finally, let's do the same with elastic net. Like before, we'll use the same data split and training parameters. And again, the code is *almost* identical; we just change `method = "lasso"` to `method = "ridge"`
 
 
 ```r
-# Set seed for consistency's sake
-set.seed(500)
-# This part creates a list of values;
-# these values are the row numbers for data included in the training set
-# we're splitting it 75-25, such that 75% of cases will be in the training set (25% in the test).
-inTrain <- createDataPartition(y = wine_for_ml$points,
-                                 p = .75,
-                                 list = FALSE)
-# subsets the training data (those data whose row number appears in the inTrain object)
-training <- wine_for_ml[inTrain,]
-# subsets the test data (those data whose row number DOES NOT appear in the inTrain object)
-testing <- wine_for_ml[-inTrain,]
-
-# Sets parameters for training;
-# telling it to use 10-fold cross-validation, and to save the predictions.
-train_control<- trainControl(method="cv", number=10, 
-                             savePredictions = TRUE)
-
-fit_enet <- train(points ~ ., 
+fit_enet <- train(points ~ .*., 
                    data = training,
                    trControl = train_control,
                    method = "enet",
                    preProc = c("center", "scale"))
+```
 
+And let's evaluate the model in the same two ways.
+
+Easier test: average fit across training runs
+
+
+```r
 avg_r2_enet <- mean(fit_enet$results$Rsquared)
 avg_RMSE_enet <- mean(fit_enet$results$RMSE)
 
@@ -491,7 +653,7 @@ avg_r2_enet
 ```
 
 ```
-## [1] 0.3236829
+## [1] 0.2480728
 ```
 
 ```r
@@ -499,8 +661,11 @@ avg_RMSE_enet
 ```
 
 ```
-## [1] 2.798077
+## [1] 2.923794
 ```
+Okay, so an $\bar{R^2}$ of 0.25, meaning we are explaining 24.97% of the variance (on average) in wine ratings with sentiment and price (and the interaction).
+
+
 Harder test: how does it do with the holdout sample?
 
 
@@ -510,4 +675,30 @@ pred_enet <- predict(fit_enet, newdata = testing)
 # Gets R^2 and RMSE for enet model
 fitstat_enet <- postResample(pred = pred_enet, 
                                   obs = testing$points)
+fitstat_enet
 ```
+
+```
+##      RMSE  Rsquared 
+## 2.8348519 0.2411339
+```
+
+Okay, so an $R^2$ of 0.24, meaning we are explaining 24.11% of the variance in wine ratings with sentiment and price (and the interaction).
+
+# Closing thoughts
+
+I want to mention a few things in closing. The first is that you'll notice the three methods we tried in our example produced nearly identical fits. One reason for this is that we supplied a very small number of predictors (just 2 + an interaction, so 3 parameters). When you have many more predictors, these methods may start to differ a bit more (especially if the predictors are correlated, as we went over in the difference between ridge and lasso).
+
+Finally, we split the data once into a training and test set. This is generally OK, BUT, if you're using the holdout sample to evaluate models (like we did here), you wouldn't want to use it to CHOOSE a model. That is, if we actually wanted to decide which of the three methods we wanted to use, the most defensible case would be to split the data into three sets: 
+
+1) model training
+2) model selection
+3) test / model evaluation
+
+This would keep the sort of purity of our test (model evaluation) data, and provide a good defense against overfitting.
+
+# References:
+
+Yarkoni, T., & Westfall, J. (2017). Choosing prediction over explanation in psychology: Lessons from machine learning. *Perspectives on Psychological Science*, 12(6), 1100-1122.
+
+Kuhn, M., & Johnson, K. (2013). Applied predictive modeling. New York, NY: Spring-Verlag.
