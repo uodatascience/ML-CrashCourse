@@ -145,9 +145,9 @@ cor(sample_data)
 
 ```
 ##           x1        x2         y
-## x1 1.0000000 0.9000834 0.7601255
-## x2 0.9000834 1.0000000 0.7601230
-## y  0.7601255 0.7601230 1.0000000
+## x1 1.0000000 0.8996853 0.7595336
+## x2 0.8996853 1.0000000 0.7593295
+## y  0.7595336 0.7593295 1.0000000
 ```
 
 Ah, it does! Good, let's proceed. Now if we estimate, a regression with both variables, we should get two beta weights of about .40:
@@ -164,20 +164,20 @@ summary(model_1)
 ## lm(formula = y ~ x1 + x2, data = sample_data)
 ## 
 ## Residuals:
-##      Min       1Q   Median       3Q      Max 
-## -2.90388 -0.42222  0.00004  0.42189  3.08332 
+##     Min      1Q  Median      3Q     Max 
+## -3.1660 -0.4224  0.0006  0.4220  2.9567 
 ## 
 ## Coefficients:
 ##               Estimate Std. Error t value Pr(>|t|)    
-## (Intercept) -0.0004451  0.0006259  -0.711    0.477    
-## x1           0.4004587  0.0014381 278.473   <2e-16 ***
-## x2           0.4002936  0.0014376 278.455   <2e-16 ***
+## (Intercept) -6.886e-05  6.264e-04   -0.11    0.912    
+## x1           4.010e-01  1.436e-03  279.15   <2e-16 ***
+## x2           3.988e-01  1.436e-03  277.74   <2e-16 ***
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ## 
-## Residual standard error: 0.6259 on 999997 degrees of freedom
-## Multiple R-squared:  0.6082,	Adjusted R-squared:  0.6082 
-## F-statistic: 7.761e+05 on 2 and 999997 DF,  p-value: < 2.2e-16
+## Residual standard error: 0.6264 on 999997 degrees of freedom
+## Multiple R-squared:  0.6072,	Adjusted R-squared:  0.6072 
+## F-statistic: 7.729e+05 on 2 and 999997 DF,  p-value: < 2.2e-16
 ```
 
 Okay, that worked as expected; we get two beta weights of about .40 (if you round to 2 decimals). Now let's check model 2, where we just include 1 x variable (x1). We should get a single beta weight of about .76.
@@ -195,18 +195,18 @@ summary(model_2)
 ## 
 ## Residuals:
 ##     Min      1Q  Median      3Q     Max 
-## -3.0550 -0.4383 -0.0006  0.4381  3.2131 
+## -3.1765 -0.4383  0.0005  0.4381  3.2446 
 ## 
 ## Coefficients:
-##               Estimate Std. Error  t value Pr(>|t|)    
-## (Intercept) -0.0001045  0.0006497   -0.161    0.872    
-## x1           0.7608821  0.0006504 1169.825   <2e-16 ***
+##              Estimate Std. Error  t value Pr(>|t|)    
+## (Intercept) 0.0002238  0.0006501    0.344    0.731    
+## x1          0.7598842  0.0006508 1167.671   <2e-16 ***
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ## 
-## Residual standard error: 0.6497 on 999998 degrees of freedom
-## Multiple R-squared:  0.5778,	Adjusted R-squared:  0.5778 
-## F-statistic: 1.368e+06 on 1 and 999998 DF,  p-value: < 2.2e-16
+## Residual standard error: 0.6501 on 999998 degrees of freedom
+## Multiple R-squared:  0.5769,	Adjusted R-squared:  0.5769 
+## F-statistic: 1.363e+06 on 1 and 999998 DF,  p-value: < 2.2e-16
 ```
 
 And we do. Now let's walk through the two penalties we covered so far, Ridge and Lasso. Based on what we know so far, Ridge should prefer Model 1 (with x1 and x2) and LASSO should prefer model 2 (the one with just x1)
