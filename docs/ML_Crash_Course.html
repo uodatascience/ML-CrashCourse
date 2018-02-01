@@ -356,9 +356,9 @@ code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Infor
 <p>Alright, let’s check the correlation matrix to make sure we did this correctly. This should match sigma:</p>
 <pre class="sourceCode r" id="cb2"><code class="sourceCode r"><div class="sourceLine" id="cb2-1" data-line-number="1"><span class="kw">cor</span>(sample_data)</div></code></pre>
 <pre><code>##           x1        x2         y
-## x1 1.0000000 0.8996263 0.7590002
-## x2 0.8996263 1.0000000 0.7589675
-## y  0.7590002 0.7589675 1.0000000</code></pre>
+## x1 1.0000000 0.8999275 0.7596885
+## x2 0.8999275 1.0000000 0.7598208
+## y  0.7596885 0.7598208 1.0000000</code></pre>
 <p>Ah, it does! Good, let’s proceed. Now if we estimate, a regression with both variables, we should get two beta weights of about .40:</p>
 <pre class="sourceCode r" id="cb4"><code class="sourceCode r"><div class="sourceLine" id="cb4-1" data-line-number="1">model_<span class="dv">1</span> &lt;-<span class="kw">lm</span>(y <span class="op">~</span><span class="st"> </span>x1 <span class="op">+</span><span class="st"> </span>x2, <span class="dt">data =</span> sample_data)</div>
 <div class="sourceLine" id="cb4-2" data-line-number="2"><span class="kw">summary</span>(model_<span class="dv">1</span>)</div></code></pre>
@@ -368,19 +368,19 @@ code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Infor
 ## 
 ## Residuals:
 ##      Min       1Q   Median       3Q      Max 
-## -2.91897 -0.42276 -0.00014  0.42322  2.83334 
+## -2.88993 -0.42238 -0.00098  0.42289  3.12422 
 ## 
 ## Coefficients:
 ##              Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept) 0.0013242  0.0006268   2.112   0.0346 *  
-## x1          0.3998931  0.0014373 278.234   &lt;2e-16 ***
-## x2          0.3996746  0.0014376 278.007   &lt;2e-16 ***
+## (Intercept) 0.0001873  0.0006262   0.299    0.765    
+## x1          0.3993581  0.0014370 277.904   &lt;2e-16 ***
+## x2          0.4005888  0.0014367 278.825   &lt;2e-16 ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
-## Residual standard error: 0.6268 on 999997 degrees of freedom
-## Multiple R-squared:  0.6065, Adjusted R-squared:  0.6065 
-## F-statistic: 7.706e+05 on 2 and 999997 DF,  p-value: &lt; 2.2e-16</code></pre>
+## Residual standard error: 0.6262 on 999997 degrees of freedom
+## Multiple R-squared:  0.6076, Adjusted R-squared:  0.6076 
+## F-statistic: 7.743e+05 on 2 and 999997 DF,  p-value: &lt; 2.2e-16</code></pre>
 <p>Okay, that worked as expected; we get two beta weights of about .40 (if you round to 2 decimals). Now let’s check model 2, where we just include 1 x variable (x1). We should get a single beta weight of about .76.</p>
 <pre class="sourceCode r" id="cb6"><code class="sourceCode r"><div class="sourceLine" id="cb6-1" data-line-number="1">model_<span class="dv">2</span> &lt;-<span class="kw">lm</span>(y <span class="op">~</span><span class="st"> </span>x1, <span class="dt">data =</span> sample_data)</div>
 <div class="sourceLine" id="cb6-2" data-line-number="2"><span class="kw">summary</span>(model_<span class="dv">2</span>)</div></code></pre>
@@ -390,18 +390,18 @@ code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Infor
 ## 
 ## Residuals:
 ##      Min       1Q   Median       3Q      Max 
-## -2.98431 -0.43883  0.00051  0.43925  2.98666 
+## -3.15195 -0.43848 -0.00032  0.43828  3.06765 
 ## 
 ## Coefficients:
 ##              Estimate Std. Error  t value Pr(&gt;|t|)    
-## (Intercept) 0.0012014  0.0006506    1.847   0.0648 .  
-## x1          0.7593538  0.0006514 1165.736   &lt;2e-16 ***
+## (Intercept) 0.0003526  0.0006501    0.542    0.588    
+## x1          0.7599419  0.0006505 1168.234   &lt;2e-16 ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
-## Residual standard error: 0.6506 on 999998 degrees of freedom
-## Multiple R-squared:  0.5761, Adjusted R-squared:  0.5761 
-## F-statistic: 1.359e+06 on 1 and 999998 DF,  p-value: &lt; 2.2e-16</code></pre>
+## Residual standard error: 0.6501 on 999998 degrees of freedom
+## Multiple R-squared:  0.5771, Adjusted R-squared:  0.5771 
+## F-statistic: 1.365e+06 on 1 and 999998 DF,  p-value: &lt; 2.2e-16</code></pre>
 <p>And we do. Now let’s walk through the two penalties we covered so far, Ridge and Lasso. Based on what we know so far, Ridge should prefer Model 1 (with x1 and x2) and LASSO should prefer model 2 (the one with just x1)</p>
 <pre class="sourceCode r" id="cb8"><code class="sourceCode r"><div class="sourceLine" id="cb8-1" data-line-number="1"><span class="co"># pull out the coefficients for each parameter of the two models</span></div>
 <div class="sourceLine" id="cb8-2" data-line-number="2">model_<span class="dv">1</span>_b1 &lt;-<span class="st"> </span>model_<span class="dv">1</span><span class="op">$</span>coefficients[<span class="st">&quot;x1&quot;</span>]</div>
@@ -693,12 +693,14 @@ code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Infor
 <pre><code>## [1] 2.923794</code></pre>
 <p>Okay, so an <span class="math inline">\(\bar{R^2}\)</span> of 0.25, meaning we are explaining 24.97% of the variance (on average) in wine ratings with sentiment and price (and the interaction).</p>
 <p>Harder test: how does it do with the holdout sample?</p>
-<pre class="sourceCode r" id="cb56"><code class="sourceCode r"><div class="sourceLine" id="cb56-1" data-line-number="1">pred_enet &lt;-<span class="st"> </span><span class="kw">predict</span>(fit_enet, <span class="dt">newdata =</span> testing)</div>
-<div class="sourceLine" id="cb56-2" data-line-number="2"></div>
-<div class="sourceLine" id="cb56-3" data-line-number="3"><span class="co"># Gets R^2 and RMSE for enet model</span></div>
-<div class="sourceLine" id="cb56-4" data-line-number="4">fitstat_enet &lt;-<span class="st"> </span><span class="kw">postResample</span>(<span class="dt">pred =</span> pred_enet, </div>
-<div class="sourceLine" id="cb56-5" data-line-number="5">                                  <span class="dt">obs =</span> testing<span class="op">$</span>points)</div>
-<div class="sourceLine" id="cb56-6" data-line-number="6">fitstat_enet</div></code></pre>
+<pre class="sourceCode r" id="cb56"><code class="sourceCode r"><div class="sourceLine" id="cb56-1" data-line-number="1">pred_enet &lt;-<span class="st"> </span><span class="kw">predict</span>(fit_enet, <span class="dt">newdata =</span> testing)</div></code></pre>
+<pre><code>## Loading required package: elasticnet</code></pre>
+<pre><code>## Loading required package: lars</code></pre>
+<pre><code>## Loaded lars 1.2</code></pre>
+<pre class="sourceCode r" id="cb60"><code class="sourceCode r"><div class="sourceLine" id="cb60-1" data-line-number="1"><span class="co"># Gets R^2 and RMSE for enet model</span></div>
+<div class="sourceLine" id="cb60-2" data-line-number="2">fitstat_enet &lt;-<span class="st"> </span><span class="kw">postResample</span>(<span class="dt">pred =</span> pred_enet, </div>
+<div class="sourceLine" id="cb60-3" data-line-number="3">                                  <span class="dt">obs =</span> testing<span class="op">$</span>points)</div>
+<div class="sourceLine" id="cb60-4" data-line-number="4">fitstat_enet</div></code></pre>
 <pre><code>##      RMSE  Rsquared 
 ## 2.8348519 0.2411339</code></pre>
 <p>Okay, so an <span class="math inline">\(R^2\)</span> of 0.24, meaning we are explaining 24.11% of the variance in wine ratings with sentiment and price (and the interaction).</p>

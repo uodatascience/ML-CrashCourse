@@ -147,9 +147,9 @@ cor(sample_data)
 
 ```
 ##           x1        x2         y
-## x1 1.0000000 0.8996263 0.7590002
-## x2 0.8996263 1.0000000 0.7589675
-## y  0.7590002 0.7589675 1.0000000
+## x1 1.0000000 0.8999275 0.7596885
+## x2 0.8999275 1.0000000 0.7598208
+## y  0.7596885 0.7598208 1.0000000
 ```
 
 Ah, it does! Good, let's proceed. Now if we estimate, a regression with both variables, we should get two beta weights of about .40:
@@ -167,19 +167,19 @@ summary(model_1)
 ## 
 ## Residuals:
 ##      Min       1Q   Median       3Q      Max 
-## -2.91897 -0.42276 -0.00014  0.42322  2.83334 
+## -2.88993 -0.42238 -0.00098  0.42289  3.12422 
 ## 
 ## Coefficients:
 ##              Estimate Std. Error t value Pr(>|t|)    
-## (Intercept) 0.0013242  0.0006268   2.112   0.0346 *  
-## x1          0.3998931  0.0014373 278.234   <2e-16 ***
-## x2          0.3996746  0.0014376 278.007   <2e-16 ***
+## (Intercept) 0.0001873  0.0006262   0.299    0.765    
+## x1          0.3993581  0.0014370 277.904   <2e-16 ***
+## x2          0.4005888  0.0014367 278.825   <2e-16 ***
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ## 
-## Residual standard error: 0.6268 on 999997 degrees of freedom
-## Multiple R-squared:  0.6065,	Adjusted R-squared:  0.6065 
-## F-statistic: 7.706e+05 on 2 and 999997 DF,  p-value: < 2.2e-16
+## Residual standard error: 0.6262 on 999997 degrees of freedom
+## Multiple R-squared:  0.6076,	Adjusted R-squared:  0.6076 
+## F-statistic: 7.743e+05 on 2 and 999997 DF,  p-value: < 2.2e-16
 ```
 
 Okay, that worked as expected; we get two beta weights of about .40 (if you round to 2 decimals). Now let's check model 2, where we just include 1 x variable (x1). We should get a single beta weight of about .76.
@@ -197,18 +197,18 @@ summary(model_2)
 ## 
 ## Residuals:
 ##      Min       1Q   Median       3Q      Max 
-## -2.98431 -0.43883  0.00051  0.43925  2.98666 
+## -3.15195 -0.43848 -0.00032  0.43828  3.06765 
 ## 
 ## Coefficients:
 ##              Estimate Std. Error  t value Pr(>|t|)    
-## (Intercept) 0.0012014  0.0006506    1.847   0.0648 .  
-## x1          0.7593538  0.0006514 1165.736   <2e-16 ***
+## (Intercept) 0.0003526  0.0006501    0.542    0.588    
+## x1          0.7599419  0.0006505 1168.234   <2e-16 ***
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ## 
-## Residual standard error: 0.6506 on 999998 degrees of freedom
-## Multiple R-squared:  0.5761,	Adjusted R-squared:  0.5761 
-## F-statistic: 1.359e+06 on 1 and 999998 DF,  p-value: < 2.2e-16
+## Residual standard error: 0.6501 on 999998 degrees of freedom
+## Multiple R-squared:  0.5771,	Adjusted R-squared:  0.5771 
+## F-statistic: 1.365e+06 on 1 and 999998 DF,  p-value: < 2.2e-16
 ```
 
 And we do. Now let's walk through the two penalties we covered so far, Ridge and Lasso. Based on what we know so far, Ridge should prefer Model 1 (with x1 and x2) and LASSO should prefer model 2 (the one with just x1)
@@ -671,7 +671,21 @@ Harder test: how does it do with the holdout sample?
 
 ```r
 pred_enet <- predict(fit_enet, newdata = testing)
+```
 
+```
+## Loading required package: elasticnet
+```
+
+```
+## Loading required package: lars
+```
+
+```
+## Loaded lars 1.2
+```
+
+```r
 # Gets R^2 and RMSE for enet model
 fitstat_enet <- postResample(pred = pred_enet, 
                                   obs = testing$points)
