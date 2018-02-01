@@ -9,27 +9,25 @@ output:
     toc_depth: 2
 ---
 
-# What is Regularized regression?
-
 This is intended to provide a (very brief) introduction to some key concepts in Machine Learning/Predictive Modeling, and how they work within a regression context. Regularized regression is a nice place for folks with a psych background to start, because its an extension of the familiar regression models we've all come to know and love.
 
 Regression models, of course, are used when you have a *continuous* outcome. So many of our problems in psych involve continuous outcomes (e.g., personality dimensions, emotions/affect, etc.), and so regression models are pretty useful for psychologists. 
 
 But, before we dive into regularized regression, we should first cover some basic concepts in machine learning.
 
-## The Bias-Variance Tradeoff, Overfitting, and Cross-Validation
+### The Bias-Variance Tradeoff, Overfitting, and Cross-Validation
 
-### Bias-Variance Tradeoff
+#### Bias-Variance Tradeoff
 
 This came up briefly last week, but the bias-variance tradeoff is really crucial to everything we'll talk about today. The basic idea is that you can partition error into two components: bias and variance. **Bias** refers to the extent to which a model produces parameter estimates that miss in a particular direction (e.g., consistently over-estimating or consistently under-estimating a parameter value). **Variance** refers to the extent to which a model produces parameter estimates that vary from their central tendency across different datasets. 
 
 There is a tradeoff between bias and variance: all else equal, increasing bias will decrease variance. The basic idea here is that if we have a zero-bias estimator, it will tend to try to fit everything in the data, whereas an estimator biased in some direction won't. This isn't to say that bias is good or bad, just that there are times where we might want to increase bias to decrease variance. As we'll see later, regularization is basically one method for introducing bias (to minimize variance).
 
-### Overfitting 
+#### Overfitting 
 
 This is probably familiar to folks in here (and it came up last week), so I won't say much about it here. The basic idea is that any data has signal and noise. Sometimes, something appears to be signal but is actually noise. That is, when our statistical models are searching for the best solution, they sometimes will be fooled into thinking some noise is signal. This is usually called **overfitting**, and it has presented a pretty substantial problem in statistical modeling. As you'll see, one of our goals is to try to avoid overfitting. Also worth noting is that overfitting will tend to produce a model with high variance, because noise will vary from dataset to dataset (basically by definition), and so a model which has fit noise will not do well across different datasets (with different noise).
 
-### Cross-Validation
+#### Cross-Validation
 
 Cross-validation generally refers to taking a model that you trained on some data and using it in a new dataset. Unlike a replication, the model parameters carry over from the training to the test data (i.e., you don't simply use the same variables and re-estimate the model parameters; you save the model parameters, and use it to predict the outcome variable). You can use cross-validation both to train and evaluate a model. A simple example may make this clear.
 
@@ -62,7 +60,7 @@ $$RMSE = \sqrt{MSE}$$
 Typically, people will also look at prediction accuracy, using the model's $R^2$. This is interpreted the same way as $R^2$ always is (as the % of variance in the outcome accounted for by the model).
 
 
-#### K-fold cross-validation
+##### K-fold cross-validation
 
 There are different varieties of cross-validation. The most intuitive version is to create a single partition of data (i.e., split full data frame into two dataframes: training and test). However, there are other methods for cross-validation. One that has been gaining steam (or is maybe already at full steam at this point) is **k-fold cross-validation**. The basic idea is that we split a dataset into k subsamples (called folds). We then treat one subsample as the holdout sample, train on the remaining subsamples, and cross-validate on the holdout sample; then rinse and repeat so to speak. An example will probably help here.
 
@@ -79,11 +77,11 @@ Then, we calculate the average performance across all of the tests.
 Note that you can also use k-fold cross-validation for training purposes. Basically, this works by taking the best fitting model from a k-fold cross-validation procedure, and then testing it on a new holdout sample. 
 
 
-## Regularization
+### Regularization
 
 Now let's get to regularized regression. This is a pretty simple extension of OLS regression. The logic of it is basically that OLS regression is minimally biased, but because of this, is higher variance than we might want. So, the solution is to introduce some bias into the model that will decrease variance. This takes the form of a new *penalization*, which tends to either be focused on parameter size, number of parameters, or both. Let's start with the first. I find it helpful to think of these as having different beliefs, and choosing one depends on whether or not those beliefs seem correct.
 
-## Ridge: all of these features matter, but only a little bit.
+#### Ridge: all of these features matter, but only a little bit.
 
 Ridge regression is basically OLS regression with an extra term. As a refresher, OLS seeks to minimize the sum of squared error, or:
 
@@ -100,7 +98,7 @@ You can think of this penalty as introducing a specific type of bias: bias towar
 
 So why does Ridge do that and why is it useful? As I said earlier, I find it useful to think of statistical tools as having certain beliefs, and as being useful when those beliefs seem more or less true (in some particular case). Ridge believes that all of the variables you're considering matter, but that most of them matter very little. Put differently, it believes that each variable you've entered belongs in the model, but that most or all only have small contributions. Because of this, people often say that ridge doesn't perform *feature selection*, and shouldn't be used if you need to select features (i.e., variables). This makes sense once you think of what Ridge believes: it believes every variable you're telling it to use should be in the model, but many will simply have small impacts. If we want to select features (i.e., decide what variables go in our model), we need a different tool with a different set of beliefs.
 
-## Lasso: only some features matter, and they might matter a lot
+#### Lasso: only some features matter, and they might matter a lot
 
 Another popular form of regularized regression is the *least absolute shrinkage and selection operator* model, or *lasso*. Unlike ridge, lasso's regularization simultaneously performs feature selection and model improvement. 
 
@@ -146,10 +144,10 @@ cor(sample_data)
 ```
 
 ```
-##           x1        x2         y
-## x1 1.0000000 0.9000185 0.7597924
-## x2 0.9000185 1.0000000 0.7596805
-## y  0.7597924 0.7596805 1.0000000
+##           x1       x2         y
+## x1 1.0000000 0.900016 0.7599924
+## x2 0.9000160 1.000000 0.7599680
+## y  0.7599924 0.759968 1.0000000
 ```
 
 Ah, it does! Good, let's proceed. Now if we estimate, a regression with both variables, we should get two beta weights of about .40:
@@ -166,20 +164,20 @@ summary(model_1)
 ## lm(formula = y ~ x1 + x2, data = sample_data)
 ## 
 ## Residuals:
-##      Min       1Q   Median       3Q      Max 
-## -3.00236 -0.42277  0.00042  0.42262  2.85982 
+##     Min      1Q  Median      3Q     Max 
+## -3.1480 -0.4230  0.0002  0.4225  2.9815 
 ## 
 ## Coefficients:
-##               Estimate Std. Error t value Pr(>|t|)    
-## (Intercept) -0.0005922  0.0006261  -0.946    0.344    
-## x1           0.4002507  0.0014367 278.593   <2e-16 ***
-## x2           0.3992187  0.0014370 277.815   <2e-16 ***
+##              Estimate Std. Error t value Pr(>|t|)    
+## (Intercept) 0.0001057  0.0006261   0.169    0.866    
+## x1          0.4002116  0.0014369 278.521   <2e-16 ***
+## x2          0.3997957  0.0014363 278.351   <2e-16 ***
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ## 
 ## Residual standard error: 0.6261 on 999997 degrees of freedom
-## Multiple R-squared:  0.6076,	Adjusted R-squared:  0.6076 
-## F-statistic: 7.741e+05 on 2 and 999997 DF,  p-value: < 2.2e-16
+## Multiple R-squared:  0.608,	Adjusted R-squared:  0.608 
+## F-statistic: 7.754e+05 on 2 and 999997 DF,  p-value: < 2.2e-16
 ```
 
 Okay, that worked as expected; we get two beta weights of about .40 (if you round to 2 decimals). Now let's check model 2, where we just include 1 x variable (x1). We should get a single beta weight of about .76.
@@ -196,19 +194,19 @@ summary(model_2)
 ## lm(formula = y ~ x1, data = sample_data)
 ## 
 ## Residuals:
-##     Min      1Q  Median      3Q     Max 
-## -3.3881 -0.4384  0.0003  0.4390  2.9920 
+##      Min       1Q   Median       3Q      Max 
+## -3.15990 -0.43888 -0.00032  0.43844  3.12758 
 ## 
 ## Coefficients:
-##               Estimate Std. Error  t value Pr(>|t|)    
-## (Intercept) -0.0003750  0.0006498   -0.577    0.564    
-## x1           0.7594768  0.0006499 1168.612   <2e-16 ***
+##              Estimate Std. Error  t value Pr(>|t|)    
+## (Intercept) 8.941e-05  6.499e-04    0.138    0.891    
+## x1          7.602e-01  6.501e-04 1169.340   <2e-16 ***
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ## 
-## Residual standard error: 0.6498 on 999998 degrees of freedom
-## Multiple R-squared:  0.5773,	Adjusted R-squared:  0.5773 
-## F-statistic: 1.366e+06 on 1 and 999998 DF,  p-value: < 2.2e-16
+## Residual standard error: 0.6499 on 999998 degrees of freedom
+## Multiple R-squared:  0.5776,	Adjusted R-squared:  0.5776 
+## F-statistic: 1.367e+06 on 1 and 999998 DF,  p-value: < 2.2e-16
 ```
 
 And we do. Now let's walk through the two penalties we covered so far, Ridge and Lasso. Based on what we know so far, Ridge should prefer Model 1 (with x1 and x2) and LASSO should prefer model 2 (the one with just x1)
@@ -252,7 +250,7 @@ So returning to why we would use it, it's easiest for me to see when it would be
 
 What if our belief is somewhere in between these options: that some variables may not be needed (may actually be zero), but that many of the variables should have smaller values?
 
-## Elastic Net: maybe everything matters, and maybe only a little bit.
+#### Elastic Net: maybe everything matters, and maybe only a little bit.
 
 Elastic net combines the penalties used by ridge and lasso. In doing so, it basically takes the middle ground between these two methods: penalizing non-zero values (feature selection) and penalizing values the further they depart from zero (regularization). So now, our error has three terms: 
 
@@ -275,7 +273,7 @@ In terms of beliefs, Elastic net is basically a more flexible thinker: it thinks
 
 Okay, this has been a (very brief) intro to regularized regression and some foundational concepts in machine learning necessary to understand it.
 
-## Example using Caret
+### Example using Caret
 
 Now let's walk through an example:
 
@@ -377,7 +375,7 @@ wine
 ```
 So you can see wee have some information about where the wine is from, its rating (called `points`), its price called `price`, and textual description of the wine (called `description`). Let's see if we can train a model that does a good job predicting wine ratings.
 
-### Extracting features: a brief detour into text analysis
+#### Extracting features: a brief detour into text analysis
 
 Okay, before we start down the modelling road, we want to do something with the textual descriptions. Along these lines, we'll separate out the description, do some automated text analysis, and use the output of those analyses as features. This should make a bit more sense as we walk through.
 
@@ -460,7 +458,7 @@ wine_for_ml <- wine %>%
   na.omit()
 ```
 
-### Modeling with caret
+#### Modeling with caret
 
 We have quite a bit of data here (150000 cases), so first let's partition our data into a training and test dataframe. We'll do a 75-25 training-test split, and can use caret's `createDataPartition()` function to do it.
 
@@ -492,7 +490,7 @@ train_control<- trainControl(method="cv", number=10,
                              savePredictions = TRUE)
 ```
 
-#### Ridge Method
+##### Ridge Method
 Now let's train a model using ridge regression. We do this by telling it to:
 
 1) predict points from everything (including interactions). This is accomplished with .*. where '.' = all (well, all except the outcome variable).
@@ -567,7 +565,7 @@ fitstat_ridge
 ```
 Okay, so an $R^2$ of 0.24, meaning we are explaining 24.11% of the variance in wine ratings with sentiment and price (and the interaction).
 
-#### Lasso Method
+##### Lasso Method
 
 Okay, now let's try lasso. We'll use the same training-test split, and the same training parameters.
 
@@ -627,7 +625,7 @@ fitstat_lasso
 
 Okay, so an $R^2$ of 0.24, meaning we are explaining 24% of the variance in wine ratings with sentiment and price (and the interaction).
 
-#### Elastic Net Method
+##### Elastic Net Method
 
 And finally, let's do the same with elastic net. Like before, we'll use the same data split and training parameters. And again, the code is *almost* identical; we just change `method = "lasso"` to `method = "ridge"`
 
@@ -699,7 +697,7 @@ fitstat_enet
 
 Okay, so an $R^2$ of 0.24, meaning we are explaining 24.11% of the variance in wine ratings with sentiment and price (and the interaction).
 
-# Closing thoughts
+### Closing thoughts
 
 I want to mention a few things in closing. The first is that you'll notice the three methods we tried in our example produced nearly identical fits. One reason for this is that we supplied a very small number of predictors (just 2 + an interaction, so 3 parameters). When you have many more predictors, these methods may start to differ a bit more (especially if the predictors are correlated, as we went over in the difference between ridge and lasso).
 
@@ -711,7 +709,7 @@ Finally, we split the data once into a training and test set. This is generally 
 
 This would keep the sort of purity of our test (model evaluation) data, and provide a good defense against overfitting.
 
-# References:
+### References:
 
 Yarkoni, T., & Westfall, J. (2017). Choosing prediction over explanation in psychology: Lessons from machine learning. *Perspectives on Psychological Science*, 12(6), 1100-1122.
 
