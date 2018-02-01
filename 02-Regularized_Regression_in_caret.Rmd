@@ -79,11 +79,11 @@ Now let's get to regularized regression. This is a pretty simple extension of OL
 
 Ridge regression is basically OLS regression with an extra term. As a refresher, OLS seeks to minimize the sum of squared error, or:
 
-$$SSE = \sum\limits_{i=1}^n = (y_i - \hat{y_i})^2$$
+$$SSE = \sum\limits_{i=1}^n (y_i - \hat{y_i})^2$$
 
 Ridge adds an additional penalty:
 
-$$SSE_{L2} = \sum\limits_{i=1}^n = (y_i - \hat{y_i}^2) + \lambda \sum\limits_{j=1}^p \beta^2_j$$
+$$SSE_{L2} = \sum\limits_{i=1}^n (y_i - \hat{y_i}^2) + \lambda \sum\limits_{j=1}^p \beta^2_j$$
 This makes it so that paramter values are only allowed to be large if they reduce error enough to justify their size. Functionally, this makes it so parameter values shrink towards 0. You can hopefully see this in that as our paramater values (our betas) increase in size, error increases, since we are adding the sum of squared beta values, times some constant $\lambda$, to our error term SSE. So, unless the parameter values decrease the first part of the error term (the ordinary sum of squared error; to the left of our new penalty) proportionally to their magnitude, they are shrunk toward 0. 
 
 The extent to which they are shrunk towards 0 depends on the value of $\lambda$; higher values lead to more shrinkage than lower values. This is called a *hyperparameter* because it's a parameter that governs other parameters. You can think of $\lambda$ as sort of the cost associated with larger parameter values: higher values of lambda are like telling your model that larger parameter values are more costly (so don't make them large for nothing).
@@ -145,7 +145,7 @@ Elastic net combines the penalties used by ridge and lasso. In doing so, it basi
 
 The formula for this error term is:
 
-$$SSE_{Enet} = \sum\limits_{i=1}^n = (y_i - \hat{y_i}^2) + \lambda_1 \sum\limits_{j=1}^p \beta^2_j + \lambda_2 \sum\limits_{j=1}^p |\beta_j|$$
+$$SSE_{Enet} = \sum\limits_{i=1}^n  (y_i - \hat{y_i}^2) + \lambda_1 \sum\limits_{j=1}^p \beta^2_j + \lambda_2 \sum\limits_{j=1}^p |\beta_j|$$
 
 Basically, elastic net is sort of a best of both worlds approach: it gives you the feature selection of lasso, and regularizes as effective as ridge. It thus introduces two dimensions of bias: 
 
