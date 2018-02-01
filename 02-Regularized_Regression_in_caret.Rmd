@@ -431,7 +431,7 @@ And let's evaluate the model in the same two ways.
 
 Easier test: average fit across training runs
 
-```{r}
+```{r avg_fit_across_trainin_enet, cache = TRUE}
 avg_r2_enet <- mean(fit_enet$results$Rsquared)
 avg_RMSE_enet <- mean(fit_enet$results$RMSE)
 
@@ -443,7 +443,7 @@ Okay, so an $\bar{R^2}$ of `r round(avg_r2_enet, 2)`, meaning we are explaining 
 
 Harder test: how does it do with the holdout sample?
 
-```{r}
+```{r fit_holdout_enet, cache = TRUE}
 pred_enet <- predict(fit_enet, newdata = testing)
 
 # Gets R^2 and RMSE for enet model
