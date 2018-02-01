@@ -127,7 +127,7 @@ code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Infor
 </ul></li>
 <li class="chapter" data-level="2.5" data-path=""><a href="#resources"><i class="fa fa-check"></i><b>2.5</b> Resources</a></li>
 </ul></li>
-<li class="chapter" data-level="3" data-path=""><a href="#regularized-regression-in-caret"><i class="fa fa-check"></i><b>3</b> Regularized Regression in Caret</a><ul>
+<li class="chapter" data-level="3" data-path=""><a href="#what-is-regularized-regression"><i class="fa fa-check"></i><b>3</b> What is Regularized regression?</a><ul>
 <li class="chapter" data-level="3.1" data-path=""><a href="#the-bias-variance-tradeoff-overfitting-and-cross-validation"><i class="fa fa-check"></i><b>3.1</b> The Bias-Variance Tradeoff, Overfitting, and Cross-Validation</a><ul>
 <li class="chapter" data-level="3.1.1" data-path=""><a href="#bias-variance-tradeoff"><i class="fa fa-check"></i><b>3.1.1</b> Bias-Variance Tradeoff</a></li>
 <li class="chapter" data-level="3.1.2" data-path=""><a href="#overfitting"><i class="fa fa-check"></i><b>3.1.2</b> Overfitting</a></li>
@@ -269,8 +269,8 @@ code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Infor
 
 </section>
 </section>
-<section id="regularized-regression-in-caret" class="level1">
-<h1><span class="header-section-number">3</span> Regularized Regression in Caret</h1>
+<section id="what-is-regularized-regression" class="level1">
+<h1><span class="header-section-number">3</span> What is Regularized regression?</h1>
 <p>This is intended to provide a (very brief) introduction to some key concepts in Machine Learning/Predictive Modeling, and how they work within a regression context. Regularized regression is a nice place for folks with a psych background to start, because its an extension of the familiar regression models we’ve all come to know and love.</p>
 <p>Regression models, of course, are used when you have a <em>continuous</em> outcome. So many of our problems in psych involve continuous outcomes (e.g., personality dimensions, emotions/affect, etc.), and so regression models are pretty useful for psychologists.</p>
 <p>But, before we dive into regularized regression, we should first cover some basic concepts in machine learning.</p>
@@ -356,9 +356,9 @@ code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Infor
 <p>Alright, let’s check the correlation matrix to make sure we did this correctly. This should match sigma:</p>
 <pre class="sourceCode r" id="cb2"><code class="sourceCode r"><div class="sourceLine" id="cb2-1" data-line-number="1"><span class="kw">cor</span>(sample_data)</div></code></pre>
 <pre><code>##           x1        x2         y
-## x1 1.0000000 0.8997763 0.7594485
-## x2 0.8997763 1.0000000 0.7591536
-## y  0.7594485 0.7591536 1.0000000</code></pre>
+## x1 1.0000000 0.9000185 0.7597924
+## x2 0.9000185 1.0000000 0.7596805
+## y  0.7597924 0.7596805 1.0000000</code></pre>
 <p>Ah, it does! Good, let’s proceed. Now if we estimate, a regression with both variables, we should get two beta weights of about .40:</p>
 <pre class="sourceCode r" id="cb4"><code class="sourceCode r"><div class="sourceLine" id="cb4-1" data-line-number="1">model_<span class="dv">1</span> &lt;-<span class="kw">lm</span>(y <span class="op">~</span><span class="st"> </span>x1 <span class="op">+</span><span class="st"> </span>x2, <span class="dt">data =</span> sample_data)</div>
 <div class="sourceLine" id="cb4-2" data-line-number="2"><span class="kw">summary</span>(model_<span class="dv">1</span>)</div></code></pre>
@@ -367,20 +367,20 @@ code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Infor
 ## lm(formula = y ~ x1 + x2, data = sample_data)
 ## 
 ## Residuals:
-##     Min      1Q  Median      3Q     Max 
-## -3.1681 -0.4241  0.0003  0.4231  2.9531 
+##      Min       1Q   Median       3Q      Max 
+## -3.00236 -0.42277  0.00042  0.42262  2.85982 
 ## 
 ## Coefficients:
 ##               Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept) -0.0008660  0.0006272  -1.381    0.167    
-## x1           0.4016308  0.0014385 279.204   &lt;2e-16 ***
-## x2           0.3987393  0.0014387 277.156   &lt;2e-16 ***
+## (Intercept) -0.0005922  0.0006261  -0.946    0.344    
+## x1           0.4002507  0.0014367 278.593   &lt;2e-16 ***
+## x2           0.3992187  0.0014370 277.815   &lt;2e-16 ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
-## Residual standard error: 0.6272 on 999997 degrees of freedom
-## Multiple R-squared:  0.607,  Adjusted R-squared:  0.607 
-## F-statistic: 7.721e+05 on 2 and 999997 DF,  p-value: &lt; 2.2e-16</code></pre>
+## Residual standard error: 0.6261 on 999997 degrees of freedom
+## Multiple R-squared:  0.6076, Adjusted R-squared:  0.6076 
+## F-statistic: 7.741e+05 on 2 and 999997 DF,  p-value: &lt; 2.2e-16</code></pre>
 <p>Okay, that worked as expected; we get two beta weights of about .40 (if you round to 2 decimals). Now let’s check model 2, where we just include 1 x variable (x1). We should get a single beta weight of about .76.</p>
 <pre class="sourceCode r" id="cb6"><code class="sourceCode r"><div class="sourceLine" id="cb6-1" data-line-number="1">model_<span class="dv">2</span> &lt;-<span class="kw">lm</span>(y <span class="op">~</span><span class="st"> </span>x1, <span class="dt">data =</span> sample_data)</div>
 <div class="sourceLine" id="cb6-2" data-line-number="2"><span class="kw">summary</span>(model_<span class="dv">2</span>)</div></code></pre>
@@ -390,18 +390,18 @@ code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Infor
 ## 
 ## Residuals:
 ##     Min      1Q  Median      3Q     Max 
-## -3.4964 -0.4389 -0.0001  0.4386  3.2230 
+## -3.3881 -0.4384  0.0003  0.4390  2.9920 
 ## 
 ## Coefficients:
 ##               Estimate Std. Error  t value Pr(&gt;|t|)    
-## (Intercept) -0.0007002  0.0006508   -1.076    0.282    
-## x1           0.7603576  0.0006513 1167.362   &lt;2e-16 ***
+## (Intercept) -0.0003750  0.0006498   -0.577    0.564    
+## x1           0.7594768  0.0006499 1168.612   &lt;2e-16 ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
-## Residual standard error: 0.6508 on 999998 degrees of freedom
-## Multiple R-squared:  0.5768, Adjusted R-squared:  0.5768 
-## F-statistic: 1.363e+06 on 1 and 999998 DF,  p-value: &lt; 2.2e-16</code></pre>
+## Residual standard error: 0.6498 on 999998 degrees of freedom
+## Multiple R-squared:  0.5773, Adjusted R-squared:  0.5773 
+## F-statistic: 1.366e+06 on 1 and 999998 DF,  p-value: &lt; 2.2e-16</code></pre>
 <p>And we do. Now let’s walk through the two penalties we covered so far, Ridge and Lasso. Based on what we know so far, Ridge should prefer Model 1 (with x1 and x2) and LASSO should prefer model 2 (the one with just x1)</p>
 <pre class="sourceCode r" id="cb8"><code class="sourceCode r"><div class="sourceLine" id="cb8-1" data-line-number="1"><span class="co"># pull out the coefficients for each parameter of the two models</span></div>
 <div class="sourceLine" id="cb8-2" data-line-number="2">model_<span class="dv">1</span>_b1 &lt;-<span class="st"> </span>model_<span class="dv">1</span><span class="op">$</span>coefficients[<span class="st">&quot;x1&quot;</span>]</div>

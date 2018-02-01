@@ -9,7 +9,7 @@ output:
     toc_depth: 2
 ---
 
-# Regularized Regression in Caret
+# What is Regularized regression?
 
 This is intended to provide a (very brief) introduction to some key concepts in Machine Learning/Predictive Modeling, and how they work within a regression context. Regularized regression is a nice place for folks with a psych background to start, because its an extension of the familiar regression models we've all come to know and love.
 
@@ -147,9 +147,9 @@ cor(sample_data)
 
 ```
 ##           x1        x2         y
-## x1 1.0000000 0.8997763 0.7594485
-## x2 0.8997763 1.0000000 0.7591536
-## y  0.7594485 0.7591536 1.0000000
+## x1 1.0000000 0.9000185 0.7597924
+## x2 0.9000185 1.0000000 0.7596805
+## y  0.7597924 0.7596805 1.0000000
 ```
 
 Ah, it does! Good, let's proceed. Now if we estimate, a regression with both variables, we should get two beta weights of about .40:
@@ -166,20 +166,20 @@ summary(model_1)
 ## lm(formula = y ~ x1 + x2, data = sample_data)
 ## 
 ## Residuals:
-##     Min      1Q  Median      3Q     Max 
-## -3.1681 -0.4241  0.0003  0.4231  2.9531 
+##      Min       1Q   Median       3Q      Max 
+## -3.00236 -0.42277  0.00042  0.42262  2.85982 
 ## 
 ## Coefficients:
 ##               Estimate Std. Error t value Pr(>|t|)    
-## (Intercept) -0.0008660  0.0006272  -1.381    0.167    
-## x1           0.4016308  0.0014385 279.204   <2e-16 ***
-## x2           0.3987393  0.0014387 277.156   <2e-16 ***
+## (Intercept) -0.0005922  0.0006261  -0.946    0.344    
+## x1           0.4002507  0.0014367 278.593   <2e-16 ***
+## x2           0.3992187  0.0014370 277.815   <2e-16 ***
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ## 
-## Residual standard error: 0.6272 on 999997 degrees of freedom
-## Multiple R-squared:  0.607,	Adjusted R-squared:  0.607 
-## F-statistic: 7.721e+05 on 2 and 999997 DF,  p-value: < 2.2e-16
+## Residual standard error: 0.6261 on 999997 degrees of freedom
+## Multiple R-squared:  0.6076,	Adjusted R-squared:  0.6076 
+## F-statistic: 7.741e+05 on 2 and 999997 DF,  p-value: < 2.2e-16
 ```
 
 Okay, that worked as expected; we get two beta weights of about .40 (if you round to 2 decimals). Now let's check model 2, where we just include 1 x variable (x1). We should get a single beta weight of about .76.
@@ -197,18 +197,18 @@ summary(model_2)
 ## 
 ## Residuals:
 ##     Min      1Q  Median      3Q     Max 
-## -3.4964 -0.4389 -0.0001  0.4386  3.2230 
+## -3.3881 -0.4384  0.0003  0.4390  2.9920 
 ## 
 ## Coefficients:
 ##               Estimate Std. Error  t value Pr(>|t|)    
-## (Intercept) -0.0007002  0.0006508   -1.076    0.282    
-## x1           0.7603576  0.0006513 1167.362   <2e-16 ***
+## (Intercept) -0.0003750  0.0006498   -0.577    0.564    
+## x1           0.7594768  0.0006499 1168.612   <2e-16 ***
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ## 
-## Residual standard error: 0.6508 on 999998 degrees of freedom
-## Multiple R-squared:  0.5768,	Adjusted R-squared:  0.5768 
-## F-statistic: 1.363e+06 on 1 and 999998 DF,  p-value: < 2.2e-16
+## Residual standard error: 0.6498 on 999998 degrees of freedom
+## Multiple R-squared:  0.5773,	Adjusted R-squared:  0.5773 
+## F-statistic: 1.366e+06 on 1 and 999998 DF,  p-value: < 2.2e-16
 ```
 
 And we do. Now let's walk through the two penalties we covered so far, Ridge and Lasso. Based on what we know so far, Ridge should prefer Model 1 (with x1 and x2) and LASSO should prefer model 2 (the one with just x1)

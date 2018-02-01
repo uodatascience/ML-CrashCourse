@@ -9,7 +9,7 @@ output:
     toc_depth: 2
 ---
 
-# Regularized Regression in Caret
+# What is Regularized regression?
 
 This is intended to provide a (very brief) introduction to some key concepts in Machine Learning/Predictive Modeling, and how they work within a regression context. Regularized regression is a nice place for folks with a psych background to start, because its an extension of the familiar regression models we've all come to know and love.
 
