@@ -9,6 +9,8 @@ output:
     toc_depth: 2
 ---
 
+# Regularized Regression in Caret
+
 This is intended to provide a (very brief) introduction to some key concepts in Machine Learning/Predictive Modeling, and how they work within a regression context. Regularized regression is a nice place for folks with a psych background to start, because its an extension of the familiar regression models we've all come to know and love.
 
 Regression models, of course, are used when you have a *continuous* outcome. So many of our problems in psych involve continuous outcomes (e.g., personality dimensions, emotions/affect, etc.), and so regression models are pretty useful for psychologists. 
@@ -144,10 +146,10 @@ cor(sample_data)
 ```
 
 ```
-##           x1       x2         y
-## x1 1.0000000 0.900016 0.7599924
-## x2 0.9000160 1.000000 0.7599680
-## y  0.7599924 0.759968 1.0000000
+##           x1        x2         y
+## x1 1.0000000 0.9001124 0.7601485
+## x2 0.9001124 1.0000000 0.7599558
+## y  0.7601485 0.7599558 1.0000000
 ```
 
 Ah, it does! Good, let's proceed. Now if we estimate, a regression with both variables, we should get two beta weights of about .40:
@@ -165,19 +167,19 @@ summary(model_1)
 ## 
 ## Residuals:
 ##     Min      1Q  Median      3Q     Max 
-## -3.1480 -0.4230  0.0002  0.4225  2.9815 
+## -3.3187 -0.4221  0.0005  0.4217  2.9327 
 ## 
 ## Coefficients:
 ##              Estimate Std. Error t value Pr(>|t|)    
-## (Intercept) 0.0001057  0.0006261   0.169    0.866    
-## x1          0.4002116  0.0014369 278.521   <2e-16 ***
-## x2          0.3997957  0.0014363 278.351   <2e-16 ***
+## (Intercept) 0.0009699  0.0006256    1.55    0.121    
+## x1          0.4011066  0.0014375  279.02   <2e-16 ***
+## x2          0.3991531  0.0014375  277.68   <2e-16 ***
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ## 
-## Residual standard error: 0.6261 on 999997 degrees of freedom
+## Residual standard error: 0.6256 on 999997 degrees of freedom
 ## Multiple R-squared:  0.608,	Adjusted R-squared:  0.608 
-## F-statistic: 7.754e+05 on 2 and 999997 DF,  p-value: < 2.2e-16
+## F-statistic: 7.757e+05 on 2 and 999997 DF,  p-value: < 2.2e-16
 ```
 
 Okay, that worked as expected; we get two beta weights of about .40 (if you round to 2 decimals). Now let's check model 2, where we just include 1 x variable (x1). We should get a single beta weight of about .76.
@@ -194,19 +196,19 @@ summary(model_2)
 ## lm(formula = y ~ x1, data = sample_data)
 ## 
 ## Residuals:
-##      Min       1Q   Median       3Q      Max 
-## -3.15990 -0.43888 -0.00032  0.43844  3.12758 
+##     Min      1Q  Median      3Q     Max 
+## -3.1938 -0.4379  0.0009  0.4379  3.1056 
 ## 
 ## Coefficients:
 ##              Estimate Std. Error  t value Pr(>|t|)    
-## (Intercept) 8.941e-05  6.499e-04    0.138    0.891    
-## x1          7.602e-01  6.501e-04 1169.340   <2e-16 ***
+## (Intercept) 0.0009396  0.0006493    1.447    0.148    
+## x1          0.7604109  0.0006500 1169.909   <2e-16 ***
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ## 
-## Residual standard error: 0.6499 on 999998 degrees of freedom
-## Multiple R-squared:  0.5776,	Adjusted R-squared:  0.5776 
-## F-statistic: 1.367e+06 on 1 and 999998 DF,  p-value: < 2.2e-16
+## Residual standard error: 0.6493 on 999998 degrees of freedom
+## Multiple R-squared:  0.5778,	Adjusted R-squared:  0.5778 
+## F-statistic: 1.369e+06 on 1 and 999998 DF,  p-value: < 2.2e-16
 ```
 
 And we do. Now let's walk through the two penalties we covered so far, Ridge and Lasso. Based on what we know so far, Ridge should prefer Model 1 (with x1 and x2) and LASSO should prefer model 2 (the one with just x1)
@@ -287,6 +289,10 @@ library(caret)
 ```
 
 ```
+## Warning: package 'caret' was built under R version 3.4.3
+```
+
+```
 ## Loading required package: lattice
 ```
 
@@ -299,31 +305,69 @@ library(tidyverse)
 ```
 
 ```
-## Loading tidyverse: tibble
-## Loading tidyverse: tidyr
-## Loading tidyverse: readr
-## Loading tidyverse: purrr
-## Loading tidyverse: dplyr
+## Warning: package 'tidyverse' was built under R version 3.4.2
 ```
 
 ```
-## Conflicts with tidy packages ----------------------------------------------
+## ── Attaching packages ────────────────────────────────── tidyverse 1.2.1 ──
 ```
 
 ```
-## filter(): dplyr, stats
-## lag():    dplyr, stats
-## lift():   purrr, caret
+## ✔ tibble  1.4.2     ✔ purrr   0.2.4
+## ✔ tidyr   0.7.2     ✔ dplyr   0.7.4
+## ✔ readr   1.1.1     ✔ stringr 1.2.0
+## ✔ tibble  1.4.2     ✔ forcats 0.2.0
+```
+
+```
+## Warning: package 'tibble' was built under R version 3.4.3
+```
+
+```
+## Warning: package 'tidyr' was built under R version 3.4.2
+```
+
+```
+## Warning: package 'purrr' was built under R version 3.4.2
+```
+
+```
+## Warning: package 'dplyr' was built under R version 3.4.2
+```
+
+```
+## ── Conflicts ───────────────────────────────────── tidyverse_conflicts() ──
+## ✖ dplyr::filter() masks stats::filter()
+## ✖ dplyr::lag()    masks stats::lag()
+## ✖ purrr::lift()   masks caret::lift()
 ```
 
 ```r
 library(tidytext)
+```
+
+```
+## Warning: package 'tidytext' was built under R version 3.4.3
+```
+
+```r
 library(topicmodels)
+```
+
+```
+## Warning: package 'topicmodels' was built under R version 3.4.2
+```
+
+```r
 require(janitor)
 ```
 
 ```
 ## Loading required package: janitor
+```
+
+```
+## Warning: package 'janitor' was built under R version 3.4.3
 ```
 
 ```r
@@ -357,21 +401,20 @@ wine
 
 ```
 ## # A tibble: 150,930 x 11
-##       id country
-##    <int>   <chr>
-##  1     0      US
-##  2     1   Spain
-##  3     2      US
-##  4     3      US
-##  5     4  France
-##  6     5   Spain
-##  7     6   Spain
-##  8     7   Spain
-##  9     8      US
-## 10     9      US
-## # ... with 150,920 more rows, and 9 more variables: description <chr>,
-## #   designation <chr>, points <int>, price <dbl>, province <chr>,
-## #   region_1 <chr>, region_2 <chr>, variety <chr>, winery <chr>
+##       id country description    designation points price province region_1
+##    <int> <chr>   <chr>          <chr>        <int> <dbl> <chr>    <chr>   
+##  1     0 US      This tremendo… Martha's V…     96 235   Califor… Napa Va…
+##  2     1 Spain   Ripe aromas o… Carodorum …     96 110   Norther… Toro    
+##  3     2 US      Mac Watson ho… Special Se…     96  90.0 Califor… Knights…
+##  4     3 US      This spent 20… Reserve         96  65.0 Oregon   Willame…
+##  5     4 France  This is the t… La Brûlade      95  66.0 Provence Bandol  
+##  6     5 Spain   Deep, dense a… Numanthia       95  73.0 Norther… Toro    
+##  7     6 Spain   Slightly grit… San Román       95  65.0 Norther… Toro    
+##  8     7 Spain   Lush cedary b… Carodorum …     95 110   Norther… Toro    
+##  9     8 US      This re-named… Silice          95  65.0 Oregon   Chehale…
+## 10     9 US      The producer … Gap's Crow…     95  60.0 Califor… Sonoma …
+## # ... with 150,920 more rows, and 3 more variables: region_2 <chr>,
+## #   variety <chr>, winery <chr>
 ```
 So you can see wee have some information about where the wine is from, its rating (called `points`), its price called `price`, and textual description of the wine (called `description`). Let's see if we can train a model that does a good job predicting wine ratings.
 
@@ -651,7 +694,7 @@ avg_r2_enet
 ```
 
 ```
-## [1] 0.2480728
+## [1] 0.2484151
 ```
 
 ```r
@@ -659,7 +702,7 @@ avg_RMSE_enet
 ```
 
 ```
-## [1] 2.923794
+## [1] 2.923475
 ```
 Okay, so an $\bar{R^2}$ of 0.25, meaning we are explaining 24.97% of the variance (on average) in wine ratings with sentiment and price (and the interaction).
 
@@ -669,21 +712,7 @@ Harder test: how does it do with the holdout sample?
 
 ```r
 pred_enet <- predict(fit_enet, newdata = testing)
-```
 
-```
-## Loading required package: elasticnet
-```
-
-```
-## Loading required package: lars
-```
-
-```
-## Loaded lars 1.2
-```
-
-```r
 # Gets R^2 and RMSE for enet model
 fitstat_enet <- postResample(pred = pred_enet, 
                                   obs = testing$points)
@@ -691,8 +720,8 @@ fitstat_enet
 ```
 
 ```
-##      RMSE  Rsquared 
-## 2.8348519 0.2411339
+##      RMSE  Rsquared       MAE 
+## 2.8348519 0.2411339 2.1897598
 ```
 
 Okay, so an $R^2$ of 0.24, meaning we are explaining 24.11% of the variance in wine ratings with sentiment and price (and the interaction).

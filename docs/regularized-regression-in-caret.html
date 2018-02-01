@@ -112,16 +112,11 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="2.5" data-path="what-is-machine-learning.html"><a href="what-is-machine-learning.html#resources"><i class="fa fa-check"></i><b>2.5</b> Resources</a></li>
 </ul></li>
 <li class="chapter" data-level="3" data-path="regularized-regression-in-caret.html"><a href="regularized-regression-in-caret.html"><i class="fa fa-check"></i><b>3</b> Regularized Regression in Caret</a><ul>
-<li class="chapter" data-level="3.1" data-path="regularized-regression-in-caret.html"><a href="regularized-regression-in-caret.html#the-bias-variance-tradeoff-overfitting-and-cross-validation"><i class="fa fa-check"></i><b>3.1</b> The Bias-Variance Tradeoff, Overfitting, and Cross-Validation</a><ul>
-<li class="chapter" data-level="3.1.1" data-path="regularized-regression-in-caret.html"><a href="regularized-regression-in-caret.html#bias-variance-tradeoff"><i class="fa fa-check"></i><b>3.1.1</b> Bias-Variance Tradeoff</a></li>
-<li class="chapter" data-level="3.1.2" data-path="regularized-regression-in-caret.html"><a href="regularized-regression-in-caret.html#overfitting"><i class="fa fa-check"></i><b>3.1.2</b> Overfitting</a></li>
-<li class="chapter" data-level="3.1.3" data-path="regularized-regression-in-caret.html"><a href="regularized-regression-in-caret.html#cross-validation"><i class="fa fa-check"></i><b>3.1.3</b> Cross-Validation</a></li>
-</ul></li>
-<li class="chapter" data-level="3.2" data-path="regularized-regression-in-caret.html"><a href="regularized-regression-in-caret.html#regularization"><i class="fa fa-check"></i><b>3.2</b> Regularization</a></li>
-<li class="chapter" data-level="3.3" data-path="regularized-regression-in-caret.html"><a href="regularized-regression-in-caret.html#ridge-all-of-these-features-matter-but-only-a-little-bit."><i class="fa fa-check"></i><b>3.3</b> Ridge: all of these features matter, but only a little bit.</a><ul>
-<li class="chapter" data-level="3.3.1" data-path="regularized-regression-in-caret.html"><a href="regularized-regression-in-caret.html#lasso-only-some-features-matter-and-they-might-matter-a-lot"><i class="fa fa-check"></i><b>3.3.1</b> Lasso: only some features matter, and they might matter a lot</a></li>
-<li class="chapter" data-level="3.3.2" data-path="regularized-regression-in-caret.html"><a href="regularized-regression-in-caret.html#elastic-net-maybe-everything-matters-and-maybe-only-a-little-bit."><i class="fa fa-check"></i><b>3.3.2</b> Elastic Net: maybe everything matters, and maybe only a little bit.</a></li>
-</ul></li>
+<li class="chapter" data-level="3.0.1" data-path="regularized-regression-in-caret.html"><a href="regularized-regression-in-caret.html#the-bias-variance-tradeoff-overfitting-and-cross-validation"><i class="fa fa-check"></i><b>3.0.1</b> The Bias-Variance Tradeoff, Overfitting, and Cross-Validation</a></li>
+<li class="chapter" data-level="3.0.2" data-path="regularized-regression-in-caret.html"><a href="regularized-regression-in-caret.html#regularization"><i class="fa fa-check"></i><b>3.0.2</b> Regularization</a></li>
+<li class="chapter" data-level="3.0.3" data-path="regularized-regression-in-caret.html"><a href="regularized-regression-in-caret.html#example-using-caret"><i class="fa fa-check"></i><b>3.0.3</b> Example using Caret</a></li>
+<li class="chapter" data-level="3.0.4" data-path="regularized-regression-in-caret.html"><a href="regularized-regression-in-caret.html#closing-thoughts"><i class="fa fa-check"></i><b>3.0.4</b> Closing thoughts</a></li>
+<li class="chapter" data-level="3.0.5" data-path="regularized-regression-in-caret.html"><a href="regularized-regression-in-caret.html#references"><i class="fa fa-check"></i><b>3.0.5</b> References:</a></li>
 </ul></li>
 </ul>
 
@@ -145,35 +140,38 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p>This is intended to provide a (very brief) introduction to some key concepts in Machine Learning/Predictive Modeling, and how they work within a regression context. Regularized regression is a nice place for folks with a psych background to start, because its an extension of the familiar regression models we’ve all come to know and love.</p>
 <p>Regression models, of course, are used when you have a <em>continuous</em> outcome. So many of our problems in psych involve continuous outcomes (e.g., personality dimensions, emotions/affect, etc.), and so regression models are pretty useful for psychologists.</p>
 <p>But, before we dive into regularized regression, we should first cover some basic concepts in machine learning.</p>
-<div id="the-bias-variance-tradeoff-overfitting-and-cross-validation" class="section level2">
-<h2><span class="header-section-number">3.1</span> The Bias-Variance Tradeoff, Overfitting, and Cross-Validation</h2>
-<div id="bias-variance-tradeoff" class="section level3">
-<h3><span class="header-section-number">3.1.1</span> Bias-Variance Tradeoff</h3>
+<div id="the-bias-variance-tradeoff-overfitting-and-cross-validation" class="section level3">
+<h3><span class="header-section-number">3.0.1</span> The Bias-Variance Tradeoff, Overfitting, and Cross-Validation</h3>
+<div id="bias-variance-tradeoff" class="section level4">
+<h4><span class="header-section-number">3.0.1.1</span> Bias-Variance Tradeoff</h4>
 <p>This came up briefly last week, but the bias-variance tradeoff is really crucial to everything we’ll talk about today. The basic idea is that you can partition error into two components: bias and variance. <strong>Bias</strong> refers to the extent to which a model produces parameter estimates that miss in a particular direction (e.g., consistently over-estimating or consistently under-estimating a parameter value). <strong>Variance</strong> refers to the extent to which a model produces parameter estimates that vary from their central tendency across different datasets.</p>
 <p>There is a tradeoff between bias and variance: all else equal, increasing bias will decrease variance. The basic idea here is that if we have a zero-bias estimator, it will tend to try to fit everything in the data, whereas an estimator biased in some direction won’t. This isn’t to say that bias is good or bad, just that there are times where we might want to increase bias to decrease variance. As we’ll see later, regularization is basically one method for introducing bias (to minimize variance).</p>
 </div>
-<div id="overfitting" class="section level3">
-<h3><span class="header-section-number">3.1.2</span> Overfitting</h3>
+<div id="overfitting" class="section level4">
+<h4><span class="header-section-number">3.0.1.2</span> Overfitting</h4>
 <p>This is probably familiar to folks in here (and it came up last week), so I won’t say much about it here. The basic idea is that any data has signal and noise. Sometimes, something appears to be signal but is actually noise. That is, when our statistical models are searching for the best solution, they sometimes will be fooled into thinking some noise is signal. This is usually called <strong>overfitting</strong>, and it has presented a pretty substantial problem in statistical modeling. As you’ll see, one of our goals is to try to avoid overfitting. Also worth noting is that overfitting will tend to produce a model with high variance, because noise will vary from dataset to dataset (basically by definition), and so a model which has fit noise will not do well across different datasets (with different noise).</p>
 </div>
-<div id="cross-validation" class="section level3">
-<h3><span class="header-section-number">3.1.3</span> Cross-Validation</h3>
+<div id="cross-validation" class="section level4">
+<h4><span class="header-section-number">3.0.1.3</span> Cross-Validation</h4>
 <p>Cross-validation generally refers to taking a model that you trained on some data and using it in a new dataset. Unlike a replication, the model parameters carry over from the training to the test data (i.e., you don’t simply use the same variables and re-estimate the model parameters; you save the model parameters, and use it to predict the outcome variable). You can use cross-validation both to train and evaluate a model. A simple example may make this clear.</p>
 <p>Let’s say we think home size (in square-feet) is the only relevant predictor for house price. So, we have some data on prices of recently sold houses, and estimate a model predicting house price from square-feet:</p>
-<p><span class="math display">\[y_{price} = b_0 + b_1*sqaurefeet\]</span></p>
+<p><span class="math display">\[\hat{price_{i}} = b_0 + b_1*sqaurefeet_i\]</span></p>
 <p>Let’s say we get these parameter values:</p>
-<p><span class="math display">\[y_{price} = 100 + 50*sqaurefeet\]</span></p>
+<p><span class="math display">\[\hat{price_{i}} = 100 + 50*sqaurefeet_i\]</span></p>
 <p>And now we want to cross-validate in a hold-out sample. We wouldn’t simply estimate this model again:</p>
-<p><span class="math display">\[y_{price} = b_0 + b_1*sqaurefeet\]</span></p>
+<p><span class="math display">\[\hat{price_{i}} = b_0 + b_1*sqaurefeet_i\]</span></p>
 <p>We would instead apply this model:</p>
-<p><span class="math display">\[y_{price} = 100 + 50*sqaurefeet\]</span> And evaluate how well it did. We could do this either by how much it misses, which is usually done with root mean squared error (RMSE):</p>
-<p><span class="math display">\[MSE = \frac{1}{n}\sum\limits_{i=1}^{n}(y_i - \hat{y_i})^2\]</span> <span class="math display">\[RMSE = \sqrt{MSE}\]</span></p>
+<p><span class="math display">\[\hat{price_{i}} = 100 + 50*sqaurefeet\]</span> And evaluate how well it did. We could do this either by how much it misses, which is usually done with root mean squared error (RMSE). This is the average squared difference between observed (<span class="math inline">\(y_i\)</span>) and expected (<span class="math inline">\(\hat{y}_i\)</span>) values:</p>
+<p><span class="math display">\[MSE = \frac{1}{n}\sum\limits_{i=1}^{n}(y_i - \hat{y_{i}})^2\]</span></p>
+<p>And in our example, the y variable is house price:</p>
+<p><span class="math display">\[MSE = \frac{1}{n}\sum\limits_{i=1}^{n}(price_i - \hat{price_{i}})^2\]</span> And then finally, we take the square root for RMSE:</p>
+<p><span class="math display">\[RMSE = \sqrt{MSE}\]</span></p>
 <p>Typically, people will also look at prediction accuracy, using the model’s <span class="math inline">\(R^2\)</span>. This is interpreted the same way as <span class="math inline">\(R^2\)</span> always is (as the % of variance in the outcome accounted for by the model).</p>
-<div id="k-fold-cross-validation" class="section level4">
-<h4><span class="header-section-number">3.1.3.1</span> K-fold cross-validation</h4>
+<div id="k-fold-cross-validation" class="section level5">
+<h5><span class="header-section-number">3.0.1.3.1</span> K-fold cross-validation</h5>
 <p>There are different varieties of cross-validation. The most intuitive version is to create a single partition of data (i.e., split full data frame into two dataframes: training and test). However, there are other methods for cross-validation. One that has been gaining steam (or is maybe already at full steam at this point) is <strong>k-fold cross-validation</strong>. The basic idea is that we split a dataset into k subsamples (called folds). We then treat one subsample as the holdout sample, train on the remaining subsamples, and cross-validate on the holdout sample; then rinse and repeat so to speak. An example will probably help here.</p>
 <p>Let’s take a ridiculously simple example (based on the earlier example). We want to predict house sale price from square footage:</p>
-<p><span class="math display">\[y_{price} = b_0 + b_1*sqaurefeet\]</span></p>
+<p><span class="math display">\[\hat{price_i} = b_0 + b_1*sqaurefeet_i\]</span></p>
 <p>Let’s say we have just 30 cases, and we use 10-fold cross validation. Let each observation be indicated by <span class="math inline">\(o_i\)</span>, so the first observation is <span class="math inline">\(o_1\)</span>, the second is <span class="math inline">\(o_2\)</span>, and the third is <span class="math inline">\(o_3\)</span>, etc.</p>
 <p>First, we would fit a model using folds 2 through 10 (i.e., <span class="math inline">\(o_4\)</span> to <span class="math inline">\(o_30\)</span>), and then test it on the first fold (<span class="math inline">\(o_1\)</span> to <span class="math inline">\(o_3\)</span>). Then, we would fit the model using folds 1 and 3-10 (i.e., <span class="math inline">\(o_1\)</span> to <span class="math inline">\(o_3\)</span> &amp; <span class="math inline">\(o_7\)</span> to <span class="math inline">\(o_30\)</span>) and test it on the 2nd fold (<span class="math inline">\(o_4\)</span>, <span class="math inline">\(o_5\)</span>, <span class="math inline">\(o_6\)</span>), and so on until each fold was used as the holdout sample.</p>
 <p>Then, we calculate the average performance across all of the tests.</p>
@@ -181,21 +179,21 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </div>
 </div>
 </div>
-<div id="regularization" class="section level2">
-<h2><span class="header-section-number">3.2</span> Regularization</h2>
+<div id="regularization" class="section level3">
+<h3><span class="header-section-number">3.0.2</span> Regularization</h3>
 <p>Now let’s get to regularized regression. This is a pretty simple extension of OLS regression. The logic of it is basically that OLS regression is minimally biased, but because of this, is higher variance than we might want. So, the solution is to introduce some bias into the model that will decrease variance. This takes the form of a new <em>penalization</em>, which tends to either be focused on parameter size, number of parameters, or both. Let’s start with the first. I find it helpful to think of these as having different beliefs, and choosing one depends on whether or not those beliefs seem correct.</p>
-</div>
-<div id="ridge-all-of-these-features-matter-but-only-a-little-bit." class="section level2">
-<h2><span class="header-section-number">3.3</span> Ridge: all of these features matter, but only a little bit.</h2>
+<div id="ridge-all-of-these-features-matter-but-only-a-little-bit." class="section level4">
+<h4><span class="header-section-number">3.0.2.1</span> Ridge: all of these features matter, but only a little bit.</h4>
 <p>Ridge regression is basically OLS regression with an extra term. As a refresher, OLS seeks to minimize the sum of squared error, or:</p>
-<p><span class="math display">\[SSE = \sum\limits_{i=1}^n = (y_i - \hat{y_i})^2\]</span></p>
+<p><span class="math display">\[SSE = \sum\limits_{i=1}^n (y_i - \hat{y_i})^2\]</span></p>
 <p>Ridge adds an additional penalty:</p>
-<p><span class="math display">\[SSE_{L2} = \sum\limits_{i=1}^n = (y_i - \hat{y_i}^2) + \lambda \sum\limits_{j=1}^p \beta^2_j\]</span> This makes it so that paramter values are only allowed to be large if they reduce error enough to justify their size. Functionally, this makes it so parameter values shrink towards 0. You can hopefully see this in that as our paramater values (our betas) increase in size, error increases, since we are adding the sum of squared beta values, times some constant <span class="math inline">\(\lambda\)</span>, to our error term SSE. So, unless the parameter values decrease the first part of the error term (the ordinary sum of squared error; to the left of our new penalty) proportionally to their magnitude, they are shrunk toward 0.</p>
+<p><span class="math display">\[SSE_{L2} = \sum\limits_{i=1}^n (y_i - \hat{y_i}^2) + \lambda \sum\limits_{j=1}^p \beta^2_j\]</span> This makes it so that paramter values are only allowed to be large if they reduce error enough to justify their size. Functionally, this makes it so parameter values shrink towards 0. You can hopefully see this in that as our paramater values (our betas) increase in size, error increases, since we are adding the sum of squared beta values, times some constant <span class="math inline">\(\lambda\)</span>, to our error term SSE. So, unless the parameter values decrease the first part of the error term (the ordinary sum of squared error; to the left of our new penalty) proportionally to their magnitude, they are shrunk toward 0.</p>
 <p>The extent to which they are shrunk towards 0 depends on the value of <span class="math inline">\(\lambda\)</span>; higher values lead to more shrinkage than lower values. This is called a <em>hyperparameter</em> because it’s a parameter that governs other parameters. You can think of <span class="math inline">\(\lambda\)</span> as sort of the cost associated with larger parameter values: higher values of lambda are like telling your model that larger parameter values are more costly (so don’t make them large for nothing).</p>
 <p>You can think of this penalty as introducing a specific type of bias: bias towards smaller parameter values. However, since larger parameter values can result from overfitting, this bias can result in reducing variance.</p>
 <p>So why does Ridge do that and why is it useful? As I said earlier, I find it useful to think of statistical tools as having certain beliefs, and as being useful when those beliefs seem more or less true (in some particular case). Ridge believes that all of the variables you’re considering matter, but that most of them matter very little. Put differently, it believes that each variable you’ve entered belongs in the model, but that most or all only have small contributions. Because of this, people often say that ridge doesn’t perform <em>feature selection</em>, and shouldn’t be used if you need to select features (i.e., variables). This makes sense once you think of what Ridge believes: it believes every variable you’re telling it to use should be in the model, but many will simply have small impacts. If we want to select features (i.e., decide what variables go in our model), we need a different tool with a different set of beliefs.</p>
-<div id="lasso-only-some-features-matter-and-they-might-matter-a-lot" class="section level3">
-<h3><span class="header-section-number">3.3.1</span> Lasso: only some features matter, and they might matter a lot</h3>
+</div>
+<div id="lasso-only-some-features-matter-and-they-might-matter-a-lot" class="section level4">
+<h4><span class="header-section-number">3.0.2.2</span> Lasso: only some features matter, and they might matter a lot</h4>
 <p>Another popular form of regularized regression is the <em>least absolute shrinkage and selection operator</em> model, or <em>lasso</em>. Unlike ridge, lasso’s regularization simultaneously performs feature selection and model improvement.</p>
 <p>Just like ridge, lasso is essentially our old friend OLS regression with an extra term added to error, which penalizes non-zero parameter values:</p>
 <p><span class="math display">\[SSE_{L1} = \sum\limits_{i=1}^n = (y_i - \hat{y_i}^2) + \lambda \sum\limits_{j=1}^p |\beta_j|\]</span></p>
@@ -204,14 +202,88 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p><span class="math display">\[Model 1: y_i = .40*X_1 + .40*X_2\]</span> According to the path algebra, including just one of these predictors, <span class="math inline">\(X_1\)</span>, in the model would give us the following:</p>
 <p><span class="math display">\[Model 2: y_i = .76*X_1\]</span></p>
 <p>Note, this is just the path from <span class="math inline">\(X_2\)</span> to <span class="math inline">\(Y\)</span> (.40) times the correlation between <span class="math inline">\(X_1\)</span> and <span class="math inline">\(X_2\)</span> (.90). So how would each of these penalties treat this? Let’s walk through it:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">lambda &lt;-<span class="st"> </span>.<span class="dv">1</span>
-ridge_penalty_Model_1 &lt;-<span class="st"> </span>lambda*(<span class="kw">sum</span>(<span class="kw">c</span>(.<span class="dv">40</span>^<span class="dv">2</span>, .<span class="dv">40</span>^<span class="dv">2</span>)))
-ridge_penalty_Model_2 &lt;-<span class="st"> </span>lambda*(<span class="kw">sum</span>(<span class="kw">c</span>(.<span class="dv">76</span>^<span class="dv">2</span>, <span class="dv">0</span>^<span class="dv">2</span>)))
+<p>First, let’s simulate some data that has the properties we just mentioned. We’ll do this with the <code>mvtnorm</code> library. This allows us to take a random sample from a multivariate normal distribution. It requires a sample size, a vector of means (equal to the number of variables), and a variance-covariance matrix (called sigma; where r = c = number of variables). Since we’re talking about standardized solutions, we’ll create a variance-covariance (sigma) matrix that is standardized (i.e., a correlation matrix), with 1’s along the diaganol. We then specify the bivariate correlation between each variable, which will be .9 for X1 and X2, and then .76 for X1’s relation with Y and .76 for X2’s relation with Y (just like above). That looks something like this:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Load the mvtnorm library</span>
+<span class="kw">library</span>(mvtnorm)
+
+<span class="co"># specify sigma matrix;</span>
+<span class="co"># again, this is the correlation matrix for the variables</span>
+<span class="co"># since we&#39;re working with standardized values.</span>
+sigma &lt;-<span class="kw">matrix</span>(<span class="kw">c</span>(<span class="dv">1</span>, .<span class="dv">9</span>, .<span class="dv">76</span>,
+                 .<span class="dv">9</span>, <span class="dv">1</span>, .<span class="dv">76</span>,
+                 .<span class="dv">76</span>, .<span class="dv">76</span>, <span class="dv">1</span>), <span class="dt">ncol =</span> <span class="dv">3</span>)
+
+<span class="co"># Now take the sample, call it sample_data</span>
+sample_data &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="kw">rmvnorm</span>(<span class="dt">n =</span> <span class="dv">1000000</span>, <span class="dt">mean =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>), <span class="dt">sigma =</span> sigma))
+
+<span class="co"># give the columns names; we&#39;ll use x1, x2, and y just like the example above</span>
+<span class="kw">names</span>(sample_data) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;x1&quot;</span>, <span class="st">&quot;x2&quot;</span>, <span class="st">&quot;y&quot;</span>)</code></pre></div>
+<p>Alright, let’s check the correlation matrix to make sure we did this correctly. This should match sigma:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cor</span>(sample_data)</code></pre></div>
+<pre><code>##           x1        x2         y
+## x1 1.0000000 0.9001124 0.7601485
+## x2 0.9001124 1.0000000 0.7599558
+## y  0.7601485 0.7599558 1.0000000</code></pre>
+<p>Ah, it does! Good, let’s proceed. Now if we estimate, a regression with both variables, we should get two beta weights of about .40:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">model_1 &lt;-<span class="kw">lm</span>(y ~<span class="st"> </span>x1 +<span class="st"> </span>x2, <span class="dt">data =</span> sample_data)
+<span class="kw">summary</span>(model_1)</code></pre></div>
+<pre><code>## 
+## Call:
+## lm(formula = y ~ x1 + x2, data = sample_data)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -3.3187 -0.4221  0.0005  0.4217  2.9327 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) 0.0009699  0.0006256    1.55    0.121    
+## x1          0.4011066  0.0014375  279.02   &lt;2e-16 ***
+## x2          0.3991531  0.0014375  277.68   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.6256 on 999997 degrees of freedom
+## Multiple R-squared:  0.608,  Adjusted R-squared:  0.608 
+## F-statistic: 7.757e+05 on 2 and 999997 DF,  p-value: &lt; 2.2e-16</code></pre>
+<p>Okay, that worked as expected; we get two beta weights of about .40 (if you round to 2 decimals). Now let’s check model 2, where we just include 1 x variable (x1). We should get a single beta weight of about .76.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">model_2 &lt;-<span class="kw">lm</span>(y ~<span class="st"> </span>x1, <span class="dt">data =</span> sample_data)
+<span class="kw">summary</span>(model_2)</code></pre></div>
+<pre><code>## 
+## Call:
+## lm(formula = y ~ x1, data = sample_data)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -3.1938 -0.4379  0.0009  0.4379  3.1056 
+## 
+## Coefficients:
+##              Estimate Std. Error  t value Pr(&gt;|t|)    
+## (Intercept) 0.0009396  0.0006493    1.447    0.148    
+## x1          0.7604109  0.0006500 1169.909   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.6493 on 999998 degrees of freedom
+## Multiple R-squared:  0.5778, Adjusted R-squared:  0.5778 
+## F-statistic: 1.369e+06 on 1 and 999998 DF,  p-value: &lt; 2.2e-16</code></pre>
+<p>And we do. Now let’s walk through the two penalties we covered so far, Ridge and Lasso. Based on what we know so far, Ridge should prefer Model 1 (with x1 and x2) and LASSO should prefer model 2 (the one with just x1)</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># pull out the coefficients for each parameter of the two models</span>
+model_1_b1 &lt;-<span class="st"> </span>model_1$coefficients[<span class="st">&quot;x1&quot;</span>]
+model_1_b2 &lt;-<span class="st"> </span>model_1$coefficients[<span class="st">&quot;x2&quot;</span>]
+model_2_b1 &lt;-<span class="st"> </span>model_2$coefficients[<span class="st">&quot;x1&quot;</span>]
+<span class="co"># Note, we&#39;re not actually estimating b2 in model 2, but this is equivalen to saying its 0</span>
+model_2_b2 &lt;-<span class="st"> </span><span class="dv">0</span>
+
+<span class="co"># set lambda to a constant; we&#39;ll use .1</span>
+lambda &lt;-<span class="st"> </span>.<span class="dv">1</span>
+ridge_penalty_Model_1 &lt;-<span class="st"> </span>lambda*(<span class="kw">sum</span>(<span class="kw">c</span>(model_1_b1^<span class="dv">2</span>, model_1_b2^<span class="dv">2</span>)))
+ridge_penalty_Model_2 &lt;-<span class="st"> </span>lambda*(<span class="kw">sum</span>(<span class="kw">c</span>(model_2_b1^<span class="dv">2</span>, model_2_b2^<span class="dv">2</span>)))
 
 ridge_penalties &lt;-<span class="st"> </span><span class="kw">rbind</span>(ridge_penalty_Model_1, ridge_penalty_Model_2)
 
-lasso_penalty_Model_1 &lt;-<span class="st"> </span>lambda*(<span class="kw">sum</span>(<span class="kw">c</span>(<span class="kw">abs</span>(.<span class="dv">40</span>), <span class="kw">abs</span>(.<span class="dv">40</span>))))
-lasso_penalty_Model_2 &lt;-<span class="st"> </span>lambda*(<span class="kw">sum</span>(<span class="kw">c</span>(<span class="kw">abs</span>(.<span class="dv">76</span>), <span class="kw">abs</span>(<span class="dv">0</span>))))
+lasso_penalty_Model_1 &lt;-<span class="st"> </span>lambda*(<span class="kw">sum</span>(<span class="kw">c</span>(<span class="kw">abs</span>(model_1_b1), <span class="kw">abs</span>(model_1_b2))))
+lasso_penalty_Model_2 &lt;-<span class="st"> </span>lambda*(<span class="kw">sum</span>(<span class="kw">c</span>(<span class="kw">abs</span>(model_2_b1), <span class="kw">abs</span>(model_2_b2))))
 
 lasso_penalties &lt;-<span class="st"> </span><span class="kw">rbind</span>(lasso_penalty_Model_1, lasso_penalty_Model_2)
 penalties &lt;-<span class="st"> </span><span class="kw">cbind</span>(ridge_penalties, lasso_penalties)
@@ -244,8 +316,8 @@ knitr::<span class="kw">kable</span>(penalties, <span class="dt">digits =</span>
 <p>So returning to why we would use it, it’s easiest for me to see when it would be useful by thinking about what Lasso believes: it believes that non-zero predictors are costly (and cost doesn’t accelerate with parameter value size, like ridge does). It (sort of) believes that only some of the variables are needed, and the ones that are needed can take on relatively larger sizes.</p>
 <p>What if our belief is somewhere in between these options: that some variables may not be needed (may actually be zero), but that many of the variables should have smaller values?</p>
 </div>
-<div id="elastic-net-maybe-everything-matters-and-maybe-only-a-little-bit." class="section level3">
-<h3><span class="header-section-number">3.3.2</span> Elastic Net: maybe everything matters, and maybe only a little bit.</h3>
+<div id="elastic-net-maybe-everything-matters-and-maybe-only-a-little-bit." class="section level4">
+<h4><span class="header-section-number">3.0.2.3</span> Elastic Net: maybe everything matters, and maybe only a little bit.</h4>
 <p>Elastic net combines the penalties used by ridge and lasso. In doing so, it basically takes the middle ground between these two methods: penalizing non-zero values (feature selection) and penalizing values the further they depart from zero (regularization). So now, our error has three terms:</p>
 <ol style="list-style-type: decimal">
 <li>sum of squared errors</li>
@@ -253,7 +325,7 @@ knitr::<span class="kw">kable</span>(penalties, <span class="dt">digits =</span>
 <li>lasso penalty</li>
 </ol>
 <p>The formula for this error term is:</p>
-<p><span class="math display">\[SSE_{Enet} = \sum\limits_{i=1}^n = (y_i - \hat{y_i}^2) + \lambda_1 \sum\limits_{j=1}^p \beta^2_j + \lambda_2 \sum\limits_{j=1}^p |\beta_j|\]</span></p>
+<p><span class="math display">\[SSE_{Enet} = \sum\limits_{i=1}^n  (y_i - \hat{y_i}^2) + \lambda_1 \sum\limits_{j=1}^p \beta^2_j + \lambda_2 \sum\limits_{j=1}^p |\beta_j|\]</span></p>
 <p>Basically, elastic net is sort of a best of both worlds approach: it gives you the feature selection of lasso, and regularizes as effective as ridge. It thus introduces two dimensions of bias:</p>
 <ol style="list-style-type: decimal">
 <li>that most predictors have small relations to the outcome.</li>
@@ -262,6 +334,10 @@ knitr::<span class="kw">kable</span>(penalties, <span class="dt">digits =</span>
 <p>How much each is priortized depends on the sie of <span class="math inline">\(\lambda_1\)</span> and <span class="math inline">\(\lambda_2\)</span> respectively. It’s often a great place to start, because as you’re tuning the hyperparameters, you can get to one of the other methods if that is truly the best method. For example, if lasso is actually the best method for your data, then (if your training is working well) you should end up with a zero value for <span class="math inline">\(\lambda_1\)</span>, leading to the ridge penalty dropping out of the model (and leaving you with a lasso model). However, in my limited experience, it usually ends up with some non-zero value for both (which I think says something about the problems we deal with).</p>
 <p>In terms of beliefs, Elastic net is basically a more flexible thinker: it thinks we might only need few predictors and that each predictor may only contribute a little bit, and its willing to weigh these things more or less depending on what works better (either determined a priori, or determined via training).</p>
 <p>Okay, this has been a (very brief) intro to regularized regression and some foundational concepts in machine learning necessary to understand it.</p>
+</div>
+</div>
+<div id="example-using-caret" class="section level3">
+<h3><span class="header-section-number">3.0.3</span> Example using Caret</h3>
 <p>Now let’s walk through an example:</p>
 <p>We’re going to work with this data on wine reviews. It has the score it received in a rating, as well as some data about the wine, and a description of the wine. We’ll see how well we can predict the rating based on the data about the wine (including the description). I found this on &lt;kaggle.com&gt;</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># clear the environment, just to be safe</span>
@@ -295,27 +371,49 @@ knitr::<span class="kw">kable</span>(penalties, <span class="dt">digits =</span>
 <pre><code>## Warning: package &#39;janitor&#39; was built under R version 3.4.3</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">require</span>(rio)</code></pre></div>
 <pre><code>## Loading required package: rio</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">wine &lt;-<span class="st"> </span>rio::<span class="kw">import</span>(<span class="st">&quot;files/winemag-data_first150k.csv&quot;</span>) %&gt;%
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">wine &lt;-<span class="st"> </span>rio::<span class="kw">import</span>(<span class="st">&quot;files/winemag-data_first150k.csv&quot;</span>,
+                    <span class="dt">setclass =</span> <span class="st">&quot;tbl_df&quot;</span>) %&gt;%
 <span class="st">  </span>janitor::<span class="kw">clean_names</span>() %&gt;%
-<span class="st">  </span><span class="kw">rename</span>(<span class="dt">id =</span> v1)
+<span class="st">  </span><span class="kw">rename</span>(<span class="dt">id =</span> v1)</code></pre></div>
+<p>We’ll limit ourselves to a sample of 1000 observations for time’s sake.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#set.seed(227)</span>
 
-wine &lt;-<span class="st"> </span><span class="kw">sample_n</span>(wine, <span class="dv">500</span>)</code></pre></div>
-<p>Okay, before we start down the modelling road, we want to do something with the descriptions. We’ll separate out the description, and do some automated text analysis, and use the output of those analyses as features. This should make a bit more sense as we walk through.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># first we need to load in a dataframe of stopwords</span>
-<span class="co"># these are basically words that don&#39;t have content</span>
-<span class="co"># and that we don&#39;t need (e.g., &quot;the&quot;, &quot;a&quot;, &quot;and&quot;, etc.)</span>
-<span class="kw">data</span>(<span class="st">&quot;stop_words&quot;</span>)
-
-wine_text_expand&lt;-<span class="st"> </span>wine %&gt;%
+<span class="co">#wine &lt;- sample_n(wine, 1000)</span></code></pre></div>
+<p>Let’s take a look at the data</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">wine</code></pre></div>
+<pre><code>## # A tibble: 150,930 x 11
+##       id country description    designation points price province region_1
+##    &lt;int&gt; &lt;chr&gt;   &lt;chr&gt;          &lt;chr&gt;        &lt;int&gt; &lt;dbl&gt; &lt;chr&gt;    &lt;chr&gt;   
+##  1     0 US      This tremendo… Martha&#39;s V…     96 235   Califor… Napa Va…
+##  2     1 Spain   Ripe aromas o… Carodorum …     96 110   Norther… Toro    
+##  3     2 US      Mac Watson ho… Special Se…     96  90.0 Califor… Knights…
+##  4     3 US      This spent 20… Reserve         96  65.0 Oregon   Willame…
+##  5     4 France  This is the t… La Brûlade      95  66.0 Provence Bandol  
+##  6     5 Spain   Deep, dense a… Numanthia       95  73.0 Norther… Toro    
+##  7     6 Spain   Slightly grit… San Román       95  65.0 Norther… Toro    
+##  8     7 Spain   Lush cedary b… Carodorum …     95 110   Norther… Toro    
+##  9     8 US      This re-named… Silice          95  65.0 Oregon   Chehale…
+## 10     9 US      The producer … Gap&#39;s Crow…     95  60.0 Califor… Sonoma …
+## # ... with 150,920 more rows, and 3 more variables: region_2 &lt;chr&gt;,
+## #   variety &lt;chr&gt;, winery &lt;chr&gt;</code></pre>
+<p>So you can see wee have some information about where the wine is from, its rating (called <code>points</code>), its price called <code>price</code>, and textual description of the wine (called <code>description</code>). Let’s see if we can train a model that does a good job predicting wine ratings.</p>
+<div id="extracting-features-a-brief-detour-into-text-analysis" class="section level4">
+<h4><span class="header-section-number">3.0.3.1</span> Extracting features: a brief detour into text analysis</h4>
+<p>Okay, before we start down the modelling road, we want to do something with the textual descriptions. Along these lines, we’ll separate out the description, do some automated text analysis, and use the output of those analyses as features. This should make a bit more sense as we walk through.</p>
+<p>First we need to load in a dataframe of stopwords these are basically words that don’t have content and that we don’t need (e.g., “the”, “a”, “and”, etc.). Luckily, the R package <code>tidytext</code> has some built-in data on stop words. We need to load these up with the <code>data()</code> command.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">data</span>(<span class="st">&quot;stop_words&quot;</span>)</code></pre></div>
+<p>Now that we have the stop words, let’s take our wine data set, select just the id (for merging purposes) and the text descriptions. Then we’ll use the <code>unnest_tokens</code> function, which basically takes the descriptions, separates them by ‘tokens’ (which in this case is each word), and leaves us with a dataset with a row per word in each desciption (essentially an id X word from description lengthed dataset).</p>
+<p>Finally, we’ll use <code>anti_join()</code> to remove the stop words. This takes requires two dataframes as its two arguments, and removes any rows from the dataframe in the first argument that are in the dataframe in the second argument. Since we’re using pipes (<code>%&gt;%</code>), the first argument is invisible, but is the new expanded wine description data, and the second is the dataframe of stopwords; effectively, this will just remove the stopwords from our expanded wine description data.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">wine_text_expand&lt;-<span class="st"> </span>wine %&gt;%
 <span class="st">  </span><span class="co"># take just the id and description</span>
 <span class="st">  </span><span class="kw">select</span>(id, description) %&gt;%
-<span class="st">  </span><span class="co"># this will make it so that the description is </span>
-<span class="st">  </span><span class="co"># broken into single words, with a row</span>
-<span class="st">  </span><span class="co"># corresponding to each word in each wine&#39;s description</span>
+<span class="st">  </span><span class="co"># unnest tokens; provide it the new variable name (for the tokens)</span>
+<span class="st">  </span><span class="co"># and the old variable (where it can find the text to tokenize).</span>
 <span class="st">  </span><span class="kw">unnest_tokens</span>(word, description) %&gt;%
 <span class="st">  </span><span class="kw">anti_join</span>(stop_words)</code></pre></div>
 <pre><code>## Joining, by = &quot;word&quot;</code></pre>
-<p>Let’s do some sentiment analysis, since that seems like it will definitely be relevant. Sentiment analysis is intended to extract the emotional tone of a text, and in this case, will basically give us a score corresponding to how poisitive and negative each word is. We’ll leave it at sentiment analysis for the sake of time.</p>
+<p>Okay, now that we have cleaned up text data for the wine descriptions, let’s extract some features from the descriptions. We can use sentiment analysis. since that seems like it will definitely be relevant. Sentiment analysis is intended to extract the emotional tone of a text, and in this case, will basically give us a score corresponding to how poisitive and negative each word is. We’ll leave it at sentiment analysis for the sake of time.</p>
+<p>We’ll do sentiment analysis using tidytext, and the “afinn” sentiment dictionary. This dictionary has a set of words with a continuous sentiment score (from -3, to +3; neutral point of 0). We can use it to get sentiment scores by using <code>inner_join()</code>, which basically keeps all columns, but only rows shared by the two dataframes; in this case, only words that are in both our descriptions data AND the sentiment dictionary will be kept, and columns for id, word, and sentiment score. Then, we’ll summarize across words to get a sentiment score for each wine’s description (wine being tracked with id). This will leave us with a dataframe with id and sentiment score (since the words are shared between the two dataframes)</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">description_sentiment &lt;-<span class="st"> </span>wine_text_expand %&gt;%
 <span class="st">  </span><span class="co"># this makes it so that all is saved is a</span>
 <span class="st">  </span><span class="co"># data frame that contains the words in the afinn</span>
@@ -329,20 +427,20 @@ wine_text_expand&lt;-<span class="st"> </span>wine %&gt;%
 <span class="st">  </span><span class="kw">summarize</span>(<span class="dt">sentiment =</span> <span class="kw">mean</span>(score)) </code></pre></div>
 <pre><code>## Joining, by = &quot;word&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">description_sentiment</code></pre></div>
-<pre><code>## # A tibble: 398 x 2
+<pre><code>## # A tibble: 123,785 x 2
 ##       id sentiment
 ##    &lt;int&gt;     &lt;dbl&gt;
-##  1   311     1.44 
-##  2   392     0.667
-##  3   488     0.500
-##  4   618    -2.00 
-##  5   854     1.33 
-##  6   908     1.67 
-##  7  2079     2.00 
-##  8  2396     1.00 
-##  9  2802     1.00 
-## 10  3044     2.00 
-## # ... with 388 more rows</code></pre>
+##  1     0       1.8
+##  2     1       1.5
+##  3     3       2.0
+##  4     4       2.0
+##  5     5       2.5
+##  6     6       2.5
+##  7     7       2.0
+##  8     9       0.0
+##  9    10      -1.0
+## 10    12       4.0
+## # ... with 123,775 more rows</code></pre>
 <p>And, let’s merge that back into the wine dataframe.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">wine_for_ml &lt;-<span class="st"> </span>wine %&gt;%
 <span class="st">  </span><span class="kw">left_join</span>(description_sentiment, <span class="dt">by =</span> <span class="st">&quot;id&quot;</span>) %&gt;%
@@ -350,119 +448,152 @@ wine_text_expand&lt;-<span class="st"> </span>wine %&gt;%
 <span class="st">  </span><span class="kw">select</span>(points, price, sentiment) %&gt;%
 <span class="st">  </span><span class="co"># just removing missing values, because they complicate things</span>
 <span class="st">  </span><span class="kw">na.omit</span>()</code></pre></div>
+</div>
+<div id="modeling-with-caret" class="section level4">
+<h4><span class="header-section-number">3.0.3.2</span> Modeling with caret</h4>
+<p>We have quite a bit of data here (150000 cases), so first let’s partition our data into a training and test dataframe. We’ll do a 75-25 training-test split, and can use caret’s <code>createDataPartition()</code> function to do it.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Set seed for consistency&#39;s sake</span>
-<span class="kw">set.seed</span>(<span class="dv">500</span>)
+<span class="kw">set.seed</span>(<span class="dv">227</span>)
 <span class="co"># This part creates a list of values;</span>
 <span class="co"># these values are the row numbers for data included in the training set</span>
 <span class="co"># we&#39;re splitting it 75-25, such that 75% of cases will be in the training set (25% in the test).</span>
-inTrain &lt;-<span class="st"> </span><span class="kw">createDataPartition</span>(<span class="dt">y =</span> wine_for_ml$points,
+in_train &lt;-<span class="st"> </span><span class="kw">createDataPartition</span>(<span class="dt">y =</span> wine_for_ml$points,
                                  <span class="dt">p =</span> .<span class="dv">75</span>,
                                  <span class="dt">list =</span> <span class="ot">FALSE</span>)
 <span class="co"># subsets the training data (those data whose row number appears in the inTrain object)</span>
-training &lt;-<span class="st"> </span>wine_for_ml[inTrain,]
+training &lt;-<span class="st"> </span>wine_for_ml[in_train,]
 <span class="co"># subsets the test data (those data whose row number DOES NOT appear in the inTrain object)</span>
-testing &lt;-<span class="st"> </span>wine_for_ml[-inTrain,]
-
-<span class="co"># Sets parameters for training;</span>
+testing &lt;-<span class="st"> </span>wine_for_ml[-in_train,]</code></pre></div>
+<p>Okay, now that we have our training data, let’s actually train a model.</p>
+<p>First, we set up the training parameters using the <code>trainControl()</code> function. This is where you specify the method (e.g., cross-validation), and some other specifics.</p>
+<p>In this example, we’ll tell it to use 10-fold cross-validation, by specifying cross-validation as the method, and 10 as the number (i.e., k). We’ll also tell it to save the best fitting model with the argument <code>savePredictions = TRUE</code>. You’ll notice that we’ll use these same controls for the different models we try (ridge, lasso, elastic net)</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Sets parameters for training;</span>
 <span class="co"># telling it to use 10-fold cross-validation, and to save the predictions.</span>
 train_control&lt;-<span class="st"> </span><span class="kw">trainControl</span>(<span class="dt">method=</span><span class="st">&quot;cv&quot;</span>, <span class="dt">number=</span><span class="dv">10</span>, 
-                             <span class="dt">savePredictions =</span> <span class="ot">TRUE</span>)
-
-fit_ridge &lt;-<span class="st"> </span><span class="kw">train</span>(points ~<span class="st"> </span>., 
+                             <span class="dt">savePredictions =</span> <span class="ot">TRUE</span>)</code></pre></div>
+<div id="ridge-method" class="section level5">
+<h5><span class="header-section-number">3.0.3.2.1</span> Ridge Method</h5>
+<p>Now let’s train a model using ridge regression. We do this by telling it to:</p>
+<ol style="list-style-type: decimal">
+<li>predict points from everything (including interactions). This is accomplished with .*. where ‘.’ = all (well, all except the outcome variable).</li>
+<li>using the training data</li>
+<li>using the training parameters we just set</li>
+<li>using the ridge method</li>
+<li>pre-processing by centering and scaling (essentially z scoring everything; this is critical, because we want everything on the same scale, since parameter size is being penalized in one way or another).</li>
+</ol>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fit_ridge &lt;-<span class="st"> </span><span class="kw">train</span>(points ~<span class="st"> </span>.*., 
                    <span class="dt">data =</span> training,
                    <span class="dt">trControl =</span> train_control,
                    <span class="dt">method =</span> <span class="st">&quot;ridge&quot;</span>,
-                   <span class="dt">preProc =</span> <span class="kw">c</span>(<span class="st">&quot;center&quot;</span>, <span class="st">&quot;scale&quot;</span>))
-
-avg_r2_ridge &lt;-<span class="st"> </span><span class="kw">mean</span>(fit_ridge$results$Rsquared)
+                   <span class="dt">preProc =</span> <span class="kw">c</span>(<span class="st">&quot;center&quot;</span>, <span class="st">&quot;scale&quot;</span>))</code></pre></div>
+<pre><code>## Loading required package: elasticnet</code></pre>
+<pre><code>## Loading required package: lars</code></pre>
+<pre><code>## Loaded lars 1.2</code></pre>
+<p>Okay, so how did our model do? We can evaluate this in two different ways given what we’ve done so far.</p>
+<ol style="list-style-type: decimal">
+<li>Easier test: what is the average fit (with <span class="math inline">\(R^2\)</span>) and misfit (with <span class="math inline">\(RMSE\)</span>) fromt the training. This will basically take the <span class="math inline">\(R^2\)</span> and <span class="math inline">\(RMSE\)</span> from all 10 folds and average them, telling us how well our models were doing on average across training runs.</li>
+</ol>
+<p>We can get this information like so:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">avg_r2_ridge &lt;-<span class="st"> </span><span class="kw">mean</span>(fit_ridge$results$Rsquared)
 avg_RMSE_ridge &lt;-<span class="st"> </span><span class="kw">mean</span>(fit_ridge$results$RMSE)
 
 avg_r2_ridge</code></pre></div>
-<pre><code>## [1] 0.3969759</code></pre>
+<pre><code>## [1] 0.2686071</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">avg_RMSE_ridge</code></pre></div>
-<pre><code>## [1] 2.567107</code></pre>
-<p>Harder test: how does it do with the holdout sample?</p>
+<pre><code>## [1] 2.759382</code></pre>
+<p>Okay, so an <span class="math inline">\(\bar{R^2}\)</span> of 0.27, meaning we are explaining 26.86% of the variance in wine ratings with sentiment and price (and the interaction).</p>
+<ol start="2" style="list-style-type: decimal">
+<li>Harder test: how well does it do with the holdout sample?</li>
+</ol>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">pred_ridge &lt;-<span class="st"> </span><span class="kw">predict</span>(fit_ridge, <span class="dt">newdata =</span> testing)
 
 <span class="co"># Gets R^2 and RMSE for ridge model</span>
 fitstat_ridge &lt;-<span class="st"> </span><span class="kw">postResample</span>(<span class="dt">pred =</span> pred_ridge, 
-                                  <span class="dt">obs =</span> testing$points)</code></pre></div>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Set seed for consistency&#39;s sake</span>
-<span class="kw">set.seed</span>(<span class="dv">500</span>)
-<span class="co"># This part creates a list of values;</span>
-<span class="co"># these values are the row numbers for data included in the training set</span>
-<span class="co"># we&#39;re splitting it 75-25, such that 75% of cases will be in the training set (25% in the test).</span>
-inTrain &lt;-<span class="st"> </span><span class="kw">createDataPartition</span>(<span class="dt">y =</span> wine_for_ml$points,
-                                 <span class="dt">p =</span> .<span class="dv">75</span>,
-                                 <span class="dt">list =</span> <span class="ot">FALSE</span>)
-<span class="co"># subsets the training data (those data whose row number appears in the inTrain object)</span>
-training &lt;-<span class="st"> </span>wine_for_ml[inTrain,]
-<span class="co"># subsets the test data (those data whose row number DOES NOT appear in the inTrain object)</span>
-testing &lt;-<span class="st"> </span>wine_for_ml[-inTrain,]
-
-<span class="co"># Sets parameters for training;</span>
-<span class="co"># telling it to use 10-fold cross-validation, and to save the predictions.</span>
-train_control&lt;-<span class="st"> </span><span class="kw">trainControl</span>(<span class="dt">method=</span><span class="st">&quot;cv&quot;</span>, <span class="dt">number=</span><span class="dv">10</span>, 
-                             <span class="dt">savePredictions =</span> <span class="ot">TRUE</span>)
-
-fit_lasso &lt;-<span class="st"> </span><span class="kw">train</span>(points ~<span class="st"> </span>., 
+                                  <span class="dt">obs =</span> testing$points)
+fitstat_ridge</code></pre></div>
+<pre><code>##      RMSE  Rsquared 
+## 2.8348519 0.2411339</code></pre>
+<p>Okay, so an <span class="math inline">\(R^2\)</span> of 0.24, meaning we are explaining 24.11% of the variance in wine ratings with sentiment and price (and the interaction).</p>
+</div>
+<div id="lasso-method" class="section level5">
+<h5><span class="header-section-number">3.0.3.2.2</span> Lasso Method</h5>
+<p>Okay, now let’s try lasso. We’ll use the same training-test split, and the same training parameters.</p>
+<p>We will run virtually the same code, but change <code>method = &quot;ridge&quot;</code> to <code>method = &quot;lasso&quot;</code>, like so:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fit_lasso &lt;-<span class="st"> </span><span class="kw">train</span>(points ~<span class="st"> </span>.*., 
                    <span class="dt">data =</span> training,
                    <span class="dt">trControl =</span> train_control,
                    <span class="dt">method =</span> <span class="st">&quot;lasso&quot;</span>,
-                   <span class="dt">preProc =</span> <span class="kw">c</span>(<span class="st">&quot;center&quot;</span>, <span class="st">&quot;scale&quot;</span>))
-
-avg_r2_lasso &lt;-<span class="st"> </span><span class="kw">mean</span>(fit_lasso$results$Rsquared)
+                   <span class="dt">preProc =</span> <span class="kw">c</span>(<span class="st">&quot;center&quot;</span>, <span class="st">&quot;scale&quot;</span>))</code></pre></div>
+<p>And let’s evaluate this model in the same two ways.</p>
+<p>Easier test: average fit across training runs:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">avg_r2_lasso &lt;-<span class="st"> </span><span class="kw">mean</span>(fit_lasso$results$Rsquared)
 avg_RMSE_lasso &lt;-<span class="st"> </span><span class="kw">mean</span>(fit_lasso$results$RMSE)
 
 avg_r2_lasso</code></pre></div>
-<pre><code>## [1] 0.3772097</code></pre>
+<pre><code>## [1] 0.249744</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">avg_RMSE_lasso</code></pre></div>
-<pre><code>## [1] 2.779287</code></pre>
+<pre><code>## [1] 2.908199</code></pre>
+<p>Okay, so an <span class="math inline">\(\bar{R^2}\)</span> of 0.25, meaning we are explaining 24.97% of the variance in wine ratings with sentiment and price (and the interaction).</p>
+<p>Now for the harder test.</p>
 <p>Harder test: how does it do with the holdout sample?</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">pred_lasso &lt;-<span class="st"> </span><span class="kw">predict</span>(fit_lasso, <span class="dt">newdata =</span> testing)
 
 <span class="co"># Gets R^2 and RMSE for lasso model</span>
 fitstat_lasso &lt;-<span class="st"> </span><span class="kw">postResample</span>(<span class="dt">pred =</span> pred_lasso, 
-                                  <span class="dt">obs =</span> testing$points)</code></pre></div>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Set seed for consistency&#39;s sake</span>
-<span class="kw">set.seed</span>(<span class="dv">500</span>)
-<span class="co"># This part creates a list of values;</span>
-<span class="co"># these values are the row numbers for data included in the training set</span>
-<span class="co"># we&#39;re splitting it 75-25, such that 75% of cases will be in the training set (25% in the test).</span>
-inTrain &lt;-<span class="st"> </span><span class="kw">createDataPartition</span>(<span class="dt">y =</span> wine_for_ml$points,
-                                 <span class="dt">p =</span> .<span class="dv">75</span>,
-                                 <span class="dt">list =</span> <span class="ot">FALSE</span>)
-<span class="co"># subsets the training data (those data whose row number appears in the inTrain object)</span>
-training &lt;-<span class="st"> </span>wine_for_ml[inTrain,]
-<span class="co"># subsets the test data (those data whose row number DOES NOT appear in the inTrain object)</span>
-testing &lt;-<span class="st"> </span>wine_for_ml[-inTrain,]
+                                  <span class="dt">obs =</span> testing$points)
 
-<span class="co"># Sets parameters for training;</span>
-<span class="co"># telling it to use 10-fold cross-validation, and to save the predictions.</span>
-train_control&lt;-<span class="st"> </span><span class="kw">trainControl</span>(<span class="dt">method=</span><span class="st">&quot;cv&quot;</span>, <span class="dt">number=</span><span class="dv">10</span>, 
-                             <span class="dt">savePredictions =</span> <span class="ot">TRUE</span>)
-
-fit_enet &lt;-<span class="st"> </span><span class="kw">train</span>(points ~<span class="st"> </span>., 
+fitstat_lasso</code></pre></div>
+<pre><code>##      RMSE  Rsquared 
+## 2.8329419 0.2400375</code></pre>
+<p>Okay, so an <span class="math inline">\(R^2\)</span> of 0.24, meaning we are explaining 24% of the variance in wine ratings with sentiment and price (and the interaction).</p>
+</div>
+<div id="elastic-net-method" class="section level5">
+<h5><span class="header-section-number">3.0.3.2.3</span> Elastic Net Method</h5>
+<p>And finally, let’s do the same with elastic net. Like before, we’ll use the same data split and training parameters. And again, the code is <em>almost</em> identical; we just change <code>method = &quot;lasso&quot;</code> to <code>method = &quot;ridge&quot;</code></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fit_enet &lt;-<span class="st"> </span><span class="kw">train</span>(points ~<span class="st"> </span>.*., 
                    <span class="dt">data =</span> training,
                    <span class="dt">trControl =</span> train_control,
                    <span class="dt">method =</span> <span class="st">&quot;enet&quot;</span>,
-                   <span class="dt">preProc =</span> <span class="kw">c</span>(<span class="st">&quot;center&quot;</span>, <span class="st">&quot;scale&quot;</span>))
-
-avg_r2_enet &lt;-<span class="st"> </span><span class="kw">mean</span>(fit_enet$results$Rsquared)
+                   <span class="dt">preProc =</span> <span class="kw">c</span>(<span class="st">&quot;center&quot;</span>, <span class="st">&quot;scale&quot;</span>))</code></pre></div>
+<p>And let’s evaluate the model in the same two ways.</p>
+<p>Easier test: average fit across training runs</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">avg_r2_enet &lt;-<span class="st"> </span><span class="kw">mean</span>(fit_enet$results$Rsquared)
 avg_RMSE_enet &lt;-<span class="st"> </span><span class="kw">mean</span>(fit_enet$results$RMSE)
 
 avg_r2_enet</code></pre></div>
-<pre><code>## [1] 0.3236829</code></pre>
+<pre><code>## [1] 0.2484151</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">avg_RMSE_enet</code></pre></div>
-<pre><code>## [1] 2.798077</code></pre>
+<pre><code>## [1] 2.923475</code></pre>
+<p>Okay, so an <span class="math inline">\(\bar{R^2}\)</span> of 0.25, meaning we are explaining 24.97% of the variance (on average) in wine ratings with sentiment and price (and the interaction).</p>
 <p>Harder test: how does it do with the holdout sample?</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">pred_enet &lt;-<span class="st"> </span><span class="kw">predict</span>(fit_enet, <span class="dt">newdata =</span> testing)
 
 <span class="co"># Gets R^2 and RMSE for enet model</span>
 fitstat_enet &lt;-<span class="st"> </span><span class="kw">postResample</span>(<span class="dt">pred =</span> pred_enet, 
-                                  <span class="dt">obs =</span> testing$points)</code></pre></div>
-
+                                  <span class="dt">obs =</span> testing$points)
+fitstat_enet</code></pre></div>
+<pre><code>##      RMSE  Rsquared       MAE 
+## 2.8348519 0.2411339 2.1897598</code></pre>
+<p>Okay, so an <span class="math inline">\(R^2\)</span> of 0.24, meaning we are explaining 24.11% of the variance in wine ratings with sentiment and price (and the interaction).</p>
 </div>
+</div>
+</div>
+<div id="closing-thoughts" class="section level3">
+<h3><span class="header-section-number">3.0.4</span> Closing thoughts</h3>
+<p>I want to mention a few things in closing. The first is that you’ll notice the three methods we tried in our example produced nearly identical fits. One reason for this is that we supplied a very small number of predictors (just 2 + an interaction, so 3 parameters). When you have many more predictors, these methods may start to differ a bit more (especially if the predictors are correlated, as we went over in the difference between ridge and lasso).</p>
+<p>Finally, we split the data once into a training and test set. This is generally OK, BUT, if you’re using the holdout sample to evaluate models (like we did here), you wouldn’t want to use it to CHOOSE a model. That is, if we actually wanted to decide which of the three methods we wanted to use, the most defensible case would be to split the data into three sets:</p>
+<ol style="list-style-type: decimal">
+<li>model training</li>
+<li>model selection</li>
+<li>test / model evaluation</li>
+</ol>
+<p>This would keep the sort of purity of our test (model evaluation) data, and provide a good defense against overfitting.</p>
+</div>
+<div id="references" class="section level3">
+<h3><span class="header-section-number">3.0.5</span> References:</h3>
+<p>Yarkoni, T., &amp; Westfall, J. (2017). Choosing prediction over explanation in psychology: Lessons from machine learning. <em>Perspectives on Psychological Science</em>, 12(6), 1100-1122.</p>
+<p>Kuhn, M., &amp; Johnson, K. (2013). Applied predictive modeling. New York, NY: Spring-Verlag.</p>
+
 </div>
 </div>
             </section>
