@@ -10,25 +10,14 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, cache = TRUE)
+knitr::opts_chunk$set(echo = TRUE, cache = TRUE)
 ```
 # Classification
 Last week we focused on using machine learning to predict a continuous outcome. This week we'll concentrate on predicting, or classifying, a dichotomous variable. We'll compare two different classification algorithms:
 * Support vector machine (SVM) classifier
 * LASSO logistic regression
 
-## Support vector machine classifier
-## LASSO logistic regression
-
-## Concepts
-### Balancing sensitivity and specificity
-### Cut points
-### Tuning
-### Reciever operator curves
-### Confusion matrices
-### Interpreting weights
-
-## Example using caret
+## Example using SVM classification in caret
 Today we'll use a [dataset from Kaggle](https://www.kaggle.com/jboysen/us-perm-visas) with lots information about US permanent visas applications. The goal is to predict the outcome of the application from a bunch of variables.
 
 #### Getting set up
@@ -58,6 +47,11 @@ if(!require(knitr)){
   install.packages(knitr)
   library(knitr)
 }
+
+if(!require(glmnet)){
+  install.packages(glmnet)
+  library(glmnet)
+}
 ```
 
 Next, let's load the data.
@@ -74,12 +68,16 @@ Time to tidy the data.
 # remove columns with no useful data (i.e. all observations are NA or has no text)
 data.reduced = data[,(colSums(is.na(data)) < nrow(data)) & (colSums(data == '') < nrow(data) | is.na(colSums(data == '')))]
 
-# change text to upper case and select unique rows
+# change text to upper case, select unique rows, recode dollar amounts, and move outcome variable to the first column
 data.reduced = data.reduced %>%
   as_tibble() %>%
+  mutate(pw_amount_9089 = gsub(",", "", pw_amount_9089)) %>%
+  extract(pw_amount_9089, "pw_amount_9089", regex = "([0-9]{1,}).00") %>%
+  mutate(pw_amount_9089 = as.integer(pw_amount_9089)) %>%
   mutate_if(is.character, funs(toupper)) %>%
   mutate_if(is.character, as.factor) %>%
-  unique(.)
+  unique(.) %>%
+  select(case_status, everything())
 ```
 
 For simplicity, let's limit ourselves to cases that are either certified or denied.
@@ -192,6 +190,9 @@ fit.svc <- train(case_status ~ .,
                  na.action  = na.pass,
                  preProcess = c("center", "scale"),
                  metric = "Accuracy")
+
+# fit.svc = readRDS("files/fit.svc") # if you try to run the model and it's taking too long, you can load the data with this command
+# saveRDS(fit.svc, "files/fit.svc") # code to save the model
 ```
 
 #### Assess the model
@@ -227,6 +228,9 @@ fit.svc.roc <- train(case_status ~ .,
                  na.action  = na.pass,
                  preProcess = c("center", "scale"),
                  metric = "ROC")
+
+# fit.svc.roc = readRDS("files/fit.svc.roc") # if you try to run the model and it's taking too long, you can load the data with this command
+# saveRDS(fit.svc.roc, "files/fit.svc.roc") # code to save the model
 ```
 
 Let's compare accuracy and kappa values
@@ -260,6 +264,9 @@ fit.svc.tune = train(case_status ~ .,
                  metric = "Accuracy",
                  tuneGrid = grid,
                  tuneLength = 10)
+
+# fit.svc.tune = readRDS("files/fit.svc.tune") # if you try to run the model and it's taking too long, you can load the data with this command
+# saveRDS(fit.svc.tune, "files/fit.svc.tune") # code to save the model
 ```
 
 Let's check the model results
@@ -291,6 +298,13 @@ row.names(fit.table) = c("Accuracy", "ROC", "Tuned")
 kable(fit.table, format = "pandoc", digits = 3)
 ```
 
+#### Test in holdout sample
+Let's apply the best fitting model to the test data and see how well it performs in a new sample
+```{r}
+# get predicted values for the test data
+test.pred = predict(fit.svc, newdata = test)
+```
+
 Let's apply the best fitting model to the test data and see how well it performs in a new sample
 ```{r}
 # get predicted values for the test data
@@ -305,3 +319,118 @@ confusionMatrix(test.pred, test$case_status)
 So how well is this model really performing? By looking at the No Information Rate and the associated p-value, we see that while our model has good verall accuracy, it actually isn't significantly better than simply guessing based on the base rates of the classes.
 
 More on how to interpret the metrics in the confusion matrix [here](https://www.hranalytics101.com/how-to-assess-model-accuracy-the-basics/#confusion-matrix-and-the-no-information-rate).
+
+### Example using LASSO logisic regression in glmnet
+I'm sure there's a way to do this using caret, but I couldn't find a straightforward answer, so I'm using the glmnet package. The basic concepts are the same, but the syntax is slightly different. We also need to do some additional tidying to get the data in the correct format for glmnet.
+
+We also need to convert any factors to dummy coded variables in the training and test data (which caret does internally). We'll do that using `dummyVars()`.
+```{r}
+# dummy code training data
+dummy = dummyVars(" ~ .", data = data.ml[,-1], fullRank = TRUE)
+training.dummy = data.frame(predict(dummy, newdata = training))
+training.dummy$case_status = training$case_status
+
+training.dummy = training.dummy %>%
+  select(case_status, everything())
+
+# dummy code testing data
+test.dummy = data.frame(predict(dummy, newdata = test))
+test.dummy$case_status = test$case_status
+
+test.dummy = test.dummy %>%
+  select(case_status, everything())
+
+# print names
+names(training.dummy)
+```
+
+
+```{r}
+# subset predictors and criterion and save as matrices
+x_train = as.matrix(training.dummy[,-1])
+y_train = as.matrix(training.dummy[, 1])
+```
+
+Run the logistic regression model with 3 cross-validation folds, an alpha of 1 (i.e. the LASSO penalty, 0 = ridge penalty), scaled (i.e. standardize) predictors, using area under the ROC curve as our metric. This will allow us to determine what lambda parameter to use.
+```{r}
+fit.log = cv.glmnet(x_train, y_train, 
+                   family='binomial', 
+                   alpha=1, 
+                   standardize=TRUE, 
+                   type.measure='auc',
+                   nfolds = 3)
+```
+
+Plot lambda versus fit metric AUC and print best lambda parameters
+```{r}
+# plots
+plot(fit.log)
+plot(fit.log$glmnet.fit, xvar="lambda", label=TRUE)
+
+# print lambdas
+fit.log$lambda.min
+fit.log$lambda.1se
+```
+
+Let's check the coefficient matrix to see which variables were shrunk
+```{r}
+coef(fit.log, s=fit.log$lambda.min)
+coef(fit.log, s=fit.log$lambda.1se)
+```
+
+Now let's use the best lambda generated from running that model and apply it to our training sample
+```{r}
+predicted.log = predict(fit.log, newx = x_train, s=fit.log$lambda.1se, type="response")
+```
+
+Let's figure out what cut point to use to determine whether a trial should be classified as CERTIFIED or DENIED
+```{r}
+# plot cutoff v. accuracy
+predicted = prediction(predicted.log, y_train, label.ordering = NULL)
+perf = performance(predicted, measure = "acc")
+perf.df = data.frame(cut=perf@x.values[[1]],acc=perf@y.values[[1]])
+
+ggplot(perf.df, aes(cut, acc)) +
+  geom_line()
+
+# plot false v. true positive rate
+perf = performance(predicted, measure = "tpr", x.measure = "fpr")
+perf.df = data.frame(cut=perf@alpha.values[[1]],fpr=perf@x.values[[1]],tpr=perf@y.values[[1]])
+
+ggplot(perf.df, aes(fpr, tpr)) +
+  geom_line()
+
+# plot specificity v. sensitivity
+perf = performance(predicted, measure = "sens", x.measure = "spec")
+perf.df = data.frame(cut=perf@alpha.values[[1]],sens=perf@x.values[[1]],spec=perf@y.values[[1]])
+ggplot(perf.df, aes(spec, sens)) +
+  geom_line()
+
+ggplot(perf.df, aes(x = cut)) +
+  geom_line(aes(y = sens, color = "sensitivity")) + 
+  geom_line(aes(y = spec, color = "specificity"))
+
+cut = perf@alpha.values[[1]][which.max(perf@x.values[[1]]+perf@y.values[[1]])]
+
+# recode values based on cut
+predicted.cut = predict(fit.log, newx = x_train, s=fit.log$lambda.1se, type="response")
+predicted.cut[predicted.cut >= cut] = "DENIED"
+predicted.cut[predicted.cut < cut] = "CERTIFIED"
+```
+
+Let's take a look at the confusion matrix
+```{r}
+confusionMatrix(predicted.cut, y_train)
+```
+
+## Other stuff that should be in this document
+### Classifiers
+#### Support vector machine classifier
+#### LASSO logistic regression
+### Concepts
+#### Balancing sensitivity and specificity
+#### Cut points
+#### Tuning
+#### Reciever operator curves
+#### Confusion matrices
+#### Interpreting weights
