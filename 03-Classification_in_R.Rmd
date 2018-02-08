@@ -1,0 +1,307 @@
+---
+title: "Classification in R"
+author: "Dani Cosme"
+date: "February 7, 2018"
+output: 
+  md_document:
+    preserve_yaml: true
+    toc: true
+    toc_depth: 2
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, cache = TRUE)
+```
+# Classification
+Last week we focused on using machine learning to predict a continuous outcome. This week we'll concentrate on predicting, or classifying, a dichotomous variable. We'll compare two different classification algorithms:
+* Support vector machine (SVM) classifier
+* LASSO logistic regression
+
+## Support vector machine classifier
+## LASSO logistic regression
+
+## Concepts
+### Balancing sensitivity and specificity
+### Cut points
+### Tuning
+### Reciever operator curves
+### Confusion matrices
+### Interpreting weights
+
+## Example using caret
+Today we'll use a [dataset from Kaggle](https://www.kaggle.com/jboysen/us-perm-visas) with lots information about US permanent visas applications. The goal is to predict the outcome of the application from a bunch of variables.
+
+#### Getting set up
+First, let's load some packages.
+```{r}
+if(!require(tidyverse)){
+  install.packages(tidyverse)
+  library(tidyverse)
+}
+
+if(!require(caret)){
+  install.packages(caret)
+  library(caret)
+}
+
+if(!require(ROCR)){
+  install.packages(ROCR)
+  library(ROCR)
+}
+
+if(!require(pROC)){
+  install.packages(pROC)
+  library(pROC)
+}
+
+if(!require(knitr)){
+  install.packages(knitr)
+  library(knitr)
+}
+```
+
+Next, let's load the data.
+```{r}
+# clear the environment, just to be safe
+rm(list=ls())
+
+# load data
+data = read.csv('files/us_perm_visas_10K.csv', stringsAsFactors = FALSE)
+```
+
+Time to tidy the data.
+```{r}
+# remove columns with no useful data (i.e. all observations are NA or has no text)
+data.reduced = data[,(colSums(is.na(data)) < nrow(data)) & (colSums(data == '') < nrow(data) | is.na(colSums(data == '')))]
+
+# change text to upper case and select unique rows
+data.reduced = data.reduced %>%
+  as_tibble() %>%
+  mutate_if(is.character, funs(toupper)) %>%
+  mutate_if(is.character, as.factor) %>%
+  unique(.)
+```
+
+For simplicity, let's limit ourselves to cases that are either certified or denied.
+```{r}
+# check levels
+levels(data.reduced$case_status)
+
+# remove withdrawn cases and relevel
+data.relevel = data.reduced %>%
+  filter(!case_status %in% "WITHDRAWN") %>%
+  mutate(case_status = as.factor(as.character(case_status)))
+
+# double check that it worked
+levels(data.relevel$case_status)
+```
+
+Let's take a look at the predictor variables.
+```{r}
+head(data.relevel)
+```
+
+For the sake of time, we're going to reduce the data in a couple of ways. There are more sophisticated ways to reduce the dimensionality while retaining the information from predictors (e.g. using PCA), but I'm just simply going to select the first 10 predictors.
+```{r}
+data.chop = data.relevel[,1:11]
+```
+
+Next, let's reduce the number of observations we have while still making sure that we have enough observations in each outcome category.
+
+Let's check the base rate of each outcome.
+```{r}
+round(table(data.chop$case_status)/nrow(data.chop),3)
+```
+
+There are very few denials (lucky applicants!), but this will cause problems for us later. We're going to oversample so that we have a 10% denial rate. 
+```{r}
+set.seed(6523)
+
+# sample separtely within each level
+cert = data.chop %>%
+  filter(case_status %in% "CERTIFIED") %>%
+  sample_n(450)
+
+den = data.chop %>%
+  filter(case_status %in% "DENIED") %>%
+  sample_n(50)
+
+# join samples
+data.ml = bind_rows(cert,den)
+
+# check proportions
+round(table(data.ml$case_status)/nrow(data.ml),3)
+```
+
+#### Overview of steps
+1. Split the data into training and test samples
+2. Set training parameters (e.g. number of k-folds)
+3. Run model
+4. Inspect fit indices and accuracy
+5. Adjust model (if necessary)
+6. Apply model to test data to assess out of sample accuracy
+
+#### Splitting the data
+We want to both develop a model and assess how well it can predict application status in a separate sample, so we'll split our data into training and test datasets. Let's use 75% of the data in the training sample and the remaining 25% in the test sample. 
+
+To do this, we'll use the `createDataPartition()` function in caret, which samples randomly within level of our outcome variable. This way we have the same proportion of outcomes in the training and test samples.
+
+```{r}
+# set a seed so we all get the same dataframes
+set.seed(6523)
+
+# split the data based on the outcome case_status
+in.train = createDataPartition(y = data.ml$case_status,
+                                 p = .75,
+                                 list = FALSE)
+
+# check that it's actually 75%
+nrow(in.train) / nrow(data.ml)
+
+# subset the training data
+training = data.ml[in.train,]
+
+# subset the test data (i.e. not in `in.train`)
+test = data.ml[-in.train,]
+
+# check proportions
+round(table(training$case_status)/nrow(training),3)
+round(table(test$case_status)/nrow(test),3)
+```
+
+Before we begin training the classifier, let's setup our training parameters using `trainControl()`. For the sake of time, let's use a 3-fold cross-validation. You may want to select more folds and/or repeat the k-fold cross-validation with several different samples. To do that you'd specify `method = "repeatedcv"` and `repeats = [n repeats]`. However, to save time, we'll just do a single 3-fold cross-validation. We also want to output the classification probabilities so that we can use the "ROC" metric below and save the predictions.
+
+```{r}
+train.control = trainControl(method = "cv", 
+                             number = 3,
+                             classProbs = TRUE,
+                             savePredictions = TRUE)
+```
+
+#### Train the model
+Now, we'll train a support vector machine (i.e. `method = "svmLinear"`) to predict our outcome `case_status` from all variables in the training dataset (i.e. `case_status ~ .`) using the training parameters we specified above (i.e. `train.control`). The rest of the inputs are as follows:
+* `na.action  = na.pass` allows NAs to pass through the model without crashing
+* `preProcess = c("center", "scale")` centers and scales the predictors so that they're on the same scale
+* `metric = "Accuracy"` means that we'll use accuracy to select the optimal model
+
+```{r}
+fit.svc <- train(case_status ~ ., 
+                 data = training,
+                 method = "svmLinear",
+                 trControl = train.control,
+                 na.action  = na.pass,
+                 preProcess = c("center", "scale"),
+                 metric = "Accuracy")
+```
+
+#### Assess the model
+First, let's check the mean accuracy of the model across cross-validation folds.
+```{r}
+fit.svc
+```
+
+Let's check out the classification accuracy and kappa values on each fold.
+```{r}
+fit.svc$resample
+```
+
+Let's unpack this a little further and look at our false positive and false negative rates using the confusion matrix.
+```{r}
+confusionMatrix(fit.svc)
+```
+
+We can also visualize this by looking at the receiver operator curve.
+```{r}
+plot(roc(predictor = fit.svc$pred$CERTIFIED, response = fit.svc$pred$obs))
+```
+
+#### Optimize the model
+To try to improve our accuracy, we can adjust various parameters. 
+
+First, let's change the selection metric from accuracy to ROC to try to balance sensitivity and specificity.
+```{r}
+fit.svc.roc <- train(case_status ~ ., 
+                 data = training,
+                 method = "svmLinear",
+                 trControl = train.control,
+                 na.action  = na.pass,
+                 preProcess = c("center", "scale"),
+                 metric = "ROC")
+```
+
+Let's compare accuracy and kappa values
+```{r}
+fit.table = bind_rows(fit.svc$results, fit.svc.roc$results)
+row.names(fit.table) = c("Accuracy", "ROC")
+kable(fit.table, format = "pandoc", digits = 3)
+```
+
+Now let's plot the ROC for both models
+```{r}
+roc1=roc(predictor = fit.svc$pred$CERTIFIED, response = fit.svc$pred$obs)
+roc2=roc(predictor = fit.svc.roc$pred$CERTIFIED, response = fit.svc.roc$pred$obs)
+
+plot(roc1, col = 1, lty = 1, main = "ROC")
+plot(roc2, col = 4, lty = 1, add = TRUE)
+legend("bottomright", legend = c("ACC", "ROC"), col = c(1,4), lty = c(1,1), bty = "n")
+```
+
+Using the first model we ran, let's tune the cost function (C).
+```{r}
+# specify different values to assign to the cost function
+grid = expand.grid(C = c(0, 0.01, 0.05, 0.25, 0.75, 1, 1.5, 2,5))
+
+fit.svc.tune = train(case_status ~ ., 
+                 data = training,
+                 method = "svmLinear",
+                 trControl = train.control,
+                 na.action  = na.pass,
+                 preProcess = c("center", "scale"),
+                 metric = "Accuracy",
+                 tuneGrid = grid,
+                 tuneLength = 10)
+```
+
+Let's check the model results
+```{r}
+fit.svc.tune
+```
+
+And plot the accuracy as a function of the cost parameter C
+```{r}
+plot(fit.svc.tune)
+```
+
+Now let's plot the ROC for all three models
+```{r}
+roc1=roc(predictor = fit.svc$pred$CERTIFIED, response = fit.svc$pred$obs)
+roc2=roc(predictor = fit.svc.roc$pred$CERTIFIED, response = fit.svc.roc$pred$obs)
+roc3=roc(predictor = fit.svc.tune$pred$CERTIFIED, response = fit.svc.tune$pred$obs)
+
+plot(roc1, col = 1, lty = 1, main = "ROC")
+plot(roc2, col = 4, lty = 1, add = TRUE)
+plot(roc2, col = 2, lty = 2, add = TRUE)
+legend("bottomright", legend = c("ACC", "ROC", "TUNED"), col = c(1,4,2), lty = c(1,1,2), bty = "n")
+```
+
+And compare accuracy
+```{r}
+fit.table = bind_rows(fit.svc$results, fit.svc.roc$results, filter(fit.svc.tune$results, C == .05))
+row.names(fit.table) = c("Accuracy", "ROC", "Tuned")
+kable(fit.table, format = "pandoc", digits = 3)
+```
+
+Let's apply the best fitting model to the test data and see how well it performs in a new sample
+```{r}
+# get predicted values for the test data
+test.pred = predict(fit.svc, newdata = test)
+```
+
+To assess the performance, let's check out the confusion matrix
+```{r}
+confusionMatrix(test.pred, test$case_status)
+```
+
+So how well is this model really performing? By looking at the No Information Rate and the associated p-value, we see that while our model has good verall accuracy, it actually isn't significantly better than simply guessing based on the base rates of the classes.
+
+More on how to interpret the metrics in the confusion matrix [here](https://www.hranalytics101.com/how-to-assess-model-accuracy-the-basics/#confusion-matrix-and-the-no-information-rate).

@@ -11,3 +11,5 @@ url: https://github.com/uodatascience/ML-CrashCourse
 ---
 # Index
 1. What Is Machine Learning?
+2. Regularized Regression in Caret
+3. Classification
