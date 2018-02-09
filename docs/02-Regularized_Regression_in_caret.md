@@ -147,9 +147,9 @@ cor(sample_data)
 
 ```
 ##           x1        x2         y
-## x1 1.0000000 0.9000072 0.7599512
-## x2 0.9000072 1.0000000 0.7600106
-## y  0.7599512 0.7600106 1.0000000
+## x1 1.0000000 0.8999009 0.7603362
+## x2 0.8999009 1.0000000 0.7605085
+## y  0.7603362 0.7605085 1.0000000
 ```
 
 Ah, it does! Good, let's proceed. Now if we estimate, a regression with both variables, we should get two beta weights of about .40:
@@ -166,20 +166,20 @@ summary(model_1)
 ## lm(formula = y ~ x1 + x2, data = sample_data)
 ## 
 ## Residuals:
-##      Min       1Q   Median       3Q      Max 
-## -2.95989 -0.42197  0.00008  0.42145  2.97004 
+##     Min      1Q  Median      3Q     Max 
+## -3.3245 -0.4222 -0.0001  0.4212  3.1076 
 ## 
 ## Coefficients:
-##               Estimate Std. Error t value Pr(>|t|)    
-## (Intercept) -0.0001945  0.0006262  -0.311    0.756    
-## x1           0.3998019  0.0014369 278.243   <2e-16 ***
-## x2           0.4003961  0.0014369 278.657   <2e-16 ***
+##              Estimate Std. Error t value Pr(>|t|)    
+## (Intercept) 0.0010257  0.0006256    1.64    0.101    
+## x1          0.3990652  0.0014333  278.43   <2e-16 ***
+## x2          0.4009384  0.0014338  279.63   <2e-16 ***
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ## 
-## Residual standard error: 0.6262 on 999997 degrees of freedom
-## Multiple R-squared:  0.608,	Adjusted R-squared:  0.608 
-## F-statistic: 7.754e+05 on 2 and 999997 DF,  p-value: < 2.2e-16
+## Residual standard error: 0.6256 on 999997 degrees of freedom
+## Multiple R-squared:  0.6087,	Adjusted R-squared:  0.6087 
+## F-statistic: 7.778e+05 on 2 and 999997 DF,  p-value: < 2.2e-16
 ```
 
 Okay, that worked as expected; we get two beta weights of about .40 (if you round to 2 decimals). Now let's check model 2, where we just include 1 x variable (x1). We should get a single beta weight of about .76.
@@ -196,19 +196,19 @@ summary(model_2)
 ## lm(formula = y ~ x1, data = sample_data)
 ## 
 ## Residuals:
-##      Min       1Q   Median       3Q      Max 
-## -3.10128 -0.43749 -0.00064  0.43783  3.03601 
+##     Min      1Q  Median      3Q     Max 
+## -3.5283 -0.4382  0.0002  0.4383  3.1313 
 ## 
 ## Coefficients:
-##               Estimate Std. Error t value Pr(>|t|)    
-## (Intercept) -3.231e-05  6.500e-04   -0.05     0.96    
-## x1           7.602e-01  6.502e-04 1169.19   <2e-16 ***
+##              Estimate Std. Error  t value Pr(>|t|)    
+## (Intercept) 0.0012714  0.0006496    1.957   0.0503 .  
+## x1          0.7597324  0.0006490 1170.594   <2e-16 ***
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ## 
-## Residual standard error: 0.65 on 999998 degrees of freedom
-## Multiple R-squared:  0.5775,	Adjusted R-squared:  0.5775 
-## F-statistic: 1.367e+06 on 1 and 999998 DF,  p-value: < 2.2e-16
+## Residual standard error: 0.6496 on 999998 degrees of freedom
+## Multiple R-squared:  0.5781,	Adjusted R-squared:  0.5781 
+## F-statistic: 1.37e+06 on 1 and 999998 DF,  p-value: < 2.2e-16
 ```
 
 And we do. Now let's walk through the two penalties we covered so far, Ridge and Lasso. Based on what we know so far, Ridge should prefer Model 1 (with x1 and x2) and LASSO should prefer model 2 (the one with just x1)
@@ -289,6 +289,10 @@ library(caret)
 ```
 
 ```
+## Warning: package 'caret' was built under R version 3.4.3
+```
+
+```
 ## Loading required package: lattice
 ```
 
@@ -301,31 +305,69 @@ library(tidyverse)
 ```
 
 ```
-## -- Attaching packages --------------------------------------- tidyverse 1.2.0 --
+## Warning: package 'tidyverse' was built under R version 3.4.2
 ```
 
 ```
-## v tibble  1.3.4     v purrr   0.2.3
-## v tidyr   0.7.1     v dplyr   0.7.3
-## v readr   1.1.1     v stringr 1.2.0
-## v tibble  1.3.4     v forcats 0.2.0
+## ── Attaching packages ────────────────────────────────── tidyverse 1.2.1 ──
 ```
 
 ```
-## -- Conflicts ------------------------------------------ tidyverse_conflicts() --
-## x dplyr::filter() masks stats::filter()
-## x dplyr::lag()    masks stats::lag()
-## x purrr::lift()   masks caret::lift()
+## ✔ tibble  1.4.2     ✔ purrr   0.2.4
+## ✔ tidyr   0.7.2     ✔ dplyr   0.7.4
+## ✔ readr   1.1.1     ✔ stringr 1.2.0
+## ✔ tibble  1.4.2     ✔ forcats 0.2.0
+```
+
+```
+## Warning: package 'tibble' was built under R version 3.4.3
+```
+
+```
+## Warning: package 'tidyr' was built under R version 3.4.2
+```
+
+```
+## Warning: package 'purrr' was built under R version 3.4.2
+```
+
+```
+## Warning: package 'dplyr' was built under R version 3.4.2
+```
+
+```
+## ── Conflicts ───────────────────────────────────── tidyverse_conflicts() ──
+## ✖ dplyr::filter() masks stats::filter()
+## ✖ dplyr::lag()    masks stats::lag()
+## ✖ purrr::lift()   masks caret::lift()
 ```
 
 ```r
 library(tidytext)
+```
+
+```
+## Warning: package 'tidytext' was built under R version 3.4.3
+```
+
+```r
 library(topicmodels)
+```
+
+```
+## Warning: package 'topicmodels' was built under R version 3.4.2
+```
+
+```r
 require(janitor)
 ```
 
 ```
 ## Loading required package: janitor
+```
+
+```
+## Warning: package 'janitor' was built under R version 3.4.3
 ```
 
 ```r
@@ -359,21 +401,20 @@ wine
 
 ```
 ## # A tibble: 150,930 x 11
-##       id country
-##    <int>   <chr>
-##  1     0      US
-##  2     1   Spain
-##  3     2      US
-##  4     3      US
-##  5     4  France
-##  6     5   Spain
-##  7     6   Spain
-##  8     7   Spain
-##  9     8      US
-## 10     9      US
-## # ... with 150,920 more rows, and 9 more variables: description <chr>,
-## #   designation <chr>, points <int>, price <dbl>, province <chr>,
-## #   region_1 <chr>, region_2 <chr>, variety <chr>, winery <chr>
+##       id country description    designation points price province region_1
+##    <int> <chr>   <chr>          <chr>        <int> <dbl> <chr>    <chr>   
+##  1     0 US      This tremendo… Martha's V…     96 235   Califor… Napa Va…
+##  2     1 Spain   Ripe aromas o… Carodorum …     96 110   Norther… Toro    
+##  3     2 US      Mac Watson ho… Special Se…     96  90.0 Califor… Knights…
+##  4     3 US      This spent 20… Reserve         96  65.0 Oregon   Willame…
+##  5     4 France  This is the t… La Brûlade      95  66.0 Provence Bandol  
+##  6     5 Spain   Deep, dense a… Numanthia       95  73.0 Norther… Toro    
+##  7     6 Spain   Slightly grit… San Román       95  65.0 Norther… Toro    
+##  8     7 Spain   Lush cedary b… Carodorum …     95 110   Norther… Toro    
+##  9     8 US      This re-named… Silice          95  65.0 Oregon   Chehale…
+## 10     9 US      The producer … Gap's Crow…     95  60.0 Califor… Sonoma …
+## # ... with 150,920 more rows, and 3 more variables: region_2 <chr>,
+## #   variety <chr>, winery <chr>
 ```
 So you can see wee have some information about where the wine is from, its rating (called `points`), its price called `price`, and textual description of the wine (called `description`). Let's see if we can train a model that does a good job predicting wine ratings.
 
@@ -638,14 +679,6 @@ fit_enet <- train(points ~ .*.,
                    trControl = train_control,
                    method = "enet",
                    preProc = c("center", "scale"))
-```
-
-```
-## Loading required package: lars
-```
-
-```
-## Loaded lars 1.2
 ```
 
 And let's evaluate the model in the same two ways.

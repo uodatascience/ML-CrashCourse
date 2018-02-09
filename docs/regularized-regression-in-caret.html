@@ -32,7 +32,7 @@
   
   
 <link rel="prev" href="what-is-machine-learning.html">
-
+<link rel="next" href="classification.html">
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
@@ -127,6 +127,15 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </ul></li>
 <li class="chapter" data-level="3.3" data-path="regularized-regression-in-caret.html"><a href="regularized-regression-in-caret.html#closing-thoughts"><i class="fa fa-check"></i><b>3.3</b> Closing thoughts</a></li>
 <li class="chapter" data-level="3.4" data-path="regularized-regression-in-caret.html"><a href="regularized-regression-in-caret.html#references"><i class="fa fa-check"></i><b>3.4</b> References:</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="classification.html"><a href="classification.html"><i class="fa fa-check"></i><b>4</b> Classification</a><ul>
+<li class="chapter" data-level="4.1" data-path="classification.html"><a href="classification.html#example-using-svm-classification-in-caret"><i class="fa fa-check"></i><b>4.1</b> Example using SVM classification in caret</a><ul>
+<li class="chapter" data-level="4.1.1" data-path="classification.html"><a href="classification.html#example-using-lasso-logisic-regression-in-glmnet"><i class="fa fa-check"></i><b>4.1.1</b> Example using LASSO logisic regression in glmnet</a></li>
+</ul></li>
+<li class="chapter" data-level="4.2" data-path="classification.html"><a href="classification.html#other-stuff-that-should-be-in-this-document"><i class="fa fa-check"></i><b>4.2</b> Other stuff that should be in this document</a><ul>
+<li class="chapter" data-level="4.2.1" data-path="classification.html"><a href="classification.html#classifiers"><i class="fa fa-check"></i><b>4.2.1</b> Classifiers</a></li>
+<li class="chapter" data-level="4.2.2" data-path="classification.html"><a href="classification.html#concepts"><i class="fa fa-check"></i><b>4.2.2</b> Concepts</a></li>
+</ul></li>
 </ul></li>
 </ul>
 
@@ -231,76 +240,76 @@ sample_data &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<sp
 <p>Alright, let’s check the correlation matrix to make sure we did this correctly. This should match sigma:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cor</span>(sample_data)</code></pre></div>
 <pre><code>##           x1        x2         y
-## x1 1.0000000 0.9000072 0.7599512
-## x2 0.9000072 1.0000000 0.7600106
-## y  0.7599512 0.7600106 1.0000000</code></pre>
+## x1 1.0000000 0.8999009 0.7603362
+## x2 0.8999009 1.0000000 0.7605085
+## y  0.7603362 0.7605085 1.0000000</code></pre>
 <p>Ah, it does! Good, let’s proceed. Now if we estimate, a regression with both variables, we should get two beta weights of about .40:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">model_<span class="dv">1</span> &lt;-<span class="kw">lm</span>(y <span class="op">~</span><span class="st"> </span>x1 <span class="op">+</span><span class="st"> </span>x2, <span class="dt">data =</span> sample_data)
-<span class="kw">summary</span>(model_<span class="dv">1</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">model_1 &lt;-<span class="kw">lm</span>(y ~<span class="st"> </span>x1 +<span class="st"> </span>x2, <span class="dt">data =</span> sample_data)
+<span class="kw">summary</span>(model_1)</code></pre></div>
 <pre><code>## 
 ## Call:
 ## lm(formula = y ~ x1 + x2, data = sample_data)
 ## 
 ## Residuals:
-##      Min       1Q   Median       3Q      Max 
-## -2.95989 -0.42197  0.00008  0.42145  2.97004 
+##     Min      1Q  Median      3Q     Max 
+## -3.3245 -0.4222 -0.0001  0.4212  3.1076 
 ## 
 ## Coefficients:
-##               Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept) -0.0001945  0.0006262  -0.311    0.756    
-## x1           0.3998019  0.0014369 278.243   &lt;2e-16 ***
-## x2           0.4003961  0.0014369 278.657   &lt;2e-16 ***
+##              Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) 0.0010257  0.0006256    1.64    0.101    
+## x1          0.3990652  0.0014333  278.43   &lt;2e-16 ***
+## x2          0.4009384  0.0014338  279.63   &lt;2e-16 ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
-## Residual standard error: 0.6262 on 999997 degrees of freedom
-## Multiple R-squared:  0.608,  Adjusted R-squared:  0.608 
-## F-statistic: 7.754e+05 on 2 and 999997 DF,  p-value: &lt; 2.2e-16</code></pre>
+## Residual standard error: 0.6256 on 999997 degrees of freedom
+## Multiple R-squared:  0.6087, Adjusted R-squared:  0.6087 
+## F-statistic: 7.778e+05 on 2 and 999997 DF,  p-value: &lt; 2.2e-16</code></pre>
 <p>Okay, that worked as expected; we get two beta weights of about .40 (if you round to 2 decimals). Now let’s check model 2, where we just include 1 x variable (x1). We should get a single beta weight of about .76.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">model_<span class="dv">2</span> &lt;-<span class="kw">lm</span>(y <span class="op">~</span><span class="st"> </span>x1, <span class="dt">data =</span> sample_data)
-<span class="kw">summary</span>(model_<span class="dv">2</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">model_2 &lt;-<span class="kw">lm</span>(y ~<span class="st"> </span>x1, <span class="dt">data =</span> sample_data)
+<span class="kw">summary</span>(model_2)</code></pre></div>
 <pre><code>## 
 ## Call:
 ## lm(formula = y ~ x1, data = sample_data)
 ## 
 ## Residuals:
-##      Min       1Q   Median       3Q      Max 
-## -3.10128 -0.43749 -0.00064  0.43783  3.03601 
+##     Min      1Q  Median      3Q     Max 
+## -3.5283 -0.4382  0.0002  0.4383  3.1313 
 ## 
 ## Coefficients:
-##               Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept) -3.231e-05  6.500e-04   -0.05     0.96    
-## x1           7.602e-01  6.502e-04 1169.19   &lt;2e-16 ***
+##              Estimate Std. Error  t value Pr(&gt;|t|)    
+## (Intercept) 0.0012714  0.0006496    1.957   0.0503 .  
+## x1          0.7597324  0.0006490 1170.594   &lt;2e-16 ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
-## Residual standard error: 0.65 on 999998 degrees of freedom
-## Multiple R-squared:  0.5775, Adjusted R-squared:  0.5775 
-## F-statistic: 1.367e+06 on 1 and 999998 DF,  p-value: &lt; 2.2e-16</code></pre>
+## Residual standard error: 0.6496 on 999998 degrees of freedom
+## Multiple R-squared:  0.5781, Adjusted R-squared:  0.5781 
+## F-statistic: 1.37e+06 on 1 and 999998 DF,  p-value: &lt; 2.2e-16</code></pre>
 <p>And we do. Now let’s walk through the two penalties we covered so far, Ridge and Lasso. Based on what we know so far, Ridge should prefer Model 1 (with x1 and x2) and LASSO should prefer model 2 (the one with just x1)</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># pull out the coefficients for each parameter of the two models</span>
-model_1_b1 &lt;-<span class="st"> </span>model_<span class="dv">1</span><span class="op">$</span>coefficients[<span class="st">&quot;x1&quot;</span>]
-model_1_b2 &lt;-<span class="st"> </span>model_<span class="dv">1</span><span class="op">$</span>coefficients[<span class="st">&quot;x2&quot;</span>]
-model_2_b1 &lt;-<span class="st"> </span>model_<span class="dv">2</span><span class="op">$</span>coefficients[<span class="st">&quot;x1&quot;</span>]
+model_1_b1 &lt;-<span class="st"> </span>model_1$coefficients[<span class="st">&quot;x1&quot;</span>]
+model_1_b2 &lt;-<span class="st"> </span>model_1$coefficients[<span class="st">&quot;x2&quot;</span>]
+model_2_b1 &lt;-<span class="st"> </span>model_2$coefficients[<span class="st">&quot;x1&quot;</span>]
 <span class="co"># Note, we&#39;re not actually estimating b2 in model 2, but this is equivalen to saying its 0</span>
 model_2_b2 &lt;-<span class="st"> </span><span class="dv">0</span>
 
 <span class="co"># set lambda to a constant; we&#39;ll use .1</span>
 lambda &lt;-<span class="st"> </span>.<span class="dv">1</span>
-ridge_penalty_Model_<span class="dv">1</span> &lt;-<span class="st"> </span>lambda<span class="op">*</span>(<span class="kw">sum</span>(<span class="kw">c</span>(model_1_b1<span class="op">^</span><span class="dv">2</span>, model_1_b2<span class="op">^</span><span class="dv">2</span>)))
-ridge_penalty_Model_<span class="dv">2</span> &lt;-<span class="st"> </span>lambda<span class="op">*</span>(<span class="kw">sum</span>(<span class="kw">c</span>(model_2_b1<span class="op">^</span><span class="dv">2</span>, model_2_b2<span class="op">^</span><span class="dv">2</span>)))
+ridge_penalty_Model_1 &lt;-<span class="st"> </span>lambda*(<span class="kw">sum</span>(<span class="kw">c</span>(model_1_b1^<span class="dv">2</span>, model_1_b2^<span class="dv">2</span>)))
+ridge_penalty_Model_2 &lt;-<span class="st"> </span>lambda*(<span class="kw">sum</span>(<span class="kw">c</span>(model_2_b1^<span class="dv">2</span>, model_2_b2^<span class="dv">2</span>)))
 
-ridge_penalties &lt;-<span class="st"> </span><span class="kw">rbind</span>(ridge_penalty_Model_<span class="dv">1</span>, ridge_penalty_Model_<span class="dv">2</span>)
+ridge_penalties &lt;-<span class="st"> </span><span class="kw">rbind</span>(ridge_penalty_Model_1, ridge_penalty_Model_2)
 
-lasso_penalty_Model_<span class="dv">1</span> &lt;-<span class="st"> </span>lambda<span class="op">*</span>(<span class="kw">sum</span>(<span class="kw">c</span>(<span class="kw">abs</span>(model_1_b1), <span class="kw">abs</span>(model_1_b2))))
-lasso_penalty_Model_<span class="dv">2</span> &lt;-<span class="st"> </span>lambda<span class="op">*</span>(<span class="kw">sum</span>(<span class="kw">c</span>(<span class="kw">abs</span>(model_2_b1), <span class="kw">abs</span>(model_2_b2))))
+lasso_penalty_Model_1 &lt;-<span class="st"> </span>lambda*(<span class="kw">sum</span>(<span class="kw">c</span>(<span class="kw">abs</span>(model_1_b1), <span class="kw">abs</span>(model_1_b2))))
+lasso_penalty_Model_2 &lt;-<span class="st"> </span>lambda*(<span class="kw">sum</span>(<span class="kw">c</span>(<span class="kw">abs</span>(model_2_b1), <span class="kw">abs</span>(model_2_b2))))
 
-lasso_penalties &lt;-<span class="st"> </span><span class="kw">rbind</span>(lasso_penalty_Model_<span class="dv">1</span>, lasso_penalty_Model_<span class="dv">2</span>)
+lasso_penalties &lt;-<span class="st"> </span><span class="kw">rbind</span>(lasso_penalty_Model_1, lasso_penalty_Model_2)
 penalties &lt;-<span class="st"> </span><span class="kw">cbind</span>(ridge_penalties, lasso_penalties)
 
 <span class="kw">colnames</span>(penalties)&lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;ridge&quot;</span>, <span class="st">&quot;lasso&quot;</span>)
 <span class="kw">row.names</span>(penalties) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;model 1&quot;</span>, <span class="st">&quot;model 2&quot;</span>)
-knitr<span class="op">::</span><span class="kw">kable</span>(penalties, <span class="dt">digits =</span> <span class="dv">3</span>)</code></pre></div>
+knitr::<span class="kw">kable</span>(penalties, <span class="dt">digits =</span> <span class="dv">3</span>)</code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -353,27 +362,36 @@ knitr<span class="op">::</span><span class="kw">kable</span>(penalties, <span cl
 <span class="kw">rm</span>(<span class="dt">list=</span><span class="kw">ls</span>())
 
 <span class="kw">library</span>(caret)</code></pre></div>
+<pre><code>## Warning: package &#39;caret&#39; was built under R version 3.4.3</code></pre>
 <pre><code>## Loading required package: lattice</code></pre>
 <pre><code>## Loading required package: ggplot2</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(tidyverse)</code></pre></div>
-<pre><code>## -- Attaching packages --------------------------------------- tidyverse 1.2.0 --</code></pre>
-<pre><code>## v tibble  1.3.4     v purrr   0.2.3
-## v tidyr   0.7.1     v dplyr   0.7.3
-## v readr   1.1.1     v stringr 1.2.0
-## v tibble  1.3.4     v forcats 0.2.0</code></pre>
-<pre><code>## -- Conflicts ------------------------------------------ tidyverse_conflicts() --
-## x dplyr::filter() masks stats::filter()
-## x dplyr::lag()    masks stats::lag()
-## x purrr::lift()   masks caret::lift()</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(tidytext)
-<span class="kw">library</span>(topicmodels)
-<span class="kw">require</span>(janitor)</code></pre></div>
+<pre><code>## Warning: package &#39;tidyverse&#39; was built under R version 3.4.2</code></pre>
+<pre><code>## ── Attaching packages ────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
+<pre><code>## ✔ tibble  1.4.2     ✔ purrr   0.2.4
+## ✔ tidyr   0.7.2     ✔ dplyr   0.7.4
+## ✔ readr   1.1.1     ✔ stringr 1.2.0
+## ✔ tibble  1.4.2     ✔ forcats 0.2.0</code></pre>
+<pre><code>## Warning: package &#39;tibble&#39; was built under R version 3.4.3</code></pre>
+<pre><code>## Warning: package &#39;tidyr&#39; was built under R version 3.4.2</code></pre>
+<pre><code>## Warning: package &#39;purrr&#39; was built under R version 3.4.2</code></pre>
+<pre><code>## Warning: package &#39;dplyr&#39; was built under R version 3.4.2</code></pre>
+<pre><code>## ── Conflicts ───────────────────────────────────── tidyverse_conflicts() ──
+## ✖ dplyr::filter() masks stats::filter()
+## ✖ dplyr::lag()    masks stats::lag()
+## ✖ purrr::lift()   masks caret::lift()</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(tidytext)</code></pre></div>
+<pre><code>## Warning: package &#39;tidytext&#39; was built under R version 3.4.3</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(topicmodels)</code></pre></div>
+<pre><code>## Warning: package &#39;topicmodels&#39; was built under R version 3.4.2</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">require</span>(janitor)</code></pre></div>
 <pre><code>## Loading required package: janitor</code></pre>
+<pre><code>## Warning: package &#39;janitor&#39; was built under R version 3.4.3</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">require</span>(rio)</code></pre></div>
 <pre><code>## Loading required package: rio</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">wine &lt;-<span class="st"> </span>rio<span class="op">::</span><span class="kw">import</span>(<span class="st">&quot;files/winemag-data_first150k.csv&quot;</span>,
-                    <span class="dt">setclass =</span> <span class="st">&quot;tbl_df&quot;</span>) <span class="op">%&gt;%</span>
-<span class="st">  </span>janitor<span class="op">::</span><span class="kw">clean_names</span>() <span class="op">%&gt;%</span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">wine &lt;-<span class="st"> </span>rio::<span class="kw">import</span>(<span class="st">&quot;files/winemag-data_first150k.csv&quot;</span>,
+                    <span class="dt">setclass =</span> <span class="st">&quot;tbl_df&quot;</span>) %&gt;%
+<span class="st">  </span>janitor::<span class="kw">clean_names</span>() %&gt;%
 <span class="st">  </span><span class="kw">rename</span>(<span class="dt">id =</span> v1)</code></pre></div>
 <p>We’ll limit ourselves to a sample of 1000 observations for time’s sake.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#set.seed(227)</span>
@@ -382,21 +400,20 @@ knitr<span class="op">::</span><span class="kw">kable</span>(penalties, <span cl
 <p>Let’s take a look at the data</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">wine</code></pre></div>
 <pre><code>## # A tibble: 150,930 x 11
-##       id country
-##    &lt;int&gt;   &lt;chr&gt;
-##  1     0      US
-##  2     1   Spain
-##  3     2      US
-##  4     3      US
-##  5     4  France
-##  6     5   Spain
-##  7     6   Spain
-##  8     7   Spain
-##  9     8      US
-## 10     9      US
-## # ... with 150,920 more rows, and 9 more variables: description &lt;chr&gt;,
-## #   designation &lt;chr&gt;, points &lt;int&gt;, price &lt;dbl&gt;, province &lt;chr&gt;,
-## #   region_1 &lt;chr&gt;, region_2 &lt;chr&gt;, variety &lt;chr&gt;, winery &lt;chr&gt;</code></pre>
+##       id country description    designation points price province region_1
+##    &lt;int&gt; &lt;chr&gt;   &lt;chr&gt;          &lt;chr&gt;        &lt;int&gt; &lt;dbl&gt; &lt;chr&gt;    &lt;chr&gt;   
+##  1     0 US      This tremendo… Martha&#39;s V…     96 235   Califor… Napa Va…
+##  2     1 Spain   Ripe aromas o… Carodorum …     96 110   Norther… Toro    
+##  3     2 US      Mac Watson ho… Special Se…     96  90.0 Califor… Knights…
+##  4     3 US      This spent 20… Reserve         96  65.0 Oregon   Willame…
+##  5     4 France  This is the t… La Brûlade      95  66.0 Provence Bandol  
+##  6     5 Spain   Deep, dense a… Numanthia       95  73.0 Norther… Toro    
+##  7     6 Spain   Slightly grit… San Román       95  65.0 Norther… Toro    
+##  8     7 Spain   Lush cedary b… Carodorum …     95 110   Norther… Toro    
+##  9     8 US      This re-named… Silice          95  65.0 Oregon   Chehale…
+## 10     9 US      The producer … Gap&#39;s Crow…     95  60.0 Califor… Sonoma …
+## # ... with 150,920 more rows, and 3 more variables: region_2 &lt;chr&gt;,
+## #   variety &lt;chr&gt;, winery &lt;chr&gt;</code></pre>
 <p>So you can see wee have some information about where the wine is from, its rating (called <code>points</code>), its price called <code>price</code>, and textual description of the wine (called <code>description</code>). Let’s see if we can train a model that does a good job predicting wine ratings.</p>
 </div>
 <div id="extracting-features-a-brief-detour-into-text-analysis" class="section level3">
@@ -406,24 +423,24 @@ knitr<span class="op">::</span><span class="kw">kable</span>(penalties, <span cl
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">data</span>(<span class="st">&quot;stop_words&quot;</span>)</code></pre></div>
 <p>Now that we have the stop words, let’s take our wine data set, select just the id (for merging purposes) and the text descriptions. Then we’ll use the <code>unnest_tokens</code> function, which basically takes the descriptions, separates them by ‘tokens’ (which in this case is each word), and leaves us with a dataset with a row per word in each desciption (essentially an id X word from description lengthed dataset).</p>
 <p>Finally, we’ll use <code>anti_join()</code> to remove the stop words. This takes requires two dataframes as its two arguments, and removes any rows from the dataframe in the first argument that are in the dataframe in the second argument. Since we’re using pipes (<code>%&gt;%</code>), the first argument is invisible, but is the new expanded wine description data, and the second is the dataframe of stopwords; effectively, this will just remove the stopwords from our expanded wine description data.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">wine_text_expand&lt;-<span class="st"> </span>wine <span class="op">%&gt;%</span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">wine_text_expand&lt;-<span class="st"> </span>wine %&gt;%
 <span class="st">  </span><span class="co"># take just the id and description</span>
-<span class="st">  </span><span class="kw">select</span>(id, description) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">select</span>(id, description) %&gt;%
 <span class="st">  </span><span class="co"># unnest tokens; provide it the new variable name (for the tokens)</span>
 <span class="st">  </span><span class="co"># and the old variable (where it can find the text to tokenize).</span>
-<span class="st">  </span><span class="kw">unnest_tokens</span>(word, description) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">unnest_tokens</span>(word, description) %&gt;%
 <span class="st">  </span><span class="kw">anti_join</span>(stop_words)</code></pre></div>
 <pre><code>## Joining, by = &quot;word&quot;</code></pre>
 <p>Okay, now that we have cleaned up text data for the wine descriptions, let’s extract some features from the descriptions. We can use sentiment analysis. since that seems like it will definitely be relevant. Sentiment analysis is intended to extract the emotional tone of a text, and in this case, will basically give us a score corresponding to how poisitive and negative each word is. We’ll leave it at sentiment analysis for the sake of time.</p>
 <p>We’ll do sentiment analysis using tidytext, and the “afinn” sentiment dictionary. This dictionary has a set of words with a continuous sentiment score (from -5, to +5; neutral point of 0). We can use it to get sentiment scores by using <code>inner_join()</code>, which basically keeps all columns, but only rows shared by the two dataframes; in this case, only words that are in both our descriptions data AND the sentiment dictionary will be kept, and columns for id, word, and sentiment score. Then, we’ll summarize across words to get a sentiment score for each wine’s description (wine being tracked with id). This will leave us with a dataframe with id and sentiment score (since the words are shared between the two dataframes)</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">description_sentiment &lt;-<span class="st"> </span>wine_text_expand <span class="op">%&gt;%</span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">description_sentiment &lt;-<span class="st"> </span>wine_text_expand %&gt;%
 <span class="st">  </span><span class="co"># this makes it so that all is saved is a</span>
 <span class="st">  </span><span class="co"># data frame that contains the words in the afinn</span>
 <span class="st">  </span><span class="co"># sentiment dictionary, the score associated with those words,</span>
 <span class="st">  </span><span class="co"># and the id for the wine.</span>
-<span class="st">  </span><span class="kw">inner_join</span>(<span class="kw">get_sentiments</span>(<span class="st">&quot;afinn&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">inner_join</span>(<span class="kw">get_sentiments</span>(<span class="st">&quot;afinn&quot;</span>)) %&gt;%<span class="st"> </span>
 <span class="st">  </span><span class="co"># group by wine id</span>
-<span class="st">  </span><span class="kw">group_by</span>(id) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">group_by</span>(id) %&gt;%<span class="st"> </span>
 <span class="st">  </span><span class="co"># summarize such that we have a single sentiment score </span>
 <span class="st">  </span><span class="co"># per wine id</span>
 <span class="st">  </span><span class="kw">summarize</span>(<span class="dt">sentiment =</span> <span class="kw">mean</span>(score)) </code></pre></div>
@@ -444,10 +461,10 @@ knitr<span class="op">::</span><span class="kw">kable</span>(penalties, <span cl
 ## 10    12       4.0
 ## # ... with 123,775 more rows</code></pre>
 <p>And, let’s merge that back into the wine dataframe.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">wine_for_ml &lt;-<span class="st"> </span>wine <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw">left_join</span>(description_sentiment, <span class="dt">by =</span> <span class="st">&quot;id&quot;</span>) <span class="op">%&gt;%</span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">wine_for_ml &lt;-<span class="st"> </span>wine %&gt;%
+<span class="st">  </span><span class="kw">left_join</span>(description_sentiment, <span class="dt">by =</span> <span class="st">&quot;id&quot;</span>) %&gt;%
 <span class="st">  </span><span class="co"># removing raw description for now</span>
-<span class="st">  </span><span class="kw">select</span>(points, price, sentiment) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">select</span>(points, price, sentiment) %&gt;%
 <span class="st">  </span><span class="co"># just removing missing values, because they complicate things</span>
 <span class="st">  </span><span class="kw">na.omit</span>()</code></pre></div>
 </div>
@@ -459,13 +476,13 @@ knitr<span class="op">::</span><span class="kw">kable</span>(penalties, <span cl
 <span class="co"># This part creates a list of values;</span>
 <span class="co"># these values are the row numbers for data included in the training set</span>
 <span class="co"># we&#39;re splitting it 75-25, such that 75% of cases will be in the training set (25% in the test).</span>
-in_train &lt;-<span class="st"> </span><span class="kw">createDataPartition</span>(<span class="dt">y =</span> wine_for_ml<span class="op">$</span>points,
+in_train &lt;-<span class="st"> </span><span class="kw">createDataPartition</span>(<span class="dt">y =</span> wine_for_ml$points,
                                  <span class="dt">p =</span> .<span class="dv">75</span>,
                                  <span class="dt">list =</span> <span class="ot">FALSE</span>)
 <span class="co"># subsets the training data (those data whose row number appears in the inTrain object)</span>
 training &lt;-<span class="st"> </span>wine_for_ml[in_train,]
 <span class="co"># subsets the test data (those data whose row number DOES NOT appear in the inTrain object)</span>
-testing &lt;-<span class="st"> </span>wine_for_ml[<span class="op">-</span>in_train,]</code></pre></div>
+testing &lt;-<span class="st"> </span>wine_for_ml[-in_train,]</code></pre></div>
 <p>Okay, now that we have our training data, let’s actually train a model.</p>
 <p>First, we set up the training parameters using the <code>trainControl()</code> function. This is where you specify the method (e.g., cross-validation), and some other specifics.</p>
 <p>In this example, we’ll tell it to use 10-fold cross-validation, by specifying cross-validation as the method, and 10 as the number (i.e., k). We’ll also tell it to save the best fitting model with the argument <code>savePredictions = TRUE</code>. You’ll notice that we’ll use these same controls for the different models we try (ridge, lasso, elastic net)</p>
@@ -483,7 +500,7 @@ train_control&lt;-<span class="st"> </span><span class="kw">trainControl</span>(
 <li>using the ridge method</li>
 <li>pre-processing by centering and scaling (essentially z scoring everything; this is critical, because we want everything on the same scale, since parameter size is being penalized in one way or another).</li>
 </ol>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fit_ridge &lt;-<span class="st"> </span><span class="kw">train</span>(points <span class="op">~</span><span class="st"> </span>.<span class="op">*</span>., 
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fit_ridge &lt;-<span class="st"> </span><span class="kw">train</span>(points ~<span class="st"> </span>.*., 
                    <span class="dt">data =</span> training,
                    <span class="dt">trControl =</span> train_control,
                    <span class="dt">method =</span> <span class="st">&quot;ridge&quot;</span>,
@@ -496,8 +513,8 @@ train_control&lt;-<span class="st"> </span><span class="kw">trainControl</span>(
 <li>Easier test: what is the average fit (with <span class="math inline">\(R^2\)</span>) and misfit (with <span class="math inline">\(RMSE\)</span>) fromt the training. This will basically take the <span class="math inline">\(R^2\)</span> and <span class="math inline">\(RMSE\)</span> from all 10 folds and average them, telling us how well our models were doing on average across training runs.</li>
 </ol>
 <p>We can get this information like so:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">avg_r2_ridge &lt;-<span class="st"> </span><span class="kw">mean</span>(fit_ridge<span class="op">$</span>results<span class="op">$</span>Rsquared)
-avg_RMSE_ridge &lt;-<span class="st"> </span><span class="kw">mean</span>(fit_ridge<span class="op">$</span>results<span class="op">$</span>RMSE)
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">avg_r2_ridge &lt;-<span class="st"> </span><span class="kw">mean</span>(fit_ridge$results$Rsquared)
+avg_RMSE_ridge &lt;-<span class="st"> </span><span class="kw">mean</span>(fit_ridge$results$RMSE)
 
 avg_r2_ridge</code></pre></div>
 <pre><code>## [1] 0.2686071</code></pre>
@@ -511,7 +528,7 @@ avg_r2_ridge</code></pre></div>
 
 <span class="co"># Gets R^2 and RMSE for ridge model</span>
 fitstat_ridge &lt;-<span class="st"> </span><span class="kw">postResample</span>(<span class="dt">pred =</span> pred_ridge, 
-                                  <span class="dt">obs =</span> testing<span class="op">$</span>points)
+                                  <span class="dt">obs =</span> testing$points)
 fitstat_ridge</code></pre></div>
 <pre><code>##      RMSE  Rsquared 
 ## 2.8348519 0.2411339</code></pre>
@@ -521,15 +538,15 @@ fitstat_ridge</code></pre></div>
 <h4><span class="header-section-number">3.2.6.2</span> Lasso Method</h4>
 <p>Okay, now let’s try lasso. We’ll use the same training-test split, and the same training parameters.</p>
 <p>We will run virtually the same code, but change <code>method = &quot;ridge&quot;</code> to <code>method = &quot;lasso&quot;</code>, like so:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fit_lasso &lt;-<span class="st"> </span><span class="kw">train</span>(points <span class="op">~</span><span class="st"> </span>.<span class="op">*</span>., 
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fit_lasso &lt;-<span class="st"> </span><span class="kw">train</span>(points ~<span class="st"> </span>.*., 
                    <span class="dt">data =</span> training,
                    <span class="dt">trControl =</span> train_control,
                    <span class="dt">method =</span> <span class="st">&quot;lasso&quot;</span>,
                    <span class="dt">preProc =</span> <span class="kw">c</span>(<span class="st">&quot;center&quot;</span>, <span class="st">&quot;scale&quot;</span>))</code></pre></div>
 <p>And let’s evaluate this model in the same two ways.</p>
 <p>Easier test: average fit across training runs:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">avg_r2_lasso &lt;-<span class="st"> </span><span class="kw">mean</span>(fit_lasso<span class="op">$</span>results<span class="op">$</span>Rsquared)
-avg_RMSE_lasso &lt;-<span class="st"> </span><span class="kw">mean</span>(fit_lasso<span class="op">$</span>results<span class="op">$</span>RMSE)
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">avg_r2_lasso &lt;-<span class="st"> </span><span class="kw">mean</span>(fit_lasso$results$Rsquared)
+avg_RMSE_lasso &lt;-<span class="st"> </span><span class="kw">mean</span>(fit_lasso$results$RMSE)
 
 avg_r2_lasso</code></pre></div>
 <pre><code>## [1] 0.249744</code></pre>
@@ -542,7 +559,7 @@ avg_r2_lasso</code></pre></div>
 
 <span class="co"># Gets R^2 and RMSE for lasso model</span>
 fitstat_lasso &lt;-<span class="st"> </span><span class="kw">postResample</span>(<span class="dt">pred =</span> pred_lasso, 
-                                  <span class="dt">obs =</span> testing<span class="op">$</span>points)
+                                  <span class="dt">obs =</span> testing$points)
 
 fitstat_lasso</code></pre></div>
 <pre><code>##      RMSE  Rsquared 
@@ -552,17 +569,15 @@ fitstat_lasso</code></pre></div>
 <div id="elastic-net-method" class="section level4">
 <h4><span class="header-section-number">3.2.6.3</span> Elastic Net Method</h4>
 <p>And finally, let’s do the same with elastic net. Like before, we’ll use the same data split and training parameters. And again, the code is <em>almost</em> identical; we just change <code>method = &quot;lasso&quot;</code> to <code>method = &quot;ridge&quot;</code></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fit_enet &lt;-<span class="st"> </span><span class="kw">train</span>(points <span class="op">~</span><span class="st"> </span>.<span class="op">*</span>., 
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fit_enet &lt;-<span class="st"> </span><span class="kw">train</span>(points ~<span class="st"> </span>.*., 
                    <span class="dt">data =</span> training,
                    <span class="dt">trControl =</span> train_control,
                    <span class="dt">method =</span> <span class="st">&quot;enet&quot;</span>,
                    <span class="dt">preProc =</span> <span class="kw">c</span>(<span class="st">&quot;center&quot;</span>, <span class="st">&quot;scale&quot;</span>))</code></pre></div>
-<pre><code>## Loading required package: lars</code></pre>
-<pre><code>## Loaded lars 1.2</code></pre>
 <p>And let’s evaluate the model in the same two ways.</p>
 <p>Easier test: average fit across training runs</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">avg_r2_enet &lt;-<span class="st"> </span><span class="kw">mean</span>(fit_enet<span class="op">$</span>results<span class="op">$</span>Rsquared)
-avg_RMSE_enet &lt;-<span class="st"> </span><span class="kw">mean</span>(fit_enet<span class="op">$</span>results<span class="op">$</span>RMSE)
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">avg_r2_enet &lt;-<span class="st"> </span><span class="kw">mean</span>(fit_enet$results$Rsquared)
+avg_RMSE_enet &lt;-<span class="st"> </span><span class="kw">mean</span>(fit_enet$results$RMSE)
 
 avg_r2_enet</code></pre></div>
 <pre><code>## [1] 0.2480728</code></pre>
@@ -574,7 +589,7 @@ avg_r2_enet</code></pre></div>
 
 <span class="co"># Gets R^2 and RMSE for enet model</span>
 fitstat_enet &lt;-<span class="st"> </span><span class="kw">postResample</span>(<span class="dt">pred =</span> pred_enet, 
-                                  <span class="dt">obs =</span> testing<span class="op">$</span>points)
+                                  <span class="dt">obs =</span> testing$points)
 fitstat_enet</code></pre></div>
 <pre><code>##      RMSE  Rsquared 
 ## 2.8348519 0.2411339</code></pre>
@@ -605,8 +620,8 @@ fitstat_enet</code></pre></div>
           </div>
         </div>
       </div>
-<a href="what-is-machine-learning.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-
+<a href="what-is-machine-learning.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="classification.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

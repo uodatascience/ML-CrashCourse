@@ -23,35 +23,23 @@ Today we'll use a [dataset from Kaggle](https://www.kaggle.com/jboysen/us-perm-v
 #### Getting set up
 First, let's load some packages.
 ```{r}
-if(!require(tidyverse)){
-  install.packages(tidyverse)
-  library(tidyverse)
+# load up our packages
+installif <- function(packages){
+  # give me a character vector of packages
+  for(p in packages){
+    # and I will check if we have them
+    if(!require(p, character.only = TRUE)){
+      # install them if we don't
+      install.packages(p)
+    }
+    # and load them if all goes well.
+    require(p, character.only = TRUE)
+  }
 }
 
-if(!require(caret)){
-  install.packages(caret)
-  library(caret)
-}
+package_list <- c("tidyverse", "caret", "ROCR", "pROC", "knitr", "glmnet", "e1071")
 
-if(!require(ROCR)){
-  install.packages(ROCR)
-  library(ROCR)
-}
-
-if(!require(pROC)){
-  install.packages(pROC)
-  library(pROC)
-}
-
-if(!require(knitr)){
-  install.packages(knitr)
-  library(knitr)
-}
-
-if(!require(glmnet)){
-  install.packages(glmnet)
-  library(glmnet)
-}
+installif(package_list)
 ```
 
 Next, let's load the data.
@@ -66,10 +54,12 @@ data = read.csv('files/us_perm_visas_10K.csv', stringsAsFactors = FALSE)
 Time to tidy the data.
 ```{r}
 # remove columns with no useful data (i.e. all observations are NA or has no text)
-data.reduced = data[,(colSums(is.na(data)) < nrow(data)) & (colSums(data == '') < nrow(data) | is.na(colSums(data == '')))]
+#data.reduced = data[,(colSums(is.na(data)) < nrow(data)) & (colSums(data == '') < nrow(data) | is.na(colSums(data == '')))]
+# do we have to keep the broken original df? -jls
+data <- data[,(colSums(is.na(data)) < nrow(data)) & (colSums(data == '') < nrow(data) | is.na(colSums(data == '')))]
 
 # change text to upper case, select unique rows, recode dollar amounts, and move outcome variable to the first column
-data.reduced = data.reduced %>%
+data = data %>%
   as_tibble() %>%
   mutate(pw_amount_9089 = gsub(",", "", pw_amount_9089)) %>%
   extract(pw_amount_9089, "pw_amount_9089", regex = "([0-9]{1,}).00") %>%
@@ -78,15 +68,19 @@ data.reduced = data.reduced %>%
   mutate_if(is.character, as.factor) %>%
   unique(.) %>%
   select(case_status, everything())
+
+# sry am bad at pipe syntax -jls
+data$case_received_date <- as.Date(data$case_received_date)
+data$decision_date <- as.Date(data$decision_date)
 ```
 
 For simplicity, let's limit ourselves to cases that are either certified or denied.
 ```{r}
 # check levels
-levels(data.reduced$case_status)
+levels(data$case_status)
 
 # remove withdrawn cases and relevel
-data.relevel = data.reduced %>%
+data.relevel = data %>%
   filter(!case_status %in% "WITHDRAWN") %>%
   mutate(case_status = as.factor(as.character(case_status)))
 
@@ -99,9 +93,16 @@ Let's take a look at the predictor variables.
 head(data.relevel)
 ```
 
-For the sake of time, we're going to reduce the data in a couple of ways. There are more sophisticated ways to reduce the dimensionality while retaining the information from predictors (e.g. using PCA), but I'm just simply going to select the first 10 predictors.
+For the sake of time, we're going to reduce the data in a couple of ways. There are more sophisticated ways to reduce the dimensionality while retaining the information from predictors (e.g. using PCA), but I'm just simply going to select the first 10 predictors. (Choosing some complete/potentially useful variables)
 ```{r}
-data.chop = data.relevel[,1:11]
+data.chop <- data.relevel[,c("case_status","case_received_date", "decision_date", "job_info_training", 
+                     "job_info_foreign_ed", "employer_num_employees", "job_info_foreign_lang_req",
+                     "foreign_worker_info_education", "fw_info_rel_occup_exp",
+                     "fw_info_req_experience", "job_info_experience")]
+data.chop$case_received_date <- as.Date(data.chop$case_received_date)
+data.chop$decision_date <- as.Date(data.chop$decision_date)
+
+data.chop <- data.chop[complete.cases(data.chop),]
 ```
 
 Next, let's reduce the number of observations we have while still making sure that we have enough observations in each outcome category.
@@ -115,14 +116,16 @@ There are very few denials (lucky applicants!), but this will cause problems for
 ```{r}
 set.seed(6523)
 
+n_denied <- nrow(data.chop[data.chop$case_status == "DENIED",])
+
 # sample separtely within each level
 cert = data.chop %>%
   filter(case_status %in% "CERTIFIED") %>%
-  sample_n(450)
+  sample_n(n_denied*9)
 
 den = data.chop %>%
-  filter(case_status %in% "DENIED") %>%
-  sample_n(50)
+  filter(case_status %in% "DENIED")
+  #sample_n(192) # gonna use all the minority samples we can
 
 # join samples
 data.ml = bind_rows(cert,den)
@@ -227,7 +230,7 @@ fit.svc.roc <- train(case_status ~ .,
                  trControl = train.control,
                  na.action  = na.pass,
                  preProcess = c("center", "scale"),
-                 metric = "ROC")
+                 metric = "Kappa") # says ROC is not an available metric
 
 # fit.svc.roc = readRDS("files/fit.svc.roc") # if you try to run the model and it's taking too long, you can load the data with this command
 # saveRDS(fit.svc.roc, "files/fit.svc.roc") # code to save the model
@@ -251,7 +254,9 @@ legend("bottomright", legend = c("ACC", "ROC"), col = c(1,4), lty = c(1,1), bty 
 ```
 
 Using the first model we ran, let's tune the cost function (C).
-```{r}
+```{r, warning=FALSE}
+# This doesn't work for me, turning warnings off off -jls
+
 # specify different values to assign to the cost function
 grid = expand.grid(C = c(0, 0.01, 0.05, 0.25, 0.75, 1, 1.5, 2,5))
 
