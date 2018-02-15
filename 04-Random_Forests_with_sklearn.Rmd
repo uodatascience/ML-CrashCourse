@@ -1,0 +1,96 @@
+---
+title: "Random Forests with sklearn"
+author: "Jonny Saunders"
+date: "2/15/2018"
+output: html_document
+---
+
+```{r, echo=FALSE}
+library(knitr)
+library(reticulate)
+knitr::knit_engines$set(python = reticulate::eng_python)
+```
+
+
+# Random Forests with `sklearn`
+
+## Random Forests
+
+We have already seen decision trees, but they tend to overfit if allowed to grow to their full depth. Random forests use an ensemble of decision trees, each trained with an incomplete subset of the data, to reduce variance at the (lower) expense of increased bias. Specifically, each tree receives a subset of the training samples, and when each branch is split (an additional decision is added to the tree) it uses a random subset of the sample features. The final class estimate is the average of predictions across trees.
+
+In this example, we will be classifying Myers-Briggs personality type from forum comments using this dataset: https://www.kaggle.com/datasnaek/mbti-type . Some of this code was graciously borrowed from depture's kernel here: https://www.kaggle.com/depture/multiclass-and-multi-output-classification
+
+## Preparing Data
+
+```{bash}
+# Set which python to use...
+export PATH="/usr/local/Cellar/python/2.7.13/Frameworks/Python.framework/Versions/2.7/bin:$PATH"
+```
+
+
+This example requires several packages:
+* `numpy`
+* `scipy`
+* `matplotlib`
+* `nltk`
+* `sklearn`
+* `pandas`
+
+If you don't have them installed, you will need to do so, presumably with `pip`. eg.
+
+```{bash, eval=FALSE}
+pip install numpy scipy
+pip install sklearn
+```
+
+if you don't have `pip`, installation instructions can be found here: https://pip.pypa.io/en/stable/installing/
+
+If you don't have `python`, installation instructions can be found here: https://wiki.python.org/moin/BeginnersGuide/Download
+
+First we will import all our packages...
+```{python, engine.path="/usr/local/Cellar/python/2.7.13/Frameworks/Python.framework/Versions/2.7/bin/python"}
+
+import re
+```
+
+
+```{python, eval=FALSE, engine.path="/usr/local/Cellar/python/2.7.13/Frameworks/Python.framework/Versions/2.7/bin/python"}
+import re
+from time import time
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy import stats
+
+import nltk
+from nltk.corpus import stopwords
+from nltk.stem import PorterStemmer, WordNetLemmatizer
+
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.feature_selection import RFECV
+from sklearn.model_selection import train_test_split, StratifiedKFold, permutation_test_score, RandomizedSearchCV, GridSearchCV
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.externals import joblib
+from sklearn.preprocessing import LabelEncoder
+```
+
+
+If this is the first time you are using `nltk`, you will need to download the stopwords and wordnet data
+```{python, eval=FALSE}
+nltk.download("stopwords")
+nltk.download("wordnet")
+```
+
+Now we will need to load and clean the data. We will be turning the posts into a list of lowercase words without punctuation, removing common words, and converting the list of words to a "tf-idf," or term-frequency times inverse document-frequency, matrix. The tf-idf representation is a *vectorization* of the text -- since a numerical identity is just as useful to most learning algorithms as the character representation of a word (if they can use them at all), we replace each unique word with a number, or literally an index in a matrix. Since many words will be shared by people of different classes (yno, the nature of language), tf-idf weighting emphasizes the words that are unique to a particular sample. The term frequency for each sample is multiplied by 1/the frequency of those terms for all samples. The equation used by `sklearn`'s vectorizer is:
+
+$$tfidf(t) = tf(t,d) * (log \frac{1+n_{d}}{1+df(d,t)} + 1) $$
+
+where $tf(t,d)$ is the term frequency for term $t$ in document (sample) $d$, $n_{d}$ is the number of documents, and $df(d,t)$ is the number of samples that contain $t$.
+
+```{python, engine.path="/usr/local/Cellar/python/2.7.13/Frameworks/Python.framework/Versions/2.7/bin/python"}
+data = pd.read_csv('files/mbti_1.csv')
+```
+
+
+
+
