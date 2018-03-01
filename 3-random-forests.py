@@ -91,6 +91,7 @@ is the number of documents, and $df(d,t)$ is the number of samples that contain 
 
 # obvs change this to wherever you have your stuff
 data_path = '/Users/Jonny/Downloads/mbti_1.csv'
+base_dir = '/Users/Jonny/rf/'
 
 data = pd.read_csv(data_path)
 
@@ -157,8 +158,8 @@ def pre_process_data(data, remove_stop_words=True):
 list_posts, list_personality = pre_process_data(data, remove_stop_words=True)
 
 # fkn save because good lord that takes awhile.
-np.save("posts_preprocessed.npy", list_posts)
-np.save("types_preprocessed.npy", list_personality)
+np.save("{}posts_preprocessed.npy".format(base_dir), list_posts)
+np.save("{}types_preprocessed.npy".format(base_dir), list_personality)
 
 # load em if we're starting in the middle
 #list_posts = np.load("posts_preprocessed.npy")
@@ -179,12 +180,17 @@ posts_tf = vectorizer.fit_transform(list_posts)
 
 ###########
 # Split to test/train sets
-X_train, X_test, Y_train, Y_test = train_test_split(posts_tf, list_personality, test_size=0.25)
+X_train, X_test, Y_train, Y_test = train_test_split(posts_tf, list_personality, test_size=0.20)
 
-np.save('X_train.npy', X_train)
-np.save('X_test.npy', X_test)
-np.save('Y_train.npy', Y_train)
-np.save('Y_test.npy', Y_test)
+np.save('{}X_train.npy'.format(base_dir), X_train)
+np.save('{}X_test.npy'.format(base_dir), X_test)
+np.save('{}Y_train.npy'.format(base_dir), Y_train)
+np.save('{}Y_test.npy'.format(base_dir), Y_test)
+
+#X_train = np.load('{}X_train.npy'.format(base_dir))
+#X_test = np.load('{}X_test.npy'.format(base_dir))
+#Y_train = np.load('{}Y_train.npy'.format(base_dir))
+#Y_text = np.load('{}Y_test.npy'.format(base_dir))
 
 '''
 First just one forest. The only parameter we manipulate here is n_estimators,
@@ -197,10 +203,10 @@ help(RandomForestClassifier)
 rfc_basic = RandomForestClassifier(n_estimators=100, n_jobs=6, verbose=1)
 
 # Fit and score
-rfc_basic.fit(X_train_sub, Y_train)
+rfc_basic.fit(X_train, Y_train)
 
 # Accuracy...
-rfc_basic.score(X_test_sub, Y_test)
+rfc_basic.score(X_test, Y_test)
 
 '''
 Before we fine-tune our model, let's see if we need all these words...
@@ -216,8 +222,8 @@ rfc_elim = RandomForestClassifier(n_jobs=4, verbose=1,
 rfc_rfecv = RFECV(rfc_elim, step=100, scoring="neg_log_loss", n_jobs=2, verbose=2)
 rfc_rfecv.fit(X_train, Y_train)
 
-joblib.dump(rfc_rfecv, 'rfc_rfecv.pkl')
-#rfc_rfecv = joblib.load('rfc_rfecv.pkl')
+joblib.dump(rfc_rfecv, '{}rfc_rfecv.pkl'.format(base_dir))
+rfc_rfecv = joblib.load('{}rfc_rfecv.pkl'.format(base_dir))
 
 plt.figure()
 plt.xlabel("Number of features selected")
@@ -232,8 +238,11 @@ n_selected_words = np.sum(good_words)
 X_test_sub = X_test[:,good_words]
 X_train_sub = X_train[:,good_words]
 
-np.save('X_train_sub.npy', X_train_sub)
-np.save('X_test_sub.npy', X_test_sub)
+np.save('{}X_train_sub.npy'.format(base_dir), X_train_sub)
+np.save('{}X_test_sub.npy'.format(base_dir), X_test_sub)
+
+#X_train_sub = np.load('{}X_train_sub.npy'.format(base_dir))
+#X_test_sub = np.load('{}X_test_sub.npy'.format(base_dir))
 
 # what are those words anyway?
 tf_words = vectorizer.get_feature_names()
@@ -246,8 +255,8 @@ randomly varying in their parameters, and choose values that optimize time vs. m
 '''
 
 # http://scikit-learn.org/stable/auto_examples/model_selection/plot_randomized_search.html#sphx-glr-auto-examples-model-selection-plot-randomized-search-py
-rfc_rand = RandomForestClassifier(verbose=1, n_jobs=4)
-rfc_params = {"n_estimators": stats.randint(10, 100),
+rfc_rand = RandomForestClassifier(verbose=1, n_jobs=2)
+rfc_params = {"n_estimators": stats.randint(10, 150),
               "max_depth": [None, 3, 10, 20],
               "max_features": stats.randint(1, 100),
               "min_samples_split": stats.randint(2, 30),
@@ -255,18 +264,19 @@ rfc_params = {"n_estimators": stats.randint(10, 100),
               "bootstrap": [True, False],
               "criterion": ["gini", "entropy"]}
 
-n_rand_iter = 50
+n_rand_iter = 100
 rand_search = RandomizedSearchCV(rfc_rand, param_distributions=rfc_params,
                                  n_iter=n_rand_iter, cv=3, verbose=2,
                                  scoring=["neg_log_loss", "f1_weighted", 'accuracy'],
-                                 n_jobs=2, refit=False)
+                                 n_jobs=4, refit=False)
 
 start = time()
 rand_search.fit(X_train_sub, Y_train)
 stop = time()
 total_time = stop-start
 
-np.save('rand_search.npy', rand_search)
+joblib.dump(rand_search, '{}rand_search.pkl'.format(base_dir))
+#rand_search = joblib.load('rand_search.pkl')
 
 #rand_search.score(X_test_sub, Y_test)
 
@@ -312,8 +322,11 @@ for v in scatter_vars:
 plt.legend()
 
 ############
-rfc_tuned = RandomForestClassifier(n_jobs=7, verbose=1, n_estimators=150, max_features=150, class_weight="balanced")
+rfc_tuned = RandomForestClassifier(n_jobs=7, verbose=1, n_estimators=75,
+                                   max_features=125, class_weight="balanced")
 rfc_tuned.fit(X_train_sub, Y_train)
+
+joblib.dump(rfc_tuned, '{}rfc_tuned.pkl'.format(base_dir))
 
 rfc_tuned.score(X_test_sub, Y_test)
 
@@ -329,6 +342,26 @@ ax.imshow(cm, interpolation='nearest')
 plt.xticks(range(len(unique_type_list)), unique_type_list)
 plt.yticks(range(len(unique_type_list)), unique_type_list)
 
+# how does it compare to class frequency?
+fig, ax = plt.subplots()
+plt.hist(Y_train)
+plt.xticks(range(len(unique_type_list)), unique_type_list)
+
+# Which features (words) are important?
+importances = rfc_tuned.feature_importances_
+std = np.std([tree.feature_importances_ for tree in rfc_tuned.estimators_],
+             axis=0)
+indices = np.argsort(importances)[::-1].tolist()
+
+important_words = [top_n_words[i] for i in indices]
+
+plt.figure()
+plt.title("Feature importances")
+plt.bar(range(X_test_sub.shape[1]), importances[indices],
+       color="r", yerr=std[indices], align="center")
+plt.xticks(range(X_test_sub.shape[1]), important_words)
+#plt.xlim([-1, X.shape[1]])
+plt.show()
 
 
 ##########
@@ -370,7 +403,7 @@ rfc_multi_out.fit(X_train, Y_train_multi)
 
 multi_predictions = rfc_multi_out.predict(X_test)
 
-np.logical_and(multi_predictions, Y_test)
+np.logical_and(multi_predictions, Y_test_multi)
 
 #cm = confusion_matrix(Y_test_multi, multi_predictions)
 #cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
